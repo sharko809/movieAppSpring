@@ -1,0 +1,34 @@
+.menu-item {
+    padding: 0;
+    margin: 0;
+}
+
+#welcome-block {
+    border: 1px;
+    border-style: double;
+    border-color: darkgray;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.custom-margin {
+    margin-left: 150px;
+}
+
+@media screen and (max-width: 768px){
+
+    .img-class {
+        zoom: 0.3;
+    }
+
+    .custom-margin {
+        margin-left: 0;
+    }
+
+}
+
+@media screen and (min-width: 769px){
+    .img-class {
+        zoom: 0.6;
+    }
+}

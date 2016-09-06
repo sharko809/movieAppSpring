@@ -1,0 +1,5 @@
+.input[type="text, url, date"], textarea {
+    background-color: aliceblue;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}

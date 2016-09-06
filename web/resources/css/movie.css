@@ -1,0 +1,88 @@
+.videoWrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    padding-top: 25px;
+    height: 0;
+}
+.videoWrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.review {
+    border: 1px;
+    border-style: double;
+    border-color: darkgray;
+    border-radius: 4px;
+}
+
+#error-info {
+    border: 1px;
+    border-style: double;
+    border-color: darkgray;
+    border-radius: 4px;
+    text-align: center;
+    margin: 10px auto 10px auto;
+    background-color: #FFCCCC;
+    width: 40%;
+}
+
+.error-paragraph {
+    margin: 5px auto 5px auto;
+}
+
+.img-container {
+    margin: 20px 0px 10px 10px;
+    text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+
+    #movie-content {
+        display: block;
+    }
+
+    #submitReview {
+        width: 100%;
+    }
+
+    #error-info {
+        width: 100%;
+    }
+
+    #post-date {
+        width: 80%;
+    }
+
+    #m-rating {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    #post-date {
+        width: 100%;
+        text-align: end;
+    }
+
+    #m-rating {
+        width: 60%;
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 1050px) {
+    #rev-detail {
+        width: 100% !important;
+    }
+
+    #m-rating {
+        margin-right: 10px;
+    }
+}
+
+
+

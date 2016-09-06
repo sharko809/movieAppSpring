@@ -1,0 +1,118 @@
+.inline {
+    display: inline;
+}
+
+.centered {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.movie-container {
+    margin: 10px;
+    display: inline-block;
+    width: 100%;
+}
+
+.video-container {
+    width: 100%;
+    height: 50%;
+}
+
+.movie-list {
+    max-width: 70%;
+    margin: auto;
+}
+
+.movie-info {
+    display: inline-block;
+    float: left;
+}
+
+.movie-trailer {
+    display: inline-block;
+    float: right;
+}
+
+.padding-top {
+    padding-top: 46px;
+}
+
+.header-menu {
+    width: 100%;
+    height: 46px;
+    background: #333333;
+}
+
+.remove-link-style {
+    color:#333;
+    text-decoration: none;
+}
+
+.remove-link-style:link {
+    color:#333;
+    text-decoration: none;
+}
+
+.remove-link-style:visited {
+    color:#333;
+    text-decoration: none;
+}
+
+.remove-link-style:hover {
+    color:#333;
+    text-decoration: none;
+}
+
+.remove-link-style:active {
+    color:#333;
+    text-decoration: none;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.body-style {
+    background-color: beige;
+    font-family: Verdana, Arial, sans-serif;
+    color: #333;
+    font-size: 16px;
+}
+
+.page-number {
+    margin: 5px;
+}
+
+.page-link {
+    text-decoration: none;
+    color: #333;
+}
+
+.page-link:hover {
+    color: hotpink;
+    text-decoration: underline;
+}
+
+.page-current {
+    text-decoration: underline;
+    color: darkviolet;
+}
+
+#empty-set {
+    border: 1px;
+    border-style: double;
+    border-color: darkgray;
+    border-radius: 4px;
+    text-align: center;
+    margin: auto;
+    background-color: #ccf1ff;
+    width: 40%;
+}
+
+@media screen and (max-width: 768px) {
+
+    #empty-set {
+        width: 100%;
+    }
+
+}

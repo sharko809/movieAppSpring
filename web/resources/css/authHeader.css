@@ -1,0 +1,45 @@
+.header-menu {
+    height: 46px;
+    background: #333333;
+}
+
+.z-index {
+    z-index: 20;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.float-search {
+    margin-top: 11px;
+    float: right;
+}
+
+.search-style {
+    border-radius: 4px;
+}
+
+.logout {
+    margin: 7px 0 0 0;
+    width: 25%;
+    text-align: end;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.menu-text {
+    color: antiquewhite;
+    text-decoration: none;
+}
+
+.max-width {
+    width: 100%;
+}
+
+.input-margin {
+    margin-left: 3px;
+    margin-right: 3px;
+}

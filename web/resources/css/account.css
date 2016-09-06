@@ -1,0 +1,18 @@
+@media screen and (max-width: 768px) {
+
+    #error-info {
+        width:100%;
+    }
+
+}
+
+.error-info {
+    border: 1px;
+    border-style: double;
+    border-color: darkgray;
+    border-radius: 4px;
+    text-align: center;
+    margin: 10px auto 10px auto;
+    background-color: #FFCCCC;
+    width: 40%;
+}
