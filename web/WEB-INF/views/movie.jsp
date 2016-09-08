@@ -1,33 +1,35 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <title>${movie.movieName}</title>
-    <link rel="stylesheet" href="/resources/css/vendor/pure/pure-min.css">
-    <link rel="stylesheet" href="/resources/css/vendor/pure/base-min.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/pure-min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/base-min.css"/>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--[if lte IE 8]>
     <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-old-ie-min.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-min.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/grids-responsive-min.css"/>">
     <!--<![endif]-->
-    <link rel="stylesheet" type="text/css" href="/resources/css/mainPage.css">
-    <link rel="stylesheet" type="text/css" href="/resources/css/movie.css">
-    <link rel="stylesheet" type="text/css" href="/resources/css/xs-screen.css">
-    <script src="/resources/js/vendor/jquery-3.1.0.min.js" type="text/javascript"></script>
-    <script src="/resources/js/redirect-url.js"></script>
-    <script src="/resources/js/reset-variables.js"></script>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/mainPage.css"/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/movie.css"/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/xs-screen.css"/>">
+    <script src="<c:url value="/resources/js/vendor/jquery-3.1.0.min.js"/>" type="text/javascript"></script>
+    <script src="<c:url value="/resources/js/redirect-url.js"/>"></script>
+    <script src="<c:url value="/resources/js/reset-variables.js"/>"></script>
 </head>
 <body class="body-style">
 <jsp:include page="header.jsp"/>
 <div class="padding-top"></div>
 <div class="pure-g">
     <div class="pure-u-md-3-4 pure-u-sm-1 centered">
-        <c:if test="${user ne null}">
-            <c:if test="${user.isAdmin()}">
+        <c:if test="${pageContext.request.remoteUser ne null}">
+            <sec:authentication var="userRole" property="principal.authorities"/>
+            <c:if test="${userRole eq '[ROLE_ADMIN]'}">
                 <div class="pure-g">
-                    <button type="button" class="pure-button" style="margin: 5px 0px 0px 5px;" onclick="window.location = 'admin/editmovie?movieID=${movie.id}'">Edit movie</button>
+                    <button type="button" class="pure-button" style="margin: 5px 0 0 5px;" onclick="window.location = 'admin/editmovie?movieID=${movie.id}'">Edit movie</button>
                 </div>
             </c:if>
         </c:if>
@@ -38,7 +40,7 @@
                         <img class="pure-img" src="${movie.posterURL}"/>
                     </c:when>
                     <c:otherwise>
-                        <img class="pure-img" src="/resources/images/no-poster-available.png"/>
+                        <img class="pure-img" src="<c:url value="/resources/images/no-poster-available.png"/>"/>
                     </c:otherwise>
                 </c:choose>
             </div>
@@ -82,7 +84,7 @@
                     </div>
                 </c:if>
                 <c:choose>
-                    <c:when test="${user eq null}">
+                    <c:when test="${pageContext.requset.remoteUser eq null}">
                         <div class="pure-u-md-1 pure-u-sm-1">
                             <div style="margin-bottom: 5px; text-align: center">
                                 Please, sign in to write reviews.
@@ -90,7 +92,7 @@
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <form class="pure-form" method="post" action="/postreview">
+                        <form class="pure-form" method="post" action="<c:url value="/postreview"/>">
                             <div class="pure-u-1 inline-flex">
                                 <div class="pure-u-6-8 max-width" style="margin-top: 7px;">
                                     <input id="reviewTitle" class="max-width" type="text" name="reviewTitle" placeholder="Review title. You can SHORTLY describe your impression."/>

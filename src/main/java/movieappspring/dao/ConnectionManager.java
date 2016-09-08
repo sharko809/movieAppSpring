@@ -41,7 +41,7 @@ public class ConnectionManager {
                     propertiesManager.getProperty("dbUser"),
                     propertiesManager.getProperty("dbPassword"));
         } catch (SQLException e) {
-            LOGGER.fatal("Error during establishing connection to database. " + e, e);
+            LOGGER.fatal("Error during establishing connection to database.", e);
             throw new RuntimeException("Error during establishing connection to database");
         }
         return connection;

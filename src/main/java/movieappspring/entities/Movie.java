@@ -4,7 +4,7 @@ package movieappspring.entities;
 import java.sql.Date;
 
 /**
- * Created by dsharko on 7/28/2016.
+ * Class representing <code>Movie</code> entity.
  */
 public class Movie {
 

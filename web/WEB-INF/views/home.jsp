@@ -3,18 +3,18 @@
 <html>
 <head>
     <title>Movies</title>
-    <link rel="stylesheet" href="/resources/css/vendor/pure/pure-min.css">
-    <link rel="stylesheet" href="/resources/css/vendor/pure/base-min.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/pure-min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/base-min.css"/>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--[if lte IE 8]>
     <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-old-ie-min.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-min.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/grids-responsive-min.css"/>">
     <!--<![endif]-->
-    <link rel="stylesheet" type="text/css" href="/resources/css/mainPage.css">
-    <link rel="stylesheet" type="text/css" href="/resources/css/xs-screen.css">
-    <link rel="stylesheet" type="text/css" href="/resources/css/pages.css">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/mainPage.css"/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/xs-screen.css"/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/pages.css"/>">
 </head>
 <body class="body-style">
 <jsp:include page="header.jsp"/>
@@ -31,7 +31,7 @@
                                     <div class="pure-u-lg-1-2 pure-u-sm-1 movie-info">
                                         <div>
                                             <h4 class="inline">Title: </h4>
-                                            <a class="remove-link-style" href="/movies?movieId=${movie.id}">
+                                            <a class="remove-link-style" href="<c:url value="/movies?movieId=${movie.id}"/>">
                                                     ${movie.movieName}
                                             </a>
                                         </div>
@@ -94,11 +94,11 @@
                                     <c:if test="${currentPage ne 1}">
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="/home?page=1" style="margin-right: 5px;">First</a>
+                                                <a class="page-link" href="<c:url value="/home?page=1"/>" style="margin-right: 5px;">First</a>
                                             </p>
                                         </c:if>
                                         <p>
-                                            <a class="page-link" href="/home?page=${currentPage - 1}">Prev</a>
+                                            <a class="page-link" href="<c:url value="/home?page=${currentPage - 1}"/>">Prev</a>
                                         </p>
                                     </c:if>
                                 </div>
@@ -111,7 +111,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <p>
-                                                        <a class="page-link" href="/home?page=${i}">${i}</a>
+                                                        <a class="page-link" href="<c:url value="/home?page=${i}"/>">${i}</a>
                                                     </p>
                                                 </c:otherwise>
                                             </c:choose>
@@ -121,11 +121,11 @@
                                 <div class="page-number inline-flex">
                                     <c:if test="${currentPage ne numberOfPages}">
                                         <p>
-                                            <a class="page-link" href="/home?page=${currentPage + 1}">Next</a>
+                                            <a class="page-link" href="<c:url value="/home?page=${currentPage + 1}"/>">Next</a>
                                         </p>
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="/home?page=${numberOfPages}" style="margin-left: 5px;">Last</a>
+                                                <a class="page-link" href="<c:url value="/home?page=${numberOfPages}"/>" style="margin-left: 5px;">Last</a>
                                             </p>
                                         </c:if>
                                     </c:if>
@@ -136,7 +136,7 @@
                             <div class="pure-u-1 inline-flex">
                                 <div class="pure-u-1-4 centered">
                                     <select style="margin-bottom: 10px;" class="page-select"
-                                            onchange="javascript:goToPage(this, '/home?page=')">
+                                            onchange="goToPage(this, '/home?page=')">
                                         <c:forEach begin="1" end="${numberOfPages}" var="i">
                                             <option ${currentPage eq i ? 'selected' : ''}>${i}</option>
                                         </c:forEach>
@@ -150,6 +150,6 @@
         </c:if>
     </div>
 </div>
-<script src="/resources/js/pages-sm.js"></script>
+<script src="<c:url value="/resources/js/pages-sm.js"/>"></script>
 </body>
 </html>

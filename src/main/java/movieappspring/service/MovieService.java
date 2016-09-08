@@ -134,4 +134,27 @@ public class MovieService {
         return pagedMovies;
     }
 
+    /**
+     * Using offset and desired number of records returns some part of movie records from database.
+     *
+     * @param offset   starting position of select query
+     * @param noOfRows desired number of records per page
+     * @param orderBy  fields by which soring is performed
+     * @param isDesc   <b>true</b> if you want descending sorting
+     * @return PagedEntity object storing List of <code>Movie</code> objects in given range and Number of Records in
+     * database if any movie records found. Otherwise returns PagedEntity object with empty list and null records value
+     * @see PagedEntity
+     */
+    public PagedEntity getMoviesSorted(Integer offset, Integer noOfRows, String orderBy, Boolean isDesc) {
+        List<Movie> movies = movieDAO.getMoviesSorted(offset, noOfRows, orderBy, isDesc);
+        Integer numberOfRecords = movieDAO.getNumberOfRecords();
+        if (movies == null || numberOfRecords == null) {
+            // TODO create exception
+        }
+        PagedEntity pagedMovies = new PagedEntity();
+        pagedMovies.setEntity(movies);
+        pagedMovies.setNumberOfRecords(numberOfRecords);
+        return pagedMovies;
+    }
+
 }

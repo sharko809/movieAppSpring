@@ -33,5 +33,8 @@
     <bean id="userDao" class="movieappspring.dao.UserDAO" scope="request"/>
 
     <bean id="reviewDao" class="movieappspring.dao.ReviewDAO" scope="request"/>
+    
+    <import resource="applicationContext.xml"/>
+    <import resource="securityContext.xml"/>
 
 </beans>

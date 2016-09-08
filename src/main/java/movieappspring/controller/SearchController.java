@@ -39,6 +39,7 @@ public class SearchController {
         List<Movie> movies = (List<Movie>) pagedMovies.getEntity();
         int numberOfRecords = pagedMovies.getNumberOfRecords();
         int numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / RECORDS_PER_PAGE);
+
         modelAndView.addObject("movies", movies);
         modelAndView.addObject("numberOfPages", numberOfPages);
         modelAndView.addObject("currentPage", page);

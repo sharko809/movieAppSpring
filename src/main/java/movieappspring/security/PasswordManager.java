@@ -5,6 +5,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -15,7 +16,7 @@ import java.security.spec.InvalidKeySpecException;
 /**
  * Class with methods for creating hash password with salt
  */
-public class PasswordManager {
+public class PasswordManager implements PasswordEncoder {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final Integer PASSWORD_LENGTH;
@@ -39,9 +40,19 @@ public class PasswordManager {
      * @return hashed password with salt
      * @throws IllegalArgumentException
      */
-    public String getSaltedHashPassword(String password) throws IllegalArgumentException {
+    @Override
+    public String encode(CharSequence password) throws IllegalArgumentException {
         byte[] salt = generateSalt(password);
         return Base64.encodeBase64String(salt) + "$" + hash(password, salt);
+    }
+
+    @Override
+    public boolean matches(CharSequence rawPassword, String encodedPassword) {
+        String encodedRaw = encode(rawPassword);
+        if (encodedRaw.equals(encodedPassword)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -52,7 +63,7 @@ public class PasswordManager {
      * @return string representing password in hashed form
      * @throws IllegalArgumentException
      */
-    private String hash(String password, byte[] salt) throws IllegalArgumentException {
+    private String hash(CharSequence password, byte[] salt) throws IllegalArgumentException {
         SecretKeyFactory secretKeyFactory;
         try {
             secretKeyFactory = SecretKeyFactory.getInstance(propertiesManager.getProperty("password.secretKeyFactory"));
@@ -63,7 +74,7 @@ public class PasswordManager {
 
         PBEKeySpec pbeKeySpec;
         try {
-            pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt,
+            pbeKeySpec = new PBEKeySpec(((String) password).toCharArray(), salt,
                     Integer.parseInt(propertiesManager.getProperty("password.hashIterations")),
                     Integer.parseInt(propertiesManager.getProperty("password.keyLength")));
         } catch (NumberFormatException e) {
@@ -88,13 +99,14 @@ public class PasswordManager {
      * @param password password to generate salt
      * @return byte array of password with salt
      */
-    private byte[] generateSalt(String password) {
-        if (password == null || password.trim().equals("") || password.length() < PASSWORD_LENGTH) {
+    private byte[] generateSalt(CharSequence password) {
+        if (password == null || ((String) password).trim().equals("") || password.length() < PASSWORD_LENGTH) {
             LOGGER.error("Wrong password: " + password);
-            throw new IllegalArgumentException("Password should not be empty and must have at least " + PASSWORD_LENGTH + " characters.");
+            throw new IllegalArgumentException(
+                    "Password should not be empty and must have at least " + PASSWORD_LENGTH + " characters.");
         }
         byte[] bytes = String.valueOf(password.length() * 42 + 3).getBytes();
-        byte[] bytes_ = password.getBytes();
+        byte[] bytes_ = ((String) password).getBytes();
         byte[] combined = new byte[bytes.length + bytes_.length];
         System.arraycopy(bytes, 0, combined, 0, bytes.length);
         System.arraycopy(bytes_, 0, combined, bytes.length, bytes_.length);

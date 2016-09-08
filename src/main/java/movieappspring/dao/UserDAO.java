@@ -1,6 +1,8 @@
 package movieappspring.dao;
 
 import movieappspring.entities.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.*;
@@ -14,6 +16,8 @@ import java.util.List;
  */
 public class UserDAO {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     /**
      * Query for counting rows found by queries
      */
@@ -22,7 +26,8 @@ public class UserDAO {
     /**
      * Query for adding new record with user data to database
      */
-    private static final String SQL_CREATE_USER = "INSERT INTO USER (username, login, password, isadmin) VALUES (?, ?, ?, ?)";
+    private static final String SQL_CREATE_USER = "INSERT INTO USER (username, login, password, isadmin) " +
+            "VALUES (?, ?, ?, ?)";
 
     /**
      * Query for selecting user with given ID from database
@@ -42,7 +47,8 @@ public class UserDAO {
     /**
      * Query for updating user record in database
      */
-    private static final String SQL_UPDATE_USER = "UPDATE USER SET username = ?, login = ?, password = ?, isadmin = ?, isbanned = ? WHERE ID = ?";
+    private static final String SQL_UPDATE_USER = "UPDATE USER SET " +
+            "username = ?, login = ?, password = ?, isadmin = ?, isbanned = ? WHERE ID = ?";
 
     /**
      * Query for retrieving user with specified login from database
@@ -77,11 +83,7 @@ public class UserDAO {
      * @return properly formatted query string
      */
     private static String makeSortQuery(String query, String orderBy, Boolean isDesc) {
-        String[] order = query.split("@");
-        if (isDesc) {
-            return order[0] + orderBy + " DESC " + order[1];
-        }
-        return order[0] + orderBy + order[1];
+        return query.replace("@", isDesc ? orderBy + " DESC " : orderBy);
     }
 
     /**
@@ -89,16 +91,20 @@ public class UserDAO {
      *
      * @param resultSet result set to parse
      * @return User object with filled fields
-     * @throws SQLException
      */
-    private static User parseUserResultSet(ResultSet resultSet) throws SQLException {
+    private static User parseUserResultSet(ResultSet resultSet) {
         User user = new User();
-        user.setId(resultSet.getLong("ID"));
-        user.setName(resultSet.getString("username"));
-        user.setLogin(resultSet.getString("login"));
-        user.setPassword(resultSet.getString("password"));
-        user.setAdmin(resultSet.getBoolean("isadmin"));
-        user.setBanned(resultSet.getBoolean("isbanned"));
+        try {
+            user.setId(resultSet.getLong("ID"));
+            user.setName(resultSet.getString("username"));
+            user.setLogin(resultSet.getString("login"));
+            user.setPassword(resultSet.getString("password"));
+            user.setAdmin(resultSet.getBoolean("isadmin"));
+            user.setBanned(resultSet.getBoolean("isbanned"));
+        } catch (SQLException e) {
+            LOGGER.error("Error parsing user result set.", e);
+            return null;
+        }
         return user;
     }
 
@@ -110,9 +116,8 @@ public class UserDAO {
      * @param password user password in encoded form
      * @param isAdmin  use <b>true</b> if you want to grant user admin rights
      * @return ID of created user. If user to some reasons hasn't been created - returns 0.
-     * @throws SQLException
      */
-    public Long create(String userName, String login, String password, Boolean isAdmin) throws SQLException {
+    public Long create(String userName, String login, String password, Boolean isAdmin) {
         Long userID = 0L;
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_CREATE_USER, Statement.RETURN_GENERATED_KEYS)) {
@@ -128,6 +133,9 @@ public class UserDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error creating new user record.", e);
+            return null;
         }
         return userID;
     }
@@ -137,10 +145,9 @@ public class UserDAO {
      *
      * @param login login of user to be found
      * @return User entity object if user with given login is found in database. Otherwise returns null.
-     * @throws SQLException
      */
-    public User getByLogin(String login) throws SQLException {
-        User user = null;
+    public User getByLogin(String login) {
+        User user;
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_GET_USER_BY_NAME)) {
 
@@ -153,6 +160,9 @@ public class UserDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error retrieving user by login.", e);
+            return null;
         }
         return user;
     }
@@ -162,9 +172,8 @@ public class UserDAO {
      *
      * @param userID ID of user to be found
      * @return User entity object if user with given ID is found in database. Otherwise returns null.
-     * @throws SQLException
      */
-    public User get(Long userID) throws SQLException {
+    public User get(Long userID) {
         User user = null;
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_GET_USER)) {
@@ -176,6 +185,9 @@ public class UserDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error retrieving user from database.", e);
+            return null;
         }
         return user;
     }
@@ -184,9 +196,8 @@ public class UserDAO {
      * Updates user data in database
      *
      * @param user user entity to update
-     * @throws SQLException
      */
-    public void update(User user) throws SQLException {
+    public void update(User user) {
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_USER)) {
 
@@ -198,6 +209,8 @@ public class UserDAO {
             statement.setLong(6, user.getId());
             statement.executeUpdate();
 
+        } catch (SQLException e) {
+            LOGGER.error("Error updating user " + user.getLogin() + " ID: " + user.getId(), e);
         }
     }
 
@@ -206,9 +219,8 @@ public class UserDAO {
      *
      * @param userID ID of user to be removed from database
      * @return <b>true</b> if user has been successfully deleted. Otherwise returns <b>false</b>
-     * @throws SQLException
      */
-    public boolean delete(Long userID) throws SQLException {
+    public boolean delete(Long userID) {
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_DELETE_USER)) {
 
@@ -218,6 +230,9 @@ public class UserDAO {
                 return true;
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error removing user record from database.", e);
+            return false;
         }
         return false;
     }
@@ -226,10 +241,9 @@ public class UserDAO {
      * Returns records for all users in database
      *
      * @return List of User objects if any found. Otherwise returns an empty list
-     * @throws SQLException
      */
-    public List<User> getAll() throws SQLException {
-        List<User> users = new ArrayList<User>();
+    public List<User> getAll() {
+        List<User> users = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_GET_ALL_USERS)) {
 
@@ -241,6 +255,9 @@ public class UserDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error retrieving all users from database.", e);
+            return null;
         }
         return users;
     }
@@ -251,9 +268,8 @@ public class UserDAO {
      * @param offset   starting position of select query
      * @param noOfRows desired number of records per page
      * @return List of User objects in given range if any users found. Otherwise returns empty list
-     * @throws SQLException
      */
-    public List<User> getAllLimit(Integer offset, Integer noOfRows) throws SQLException {
+    public List<User> getAllLimit(Integer offset, Integer noOfRows) {
         List<User> users = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_GET_ALL_USERS_WITH_LIMIT)) {
@@ -281,21 +297,24 @@ public class UserDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error retrieving users list with offset " + offset +
+                    " and number of records " + noOfRows + ". ", e);
+            return null;
         }
         return users;
     }
 
     /**
-     * Returns some part of users from database.
+     * Returns some part of users sorted in particular way from database.
      *
      * @param offset   starting position of select query
      * @param noOfRows desired number of records per page
      * @param orderBy  column by which soring is performed
      * @param isDesc   <b>true</b> if you want descending sorting
      * @return List of User objects in given range if any users found. Otherwise returns empty list
-     * @throws SQLException
      */
-    public List<User> getUsersSorted(Integer offset, Integer noOfRows, String orderBy, Boolean isDesc) throws SQLException {
+    public List<User> getUsersSorted(Integer offset, Integer noOfRows, String orderBy, Boolean isDesc) {
         List<User> users = new ArrayList<>();
         String query = makeSortQuery(SQL_GET_USERS_SORTED_BY, orderBy, isDesc);
         try (Connection connection = connectionManager.getConnection();
@@ -324,6 +343,10 @@ public class UserDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error retrieving sorted users list with offset " + offset +
+                    " and number of records " + noOfRows + ". ", e);
+            return null;
         }
         return users;
     }

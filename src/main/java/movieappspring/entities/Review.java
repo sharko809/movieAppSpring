@@ -3,7 +3,7 @@ package movieappspring.entities;
 import java.sql.Date;
 
 /**
- * Created by dsharko on 7/28/2016.
+ * Class representing <code>Review</code>entity.
  */
 public class Review {
 

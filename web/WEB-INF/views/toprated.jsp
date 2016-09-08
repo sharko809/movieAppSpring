@@ -3,17 +3,17 @@
 <html>
 <head>
     <title>Top Rated Movies</title>
-    <link rel="stylesheet" href="/resources/css/vendor/pure/pure-min.css">
-    <link rel="stylesheet" href="/resources/css/vendor/pure/base-min.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/pure-min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/base-min.css"/>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--[if lte IE 8]>
     <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-old-ie-min.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-min.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/grids-responsive-min.css"/>">
     <!--<![endif]-->
-    <link rel="stylesheet" type="text/css" href="/resources/css/mainPage.css">
-    <link rel="stylesheet" type="text/css" href="/resources/css/xs-screen.css">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/mainPage.css"/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/xs-screen.css"/>">
 </head>
 <body class="body-style">
 <jsp:include page="header.jsp"/>
@@ -30,7 +30,7 @@
                                     <div class="pure-u-lg-1-2 pure-u-sm-1 movie-info">
                                         <div>
                                             <h4 class="inline">Title: </h4>
-                                            <a class="remove-link-style" href="/movies?movieId=${movie.id}">
+                                            <a class="remove-link-style" href="<c:url value="/movies?movieId=${movie.id}"/>">
                                                     ${movie.movieName}
                                             </a>
                                         </div>

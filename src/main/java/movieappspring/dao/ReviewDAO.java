@@ -1,6 +1,8 @@
 package movieappspring.dao;
 
 import movieappspring.entities.Review;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.*;
@@ -13,6 +15,8 @@ import java.util.List;
  * This particular class deals with review data in database.
  */
 public class ReviewDAO {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Query for adding new record with review data to database
@@ -58,17 +62,21 @@ public class ReviewDAO {
      *
      * @param resultSet result set to parse
      * @return Review object with filled fields
-     * @throws SQLException
      */
-    private static Review parseReviewResultSet(ResultSet resultSet) throws SQLException {
+    private static Review parseReviewResultSet(ResultSet resultSet) {
         Review review = new Review();
-        review.setId(resultSet.getLong("id"));
-        review.setUserId(resultSet.getLong("userid"));
-        review.setMovieId(resultSet.getLong("movieid"));
-        review.setPostDate(resultSet.getDate("postdate"));
-        review.setTitle(resultSet.getString("reviewtitle"));
-        review.setRating(resultSet.getInt("rating"));
-        review.setReviewText(resultSet.getString("reviewtext"));
+        try {
+            review.setId(resultSet.getLong("id"));
+            review.setUserId(resultSet.getLong("userid"));
+            review.setMovieId(resultSet.getLong("movieid"));
+            review.setPostDate(resultSet.getDate("postdate"));
+            review.setTitle(resultSet.getString("reviewtitle"));
+            review.setRating(resultSet.getInt("rating"));
+            review.setReviewText(resultSet.getString("reviewtext"));
+        } catch (SQLException e) {
+            LOGGER.error("Error parsing reviews result set.", e);
+            return null;
+        }
         return review;
     }
 
@@ -82,9 +90,8 @@ public class ReviewDAO {
      * @param rating      rating given by user to the movie
      * @param reviewText  text of submitted review
      * @return ID of created review. If review to some reasons hasn't been created - returns 0.
-     * @throws SQLException
      */
-    public Long create(Long userID, Long movieID, Date postDate, String reviewTitle, Integer rating, String reviewText) throws SQLException {
+    public Long create(Long userID, Long movieID, Date postDate, String reviewTitle, Integer rating, String reviewText) {
         Long reviewID = 0L;
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_CREATE_REVIEW, Statement.RETURN_GENERATED_KEYS)) {
@@ -110,6 +117,9 @@ public class ReviewDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error creating review record in database.", e);
+            return null;
         }
         return reviewID;
     }
@@ -119,9 +129,8 @@ public class ReviewDAO {
      *
      * @param reviewID ID of user to be found
      * @return Review entity object if review with given ID is found in database. Otherwise returns null.
-     * @throws SQLException
      */
-    public Review get(Long reviewID) throws SQLException {
+    public Review get(Long reviewID) {
         Review review = null;
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_GET_REVIEW)) {
@@ -141,6 +150,9 @@ public class ReviewDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error retrieving review record from database.", e);
+            return null;
         }
         return review;
     }
@@ -149,9 +161,8 @@ public class ReviewDAO {
      * Updates review data in database
      *
      * @param review review entity to update
-     * @throws SQLException
      */
-    public void update(Review review) throws SQLException {
+    public void update(Review review) {
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_REVIEW)) {
 
@@ -164,6 +175,8 @@ public class ReviewDAO {
             statement.setLong(7, review.getId());
             statement.executeUpdate();
 
+        } catch (SQLException e) {
+            LOGGER.error("Error updating review data.", e);
         }
     }
 
@@ -172,10 +185,9 @@ public class ReviewDAO {
      *
      * @param movieID ID of movie which this review refers to
      * @return List of Review objects if found any. Otherwise returns empty List.
-     * @throws SQLException
      */
-    public List<Review> getReviewsByMovieId(Long movieID) throws SQLException {
-        List<Review> reviews = new ArrayList<Review>();
+    public List<Review> getReviewsByMovieId(Long movieID) {
+        List<Review> reviews = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_GET_REVIEWS_BY_MOVIE_ID)) {
 
@@ -188,6 +200,9 @@ public class ReviewDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error retrieving reviews for movie. Movie ID: " + movieID, e);
+            return null;
         }
         return reviews;
     }
@@ -197,9 +212,8 @@ public class ReviewDAO {
      *
      * @param reviewID ID of review to be removed from database
      * @return <b>true</b> if review has been successfully deleted. Otherwise returns <b>false</b>
-     * @throws SQLException
      */
-    public boolean delete(Long reviewID) throws SQLException {
+    public boolean delete(Long reviewID) {
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_DELETE_REVIEW)) {
 
@@ -209,6 +223,9 @@ public class ReviewDAO {
                 return true;
             }
 
+        } catch (SQLException e) {
+            LOGGER.error("Error deleting review record from database.", e);
+            return false;
         }
         return false;
     }
