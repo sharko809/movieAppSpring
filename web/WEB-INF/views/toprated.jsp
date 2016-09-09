@@ -30,7 +30,7 @@
                                     <div class="pure-u-lg-1-2 pure-u-sm-1 movie-info">
                                         <div>
                                             <h4 class="inline">Title: </h4>
-                                            <a class="remove-link-style" href="<c:url value="/movies?movieId=${movie.id}"/>">
+                                            <a class="remove-link-style" href="<c:url value="/movies/${movie.id}"/>">
                                                     ${movie.movieName}
                                             </a>
                                         </div>

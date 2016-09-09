@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Class containing all methods to interact with movies in database
+ * Class containing all methods to interact with movies
  */
 public class MovieService {
 
@@ -49,7 +49,8 @@ public class MovieService {
      * Get movie with specified ID from database
      *
      * @param movieID ID of movie to be found
-     * @return Movie entity object if movie with given ID is found in database. Otherwise returns null.
+     * @return Movie entity object if movie with given ID is found in database. Otherwise returns null
+     * @see Movie
      */
     public Movie getMovieByID(Long movieID) {
         Movie movie = movieDAO.get(movieID);
@@ -82,6 +83,7 @@ public class MovieService {
      * Returns records for all movies in database
      *
      * @return List of Movie objects if any found. Otherwise returns an empty list
+     * @see Movie
      */
     public List<Movie> getAllMovies() {
         List<Movie> movies = movieDAO.getAll();

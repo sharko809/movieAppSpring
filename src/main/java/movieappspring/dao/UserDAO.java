@@ -92,7 +92,7 @@ public class UserDAO {
      * @param resultSet result set to parse
      * @return User object with filled fields
      */
-    private static User parseUserResultSet(ResultSet resultSet) {
+    private User parseUserResultSet(ResultSet resultSet) {
         User user = new User();
         try {
             user.setId(resultSet.getLong("ID"));
@@ -144,7 +144,8 @@ public class UserDAO {
      * Searches for user with specified login in database
      *
      * @param login login of user to be found
-     * @return User entity object if user with given login is found in database. Otherwise returns null.
+     * @return <code>User</code> object if user with given login is found in database. Otherwise returns null.
+     * @see User
      */
     public User getByLogin(String login) {
         User user;
@@ -171,7 +172,8 @@ public class UserDAO {
      * Searches for user with specified ID in database
      *
      * @param userID ID of user to be found
-     * @return User entity object if user with given ID is found in database. Otherwise returns null.
+     * @return <code>User</code> object if user with given ID exists. Otherwise returns null.
+     * @see User
      */
     public User get(Long userID) {
         User user = null;
@@ -195,7 +197,7 @@ public class UserDAO {
     /**
      * Updates user data in database
      *
-     * @param user user entity to update
+     * @param user <code>User</code> entity to update
      */
     public void update(User user) {
         try (Connection connection = connectionManager.getConnection();
@@ -238,9 +240,9 @@ public class UserDAO {
     }
 
     /**
-     * Returns records for all users in database
+     * Returns records for all existing users
      *
-     * @return List of User objects if any found. Otherwise returns an empty list
+     * @return List of <code>User</code> objects if any found. Otherwise returns an empty list
      */
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
@@ -267,7 +269,7 @@ public class UserDAO {
      *
      * @param offset   starting position of select query
      * @param noOfRows desired number of records per page
-     * @return List of User objects in given range if any users found. Otherwise returns empty list
+     * @return List of <code>User</code>objects in given range if any users found. Otherwise returns empty list
      */
     public List<User> getAllLimit(Integer offset, Integer noOfRows) {
         List<User> users = new ArrayList<>();
@@ -312,7 +314,7 @@ public class UserDAO {
      * @param noOfRows desired number of records per page
      * @param orderBy  column by which soring is performed
      * @param isDesc   <b>true</b> if you want descending sorting
-     * @return List of User objects in given range if any users found. Otherwise returns empty list
+     * @return List of <code>User</code> objects in given range if any users found. Otherwise returns empty list
      */
     public List<User> getUsersSorted(Integer offset, Integer noOfRows, String orderBy, Boolean isDesc) {
         List<User> users = new ArrayList<>();

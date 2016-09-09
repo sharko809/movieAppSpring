@@ -89,7 +89,7 @@ public class MovieDAO {
      * @param resultSet result set to parse
      * @return Movie object with filled fields
      */
-    private static Movie parseMovieResultSet(ResultSet resultSet) {
+    private Movie parseMovieResultSet(ResultSet resultSet) {
         Movie movie = new Movie();
         try {
             movie.setId(resultSet.getLong("ID"));

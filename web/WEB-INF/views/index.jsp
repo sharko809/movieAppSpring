@@ -94,7 +94,7 @@
                     You don't need to register to see movies list, watch trailers and read description.
                 </p>
                 <p>
-                    <a id="home-link" href="<c:url value="/home"/>">
+                    <a id="home-link" href="<c:url value="/movies"/>">
                         Click this message to proceed to movies list without registration.
                     </a>
                 </p>

@@ -78,7 +78,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
         }
 
         if (user) {
-            return "/home";
+            return "/movies";
         } else if (admin) {
             return "/admin";
         } else {

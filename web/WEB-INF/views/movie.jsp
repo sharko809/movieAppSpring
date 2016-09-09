@@ -84,7 +84,7 @@
                     </div>
                 </c:if>
                 <c:choose>
-                    <c:when test="${pageContext.requset.remoteUser eq null}">
+                    <c:when test="${pageContext.request.remoteUser eq null}">
                         <div class="pure-u-md-1 pure-u-sm-1">
                             <div style="margin-bottom: 5px; text-align: center">
                                 Please, sign in to write reviews.

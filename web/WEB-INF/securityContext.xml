@@ -28,7 +28,9 @@
     </security:authentication-manager>
 
     <bean id="userDetailsServiceImpl" class="movieappspring.security.UserDetailsServiceImpl"/>
-    <bean id="passEncoder" class="movieappspring.security.PasswordManager"/>
+    <bean id="passEncoder" class="movieappspring.security.PasswordManager">
+        <constructor-arg ref="propertiesManager"/>
+    </bean>
     <bean id="authSuccessHandler" class="movieappspring.security.AuthSuccessHandler"/>
 
 </beans>

@@ -22,7 +22,6 @@ public class PasswordManager implements PasswordEncoder {
     private final Integer PASSWORD_LENGTH;
     private PropertiesManager propertiesManager;
 
-    @Autowired
     public PasswordManager(PropertiesManager propertiesManager) {
         this.propertiesManager = propertiesManager;
         try {

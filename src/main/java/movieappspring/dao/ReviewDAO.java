@@ -63,7 +63,7 @@ public class ReviewDAO {
      * @param resultSet result set to parse
      * @return Review object with filled fields
      */
-    private static Review parseReviewResultSet(ResultSet resultSet) {
+    private Review parseReviewResultSet(ResultSet resultSet) {
         Review review = new Review();
         try {
             review.setId(resultSet.getLong("id"));
@@ -125,10 +125,10 @@ public class ReviewDAO {
     }
 
     /**
-     * Searches for review with specified ID ing database
+     * Searches for review with specified ID in database
      *
-     * @param reviewID ID of user to be found
-     * @return Review entity object if review with given ID is found in database. Otherwise returns null.
+     * @param reviewID ID of review to be found
+     * @return <code>Review</code> object if review with given ID exists.
      */
     public Review get(Long reviewID) {
         Review review = null;
@@ -184,7 +184,7 @@ public class ReviewDAO {
      * Searches for review with specified movieID in database
      *
      * @param movieID ID of movie which this review refers to
-     * @return List of Review objects if found any. Otherwise returns empty List.
+     * @return List of <code>Review</code>objects if found any. Otherwise returns empty List.
      */
     public List<Review> getReviewsByMovieId(Long movieID) {
         List<Review> reviews = new ArrayList<>();

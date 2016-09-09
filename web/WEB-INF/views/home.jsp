@@ -31,7 +31,7 @@
                                     <div class="pure-u-lg-1-2 pure-u-sm-1 movie-info">
                                         <div>
                                             <h4 class="inline">Title: </h4>
-                                            <a class="remove-link-style" href="<c:url value="/movies?movieId=${movie.id}"/>">
+                                            <a class="remove-link-style" href="<c:url value="/movies/${movie.id}"/>">
                                                     ${movie.movieName}
                                             </a>
                                         </div>
@@ -94,11 +94,11 @@
                                     <c:if test="${currentPage ne 1}">
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="<c:url value="/home?page=1"/>" style="margin-right: 5px;">First</a>
+                                                <a class="page-link" href="<c:url value="/movies?page=1"/>" style="margin-right: 5px;">First</a>
                                             </p>
                                         </c:if>
                                         <p>
-                                            <a class="page-link" href="<c:url value="/home?page=${currentPage - 1}"/>">Prev</a>
+                                            <a class="page-link" href="<c:url value="/movies?page=${currentPage - 1}"/>">Prev</a>
                                         </p>
                                     </c:if>
                                 </div>
@@ -111,7 +111,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <p>
-                                                        <a class="page-link" href="<c:url value="/home?page=${i}"/>">${i}</a>
+                                                        <a class="page-link" href="<c:url value="/movies?page=${i}"/>">${i}</a>
                                                     </p>
                                                 </c:otherwise>
                                             </c:choose>
@@ -121,11 +121,11 @@
                                 <div class="page-number inline-flex">
                                     <c:if test="${currentPage ne numberOfPages}">
                                         <p>
-                                            <a class="page-link" href="<c:url value="/home?page=${currentPage + 1}"/>">Next</a>
+                                            <a class="page-link" href="<c:url value="/movies?page=${currentPage + 1}"/>">Next</a>
                                         </p>
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="<c:url value="/home?page=${numberOfPages}"/>" style="margin-left: 5px;">Last</a>
+                                                <a class="page-link" href="<c:url value="/movies?page=${numberOfPages}"/>" style="margin-left: 5px;">Last</a>
                                             </p>
                                         </c:if>
                                     </c:if>
@@ -136,7 +136,7 @@
                             <div class="pure-u-1 inline-flex">
                                 <div class="pure-u-1-4 centered">
                                     <select style="margin-bottom: 10px;" class="page-select"
-                                            onchange="goToPage(this, '/home?page=')">
+                                            onchange="goToPage(this, '/movies?page=')">
                                         <c:forEach begin="1" end="${numberOfPages}" var="i">
                                             <option ${currentPage eq i ? 'selected' : ''}>${i}</option>
                                         </c:forEach>

@@ -51,7 +51,7 @@
                                                 Top rated
                                             </p>
                                         </a>
-                                        <a class="menu-text" style="text-align: center;" href="<c:url value="/home"/>">
+                                        <a class="menu-text" style="text-align: center;" href="<c:url value="/movies"/>">
                                             <p>
                                                 Movie list
                                             </p>
@@ -88,7 +88,7 @@
             </div>
             <div id="movie-list" class="pure-u-md-1-8 pure-u-sm-1-8 pure-u-md-1-10"
                  style="text-align: center; width: 50%;">
-                <a class="menu-text" href="<c:url value="/home"/>">
+                <a class="menu-text" href="<c:url value="/movies"/>">
                     <p class="p-item">
                         Movie list
                     </p>

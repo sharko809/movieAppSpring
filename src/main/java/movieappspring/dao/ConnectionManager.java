@@ -17,7 +17,6 @@ public class ConnectionManager {
     private static final Logger LOGGER = LogManager.getLogger();
     private PropertiesManager propertiesManager;
 
-    @Autowired
     private ConnectionManager(PropertiesManager propertiesManager) {
         this.propertiesManager = propertiesManager;
     }
