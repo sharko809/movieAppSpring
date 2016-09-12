@@ -31,6 +31,9 @@
         <constructor-arg ref="propertiesManager"/>
     </bean>
 
+    <bean id="validator"
+          class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
     <bean id="movieService" class="movieappspring.service.MovieService" scope="request"/>
 
     <bean id="userService" class="movieappspring.service.UserService" scope="request"/>

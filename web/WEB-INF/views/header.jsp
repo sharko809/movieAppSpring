@@ -37,7 +37,7 @@
                                             setAdminColor();
                                         </script>
                                     </c:if>
-                                        ${pageContext.request.remoteUser}
+                                        ${pageContext.request.userPrincipal.principal.userName}
                                 </a>
                             </p>
                             <div id="menu-sm" class="pure-u-1-2 menu-text">

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf" %>
 <html>
 <head>
     <title>Account info</title>
@@ -25,32 +26,33 @@
     <div class="pure-u-md-3-4 pure-u-sm-1 centered">
         <div class="pure-u-1">
             <c:if test="${pageContext.request.remoteUser ne null}">
-                <form class="pure-form pure-form-aligned" style="text-align: center;" method="post">
+                <sf:form class="pure-form pure-form-aligned" style="text-align: center;" method="post" commandName="thisUser">
+                    <sf:errors path="*" element="div"/>
                     <fieldset>
                         <div class="pure-control-group">
-                            <label for="userName">Username: </label>
+                            <sf:label path="name">Username: </sf:label>
                             <div class="inline-flex">
-                                <input type="text" id="userName" name="name" minlength="1" maxlength="20"
-                                       value="${thisUser.name}" style="margin-right: 5px;" readonly/>
+                                <sf:input path="name"  style="margin-right: 5px;"
+                                          readonly="true"/>
                                 <button id="editName" type="button" class="pure-button">Edit</button>
                             </div>
                         </div>
                         <div class="pure-control-group">
-                            <label for="userLogin">Login: </label>
+                            <sf:label path="login">Login: </sf:label>
                             <div class="inline-flex">
-                                <input type="email" id="userLogin" name="login" minlength="3" maxlength="60"
-                                       value="${thisUser.login}" style="margin-right: 5px;" readonly/>
+                                <sf:input type="email" path="login" minlength="3" maxlength="60"
+                                       style="margin-right: 5px;" readonly="true"/>
                                 <button id="editLogin" type="button" class="pure-button">Edit</button>
                             </div>
                         </div>
                         <div class="pure-control-group">
-                            <label for="userPassword">Password: </label>
+                            <sf:label path="password">Password: </sf:label>
                             <div class="inline-flex">
-                                <input type="password" id="userPassword" name="password"
+                                <sf:password path="password"
                                        title="If you want to change password - type new one here." minlength="3"
                                        maxlength="15"
                                        placeholder="Leave blank to keep old password" style="margin-right: 5px;"
-                                       readonly/>
+                                       readonly="true"/>
                                 <button id="editPassword" type="button" class="pure-button">Edit</button>
                             </div>
                         </div>
@@ -60,7 +62,7 @@
                             <button type="submit" class="pure-button">Update account</button>
                         </div>
                     </fieldset>
-                </form>
+                </sf:form>
             </c:if>
         </div>
         <div class="pure-u-1">

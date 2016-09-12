@@ -1,5 +1,9 @@
 package movieappspring.entities;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 /**
  * Class representing <code>User</code> entity.
  */
@@ -8,28 +12,38 @@ public class User {
     /**
      * User id from database
      */
+    @NotNull
     private Long id;
 
     /**
      * Username used to display in UI
      */
+    @NotNull
+    @Size(min = 3, max = 20, message = "Wrong size")
+    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "Invalid characters")
     private String name;
 
     /**
      * Login is used to log in the service.
      * Only visible to admin.
      */
+    @NotNull
+    @Size(min = 3, max = 60)
+    @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
     private String login;
 
     /**
      * User password to access service.
      */
+    @NotNull
+    @Size(min = 3, max = 15)
     private String password;
 
     /**
      * Field indicating if user has admin rights.
      * <b>true</b> - user has admin rights
      */
+    @NotNull
     private Boolean admin;
 
     /**

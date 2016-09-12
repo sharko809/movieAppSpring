@@ -1,7 +1,7 @@
 package movieappspring.security;
 
-import movieappspring.dao.UserDAO;
 import movieappspring.entities.User;
+import movieappspring.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +20,28 @@ import java.util.List;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private UserDAO userDAO;
+    private UserService userService;
 
     @Autowired
-    public UserDetailsServiceImpl(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public UserDetailsServiceImpl(UserService userService) {
+        this.userService = userService;
     }
 
     /**
      * Attempts to get user details
      *
-     * @param s 'username' of user to look for
+     * @param login login of user to look for
      * @return <code>UserDetails</code> object with all user specific info (same as in <code>User</code> class)
-     * @throws UsernameNotFoundException
+     * @throws UsernameNotFoundException thrown when user with provided login is not found in database
      * @see User
      */
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userDAO.getByLogin(s);
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        System.out.println("LOGIN: " + login);
+        User user = userService.getUserByLogin(login);
 
         if (user == null) {
-            LOGGER.warn("User with username " + s + " not found.");
-            throw new UsernameNotFoundException("User with username " + s + " not found.");
+            LOGGER.warn("User with login " + login + " not found.");
+            throw new UsernameNotFoundException("User with login " + login + " not found.");
         }
 
         List<GrantedAuthority> authorities = new ArrayList<>();

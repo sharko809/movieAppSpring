@@ -18,7 +18,7 @@ public class UserDetailsImpl extends User {
 
     public UserDetailsImpl(Long id, String username, String login, String password,
                            Collection<? extends GrantedAuthority> authorities, Boolean banned) {
-        super(username, password, authorities);
+        super(login, password, authorities);
         this.id = id;
         this.userName = username;
         this.login = login;

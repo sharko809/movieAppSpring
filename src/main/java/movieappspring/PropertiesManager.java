@@ -43,13 +43,13 @@ public class PropertiesManager {
             properties.load(inputStream);
             prop = properties.getProperty(propName);
         } catch (IOException e) {
-            LOGGER.fatal("Seems properties file is missing. That's totally not my fault, sorry. " + e, e);
-            throw new RuntimeException("Seems properties file is missing. That's totally not my fault, sorry. " + e, e);
+            LOGGER.fatal("Seems properties file is missing. That's totally not my fault, sorry. ", e);
+            throw new RuntimeException("Seems properties file is missing. That's totally not my fault, sorry. ", e);
         } finally {
             try {
                 inputStream.close();
             } catch (IOException e) {
-                LOGGER.error("Error while closing input stream. " + e, e);
+                LOGGER.error("Error while closing input stream. ", e);
             }
         }
         return prop;
