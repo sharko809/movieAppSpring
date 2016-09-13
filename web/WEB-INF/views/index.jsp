@@ -24,11 +24,11 @@
 <jsp:include page="/WEB-INF/views/header.jsp"/>
 <div class="padding-top"></div>
 <div class="pure-g">
-    <div class="pure-u-md-3-4 pure-u-sm-1 centered">
+    <div class="pure-u-md-1-2 pure-u-sm-5-6 centered">
         <div id="auth-block" class="pure-u-1 inline-flex">
-            <div class="pure-u-md-1-2 pure-u-sm-1">
+            <div class="pure-u-md-1-2 pure-u-sm-1 max-width">
                 <form class="pure-form pure-form-aligned" method="post" action="<c:url value="/login"/>">
-                    <fieldset>
+                    <fieldset class="text-center">
                         <div class="pure-control-group">
                             <label for="userName">E-mail: </label>
                             <input id="userName" type="text" name="userLogin" minlength="3" maxlength="60" placeholder="E-mail" required/>
@@ -49,32 +49,7 @@
                         </c:if>
                     </fieldset>
                 </form>
-            </div>
-            <div class="pure-u-md-1-2 pure-u-sm-1">
-                <form class="pure-form pure-form-aligned" method="post" action="<c:url value="/registration"/>">
-                    <fieldset>
-                        <div class="pure-control-group">
-                            <label for="newUserName">Nickname: </label>
-                            <input id="newUserName" type="text" name="newUserName" minlength="1" maxlength="20" placeholder="Name to display" required/>
-                        </div>
-                        <div class="pure-control-group">
-                            <label for="newUserLogin">Your email:</label>
-                            <input id="newUserLogin" type="email" name="newUserLogin" minlength="3" maxlength="60" placeholder="E-mail" required/>
-                        </div>
-                        <div class="pure-control-group">
-                            <label for="newUserPassword">Enter password: </label>
-                            <input id="newUserPassword" type="password" name="newUserPassword" minlength="3" maxlength="15" placeholder="Password" required/>
-                        </div>
-                        <div class="pure-controls">
-                            <input class="pure-button" type="submit" value="Register">
-                        </div>
-                    </fieldset>
-                    <c:if test="${!regUser.name.isEmpty()}">
-                        <script type="text/javascript">
-                            setRegistrationInputs('${regUser.name}', '${regUser.login}');
-                        </script>
-                    </c:if>
-                </form>
+                <a class="text-center" href="<c:url value="/registration"/>">Don't have an account? Register here</a>
             </div>
         </div>
         <div class="pure-u-1">

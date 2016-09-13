@@ -53,7 +53,7 @@ public class UserDAO {
     /**
      * Query for retrieving user with specified login from database
      */
-    private static final String SQL_GET_USER_BY_NAME = "SELECT * FROM USER WHERE login = ?";
+    private static final String SQL_GET_USER_BY_LOGIN = "SELECT * FROM USER WHERE login = ?";
 
     /**
      * Query for retrieving part of user records specified by "LIMIT"
@@ -150,7 +150,7 @@ public class UserDAO {
     public User getByLogin(String login) {
         User user;
         try (Connection connection = connectionManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_GET_USER_BY_NAME)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_GET_USER_BY_LOGIN)) {
 
             statement.setString(1, login);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -351,6 +351,25 @@ public class UserDAO {
             return null;
         }
         return users;
+    }
+
+    public boolean ifUserExists(String login) {
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_GET_USER_BY_LOGIN)) {
+
+            statement.setString(1, login);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return true;
+                }
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Error checking user by login", e);
+            return false;
+        }
+        return false;
     }
 
     /**

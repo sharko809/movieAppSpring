@@ -159,4 +159,8 @@ public class UserService {
         return pagedUsers;
     }
 
+    public boolean ifUserExists(String login) {
+        return userDAO.ifUserExists(login);
+    }
+
 }

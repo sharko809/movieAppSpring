@@ -2,6 +2,7 @@ package movieappspring.entities;
 
 import movieappspring.validation.AccountValidation;
 import movieappspring.validation.LoginValidation;
+import movieappspring.validation.RegistrationValidation;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -21,27 +22,31 @@ public class User {
     /**
      * Username used to display in UI
      */
-    @NotNull(groups = {AccountValidation.class})
-    @Size(min = 3, max = 20, message = "{username.size}", groups = {AccountValidation.class})
+    @NotNull(groups = {AccountValidation.class, RegistrationValidation.class})
+    @Size(min = 3, max = 20, message = "{username.size}",
+            groups = {AccountValidation.class, RegistrationValidation.class})
     @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{username.pattern}",
-            groups = AccountValidation.class)
+            groups = {AccountValidation.class, RegistrationValidation.class})
     private String name;
 
     /**
      * Login is used to log in the service.
      * Only visible to admin.
      */
-    @NotNull(groups = {AccountValidation.class, LoginValidation.class})
-    @Size(min = 3, max = 60, message = "{login.size}", groups = {AccountValidation.class, LoginValidation.class})
+    @NotNull(groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class})
+    @Size(min = 3, max = 60, message = "{login.size}",
+            groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class})
     @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
-            message = "{login.pattern}", groups = {AccountValidation.class, LoginValidation.class})
+            message = "{login.pattern}",
+            groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class})
     private String login;
 
     /**
      * User password to access service.
      */
-    @NotNull(groups = LoginValidation.class)
-    @Size(min = 3, max = 15, message = "{password.size}", groups = LoginValidation.class)
+    @NotNull(groups = {LoginValidation.class, RegistrationValidation.class})
+    @Size(min = 3, max = 15, message = "{password.size}",
+            groups = {LoginValidation.class, RegistrationValidation.class})
     private String password;
 
     /**
