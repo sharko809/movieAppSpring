@@ -159,21 +159,4 @@ public class UserService {
         return pagedUsers;
     }
 
-    /**
-     * Get user by username
-     * @param userName username of user to look for
-     * @return <code>User</code> object with all user details if any user found
-     * @see User
-     */
-    public User getUserByUsername(String userName) {
-        User user = userDAO.getUserByUsername(userName);
-
-        if (user == null) {
-            LOGGER.error("Unable to get user by username: " + userName + ". DAO method returned null");
-            // TODO create exception
-        }
-
-        return user;
-    }
-
 }

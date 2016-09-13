@@ -26,13 +26,13 @@
     <div class="pure-u-md-3-4 pure-u-sm-1 centered">
         <div class="pure-u-1">
             <c:if test="${pageContext.request.remoteUser ne null}">
-                <sf:form class="pure-form pure-form-aligned" style="text-align: center;" method="post" commandName="thisUser">
-                    <sf:errors path="*" element="div"/>
+                <sf:form class="pure-form pure-form-aligned" style="text-align: center;" method="post"
+                         commandName="thisUser">
                     <fieldset>
                         <div class="pure-control-group">
                             <sf:label path="name">Username: </sf:label>
                             <div class="inline-flex">
-                                <sf:input path="name"  style="margin-right: 5px;"
+                                <sf:input path="name" style="margin-right: 5px;" cssErrorClass="error-input"
                                           readonly="true"/>
                                 <button id="editName" type="button" class="pure-button">Edit</button>
                             </div>
@@ -41,18 +41,19 @@
                             <sf:label path="login">Login: </sf:label>
                             <div class="inline-flex">
                                 <sf:input type="email" path="login" minlength="3" maxlength="60"
-                                       style="margin-right: 5px;" readonly="true"/>
+                                          cssErrorClass="error-input"
+                                          style="margin-right: 5px;" readonly="true"/>
                                 <button id="editLogin" type="button" class="pure-button">Edit</button>
                             </div>
                         </div>
                         <div class="pure-control-group">
                             <sf:label path="password">Password: </sf:label>
                             <div class="inline-flex">
-                                <sf:password path="password"
-                                       title="If you want to change password - type new one here." minlength="3"
-                                       maxlength="15"
-                                       placeholder="Leave blank to keep old password" style="margin-right: 5px;"
-                                       readonly="true"/>
+                                <sf:password path="password" cssErrorClass="error-input"
+                                             title="If you want to change password - type new one here." minlength="3"
+                                             maxlength="15"
+                                             placeholder="Leave blank to keep old password" style="margin-right: 5px;"
+                                             readonly="true"/>
                                 <button id="editPassword" type="button" class="pure-button">Edit</button>
                             </div>
                         </div>
@@ -61,6 +62,7 @@
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <button type="submit" class="pure-button">Update account</button>
                         </div>
+                        <sf:errors path="*" element="p" cssClass="error-info"/>
                     </fieldset>
                 </sf:form>
             </c:if>

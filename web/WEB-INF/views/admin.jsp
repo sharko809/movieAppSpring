@@ -28,7 +28,7 @@
             <div class="pure-g"></div>
             <div class="pure-u-7-8 pure-u-sm-1 centered" style="margin-top: 20px;">
                 <div id="welcome-block">
-                    <p>Welcome to your admin panel, ${pageContext.request.remoteUser}.</p>
+                    <p>Welcome to your admin panel, ${pageContext.request.userPrincipal.principal.userName}.</p>
                     <p>Here you are able to manage all site activities. Adding and deleting movies, banning users
                         and other functions are present here. Be wise admin!</p>
                 </div>

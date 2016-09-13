@@ -15,4 +15,9 @@
     margin: 10px auto 10px auto;
     background-color: #FFCCCC;
     width: 40%;
+    padding: 5px;
+}
+
+.error-input {
+    background-color: #FFCCCC !important;
 }

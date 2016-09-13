@@ -1,5 +1,8 @@
 package movieappspring.entities;
 
+import movieappspring.validation.AccountValidation;
+import movieappspring.validation.LoginValidation;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -18,32 +21,33 @@ public class User {
     /**
      * Username used to display in UI
      */
-    @NotNull
-    @Size(min = 3, max = 20, message = "Wrong size")
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "Invalid characters")
+    @NotNull(groups = {AccountValidation.class})
+    @Size(min = 3, max = 20, message = "{username.size}", groups = {AccountValidation.class})
+    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{username.pattern}",
+            groups = AccountValidation.class)
     private String name;
 
     /**
      * Login is used to log in the service.
      * Only visible to admin.
      */
-    @NotNull
-    @Size(min = 3, max = 60)
-    @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+    @NotNull(groups = {AccountValidation.class, LoginValidation.class})
+    @Size(min = 3, max = 60, message = "{login.size}", groups = {AccountValidation.class, LoginValidation.class})
+    @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
+            message = "{login.pattern}", groups = {AccountValidation.class, LoginValidation.class})
     private String login;
 
     /**
      * User password to access service.
      */
-    @NotNull
-    @Size(min = 3, max = 15)
+    @NotNull(groups = LoginValidation.class)
+    @Size(min = 3, max = 15, message = "{password.size}", groups = LoginValidation.class)
     private String password;
 
     /**
      * Field indicating if user has admin rights.
      * <b>true</b> - user has admin rights
      */
-    @NotNull
     private Boolean admin;
 
     /**
