@@ -42,7 +42,7 @@ public class MovieController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView movies(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page) throws SQLException {
+    public ModelAndView movies(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home");
 

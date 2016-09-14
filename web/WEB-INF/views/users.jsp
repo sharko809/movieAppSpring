@@ -30,7 +30,7 @@
         <div class="pure-u-1">
             <div class="pure-u-1">
                 <div class="inline-flex">
-                    <form style="margin: 15px 0 5px 0;" method="post" action="/admin/usersort">
+                    <form style="margin: 15px 0 5px 0;" method="get">
                         <label for="id">ID</label>
                         <input id="id" type="radio" name="sortBy" value="id"
                         ${sortBy eq 'id' ? 'checked' : ''}>
@@ -48,8 +48,9 @@
                         ${sortBy eq 'isbanned' ? 'checked' : ''}>
                         <label for="isDesc">Descending</label>
                         <input id="isDesc" type="checkbox" name="isDesc" value="1" ${isDesc eq '1' ? 'checked' : ''}>
-                        <input type="hidden" name="redirectFrom" value="">
+                        <%--<input type="hidden" name="redirectFrom" value="">--%>
                         <input type="hidden" name="page" value="${currentPage}">
+                        <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>--%>
                         <button class="pure-button" style="padding-bottom: 5px; vertical-align: baseline;"
                                 type="submit">Sort
                         </button>
@@ -167,24 +168,28 @@
                                                 <c:choose>
                                                     <c:when test="${user.isBanned()}">
                                                         <td>
-                                                            <form method="post" action="/admin/ban" style="margin: 0px;">
+                                                            <form method="post" action="/admin/ban"
+                                                                  style="margin: 0px;">
                                                                 <input type="hidden" name="userID" value="${user.id}"/>
                                                                 <input type="hidden" name="redirectFrom" value=""/>
                                                                 <button class="pure-button max-width"
                                                                         style="background-color: #FFCCCC;"
                                                                         title="Unban user"
-                                                                        type="submit">Unban</button>
+                                                                        type="submit">Unban
+                                                                </button>
                                                             </form>
                                                         </td>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <td>
-                                                            <form method="post" action="/admin/ban" style="margin: 0px;">
+                                                            <form method="post" action="/admin/ban"
+                                                                  style="margin: 0px;">
                                                                 <input type="hidden" name="userID" value="${user.id}"/>
                                                                 <input type="hidden" name="redirectFrom" value=""/>
                                                                 <button class="pure-button max-width"
                                                                         title="Ban user"
-                                                                        type="submit">Ban</button>
+                                                                        type="submit">Ban
+                                                                </button>
                                                             </form>
                                                         </td>
                                                     </c:otherwise>
@@ -210,6 +215,8 @@
                 </tbody>
             </table>
         </div>
+        <c:set var="sortParam" value="${(sortBy ne null) ? ('sortBy='+=sortBy+='&') : ''}"/>
+        <c:set var="descParam" value="${('1' eq isDesc) ? 'isDesc=1&' : ''}"/>
         <c:if test="${users ne null}">
             <c:if test="${users.size() ge 1 and numberOfPages gt 1}">
                 <div class="pure-g">
@@ -220,15 +227,18 @@
                                     <c:if test="${currentPage ne 1}">
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="/admin/users?page=1" style="margin-right: 5px;">First</a>
+                                                <a class="page-link" href="/admin/users?${sortParam}${descParam}page=1"
+                                                   style="margin-right: 5px;">First</a>
                                             </p>
                                         </c:if>
                                         <p>
-                                            <a class="page-link" href="/admin/users?page=${currentPage - 1}">Prev</a>
+                                            <a class="page-link" href="/admin/users?${sortParam}${descParam}page=${currentPage - 1}">Prev</a>
                                         </p>
                                     </c:if>
                                 </div>
-                                <c:forEach begin="${(numberOfPages gt 10) ? (currentPage gt 5 ? (currentPage - 5) : 1) : 1}" end="${(numberOfPages gt 10) ? (currentPage + 5) : numberOfPages}" var="i">
+                                <c:forEach
+                                        begin="${(numberOfPages gt 10) ? (currentPage gt 5 ? (currentPage - 5) : 1) : 1}"
+                                        end="${(numberOfPages gt 10) ? (currentPage + 5) : numberOfPages}" var="i">
                                     <c:if test="${i le numberOfPages}">
                                         <div class="page-number">
                                             <c:choose>
@@ -237,7 +247,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <p>
-                                                        <a class="page-link" href="/admin/users?page=${i}">${i}</a>
+                                                        <a class="page-link" href="/admin/users?${sortParam}${descParam}page=${i}">${i}</a>
                                                     </p>
                                                 </c:otherwise>
                                             </c:choose>
@@ -247,11 +257,12 @@
                                 <div class="page-number inline-flex">
                                     <c:if test="${currentPage ne numberOfPages}">
                                         <p>
-                                            <a class="page-link" href="/admin/users?page=${currentPage + 1}">Next</a>
+                                            <a class="page-link" href="/admin/users?${sortParam}${descParam}page=${currentPage + 1}">Next</a>
                                         </p>
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="/admin/users?page=${numberOfPages}" style="margin-left: 5px;">Last</a>
+                                                <a class="page-link" href="/admin/users?${sortParam}${descParam}page=${numberOfPages}"
+                                                   style="margin-left: 5px;">Last</a>
                                             </p>
                                         </c:if>
                                     </c:if>
@@ -261,7 +272,8 @@
                         <div id="pages-sm" class="pure-g">
                             <div class="pure-u-1 inline-flex">
                                 <div class="pure-u-1-4 centered">
-                                    <select class="page-select" onchange="javascript:goToPage(this, '/admin/users?page=')">
+                                    <select class="page-select"
+                                            onchange="javascript:goToPage(this, '/admin/users?${sortParam}${descParam}page=')">
                                         <c:forEach begin="1" end="${numberOfPages}" var="i">
                                             <option ${currentPage eq i ? 'selected' : ''}>${i}</option>
                                         </c:forEach>
