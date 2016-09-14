@@ -50,8 +50,8 @@ public class RegistrationController {
             return modelAndView;
         }
 
-        redirectAttributes.addFlashAttribute("success", "User <b>" + user.getName() + "</b> with login <b>" + user.getLogin() +
-                "</b> created successfully");
+        redirectAttributes.addFlashAttribute("success", "User <b>" + user.getName() + "</b> with login <b>" +
+                user.getLogin() + "</b> created successfully");
         return new ModelAndView("redirect:/registration");
     }
 

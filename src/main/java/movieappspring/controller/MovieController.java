@@ -112,7 +112,7 @@ public class MovieController {
         if (reviews.size() > 0) {
             for (Review review : reviews) {
                 // TODO check this spot. Tricky place
-                User user = userService.getUserById(review.getId());
+                User user = userService.getUserById(review.getUserId());
                 users.put(review.getUserId(), user.getName());
             }
         }

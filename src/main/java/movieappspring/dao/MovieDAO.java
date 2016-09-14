@@ -299,6 +299,10 @@ public class MovieDAO {
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_SEARCH_MOVIE_BY_TITLE)) {
 
+            if (movieName.isEmpty()) {
+                return movies;
+            }
+
             statement.setString(1, movieName + "%");
             statement.setInt(2, offset);
             statement.setInt(3, noOfRows);

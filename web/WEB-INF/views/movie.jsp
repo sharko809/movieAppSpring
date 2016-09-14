@@ -70,23 +70,14 @@
                         <span>${movieContainer.movie.description}</span>
                     </div>
                 </div>
-
                 <div class="pure-u-1 videoWrapper">
                     <iframe src="${movieContainer.movie.trailerURL ne null ? movieContainer.movie.trailerURL : "/resources/images/no-trailer.jpg"}"
                             frameborder="0" allowfullscreen></iframe>
                 </div>
-
             </div>
         </div>
         <div class="pure-u-1" style="margin: 5px;">
             <div class="review-section">
-                <%--<c:if test="${reviewError.size() ge 1}">--%>
-                    <%--<div id="error-info">--%>
-                        <%--<c:forEach items="${reviewError}" var="error">--%>
-                            <%--<p class="error-paragraph">${error}</p>--%>
-                        <%--</c:forEach>--%>
-                    <%--</div>--%>
-                <%--</c:if>--%>
                 <c:choose>
                     <c:when test="${pageContext.request.remoteUser eq null}">
                         <div class="pure-u-md-1 pure-u-sm-1">
@@ -133,58 +124,11 @@
                             </div>
                             <div class="pure-u-1 inline-flex">
                                 <div>
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                     <button id="submitReview" class="pure-button" type="submit">Post review</button>
                                 </div>
                             </div>
-                            <%--<c:if test="${review ne null}">--%>
-                            <%--<script type="text/javascript">--%>
-                            <%--setReviewInputs('${review.title}','${review.rating}','${review.reviewText}');--%>
-                            <%--</script>--%>
-                            <%--</c:if>--%>
                         </sf:form>
-                        <%--<form class="pure-form" method="post" action="<c:url value="/postreview"/>">--%>
-                        <%--<div class="pure-u-1 inline-flex">--%>
-                        <%--<div class="pure-u-6-8 max-width" style="margin-top: 7px;">--%>
-                        <%--<input id="reviewTitle" class="max-width" type="text" name="reviewTitle" placeholder="Review title. You can SHORTLY describe your impression."/>--%>
-                        <%--</div>--%>
-                        <%--<div class="pure-u-1-8">--%>
-                        <%--<div class="center-text">--%>
-                        <%--<p>--%>
-                        <%--Rating:--%>
-                        <%--</p>--%>
-                        <%--</div>--%>
-                        <%--</div>--%>
-                        <%--<div class="pure-u-1-8" style="margin-top: 7px;">--%>
-                        <%--<select id="rating" class="max-width" name="userRating">--%>
-                        <%--<option value="1">1</option>--%>
-                        <%--<option value="2">2</option>--%>
-                        <%--<option value="3">3</option>--%>
-                        <%--<option value="4">4</option>--%>
-                        <%--<option value="5" selected>5</option>--%>
-                        <%--<option value="6">6</option>--%>
-                        <%--<option value="7">7</option>--%>
-                        <%--<option value="8">8</option>--%>
-                        <%--<option value="9">9</option>--%>
-                        <%--<option value="10">10</option>--%>
-                        <%--</select>--%>
-                        <%--</div>--%>
-                        <%--</div>--%>
-                        <%--<div class="pure-u-1" style="height: 200px; margin-bottom: 5px;">--%>
-                        <%--<textarea id="reviewText" style="height: 100%;" class="max-width" name="reviewText" placeholder="Your review"></textarea>--%>
-                        <%--<input type="hidden" name="movieID" value="${movie.id}"/>--%>
-                        <%--<input type="hidden" id="redirectFrom" name="redirectFrom" value=""/>--%>
-                        <%--</div>--%>
-                        <%--<div class="pure-u-1 inline-flex">--%>
-                        <%--<div>--%>
-                        <%--<button id="submitReview" class="pure-button" type="submit">Post review</button>--%>
-                        <%--</div>--%>
-                        <%--</div>--%>
-                        <%--<c:if test="${review ne null}">--%>
-                        <%--<script type="text/javascript">--%>
-                        <%--setReviewInputs('${review.title}','${review.rating}','${review.reviewText}');--%>
-                        <%--</script>--%>
-                        <%--</c:if>--%>
-                        <%--</form>--%>
                     </c:otherwise>
                 </c:choose>
                 <c:forEach items="${movieContainer.reviews}" var="review">

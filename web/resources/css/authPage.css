@@ -58,3 +58,33 @@
 .text-center {
     text-align: center;
 }
+
+#reg-redirect:link {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+#reg-redirect:visited {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+#reg-redirect:hover {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+#reg-redirect:active {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+.success-info {
+    border: 1px double darkgray;
+    border-radius: 4px;
+    text-align: center;
+    margin: 10px auto 10px auto;
+    background-color: #ccf1ff;
+    width: 70%;
+    padding: 5px;
+}

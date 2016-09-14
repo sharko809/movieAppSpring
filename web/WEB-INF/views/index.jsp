@@ -27,29 +27,31 @@
     <div class="pure-u-md-1-2 pure-u-sm-5-6 centered">
         <div id="auth-block" class="pure-u-1 inline-flex">
             <div class="pure-u-md-1-2 pure-u-sm-1 max-width">
-                <form class="pure-form pure-form-aligned" method="post" action="<c:url value="/login"/>">
+                <sf:form class="pure-form pure-form-aligned" method="post" modelAttribute="user" action="/login">
+                    <h3 class="text-center">Please, fill form below to login</h3>
                     <fieldset class="text-center">
                         <div class="pure-control-group">
-                            <label for="userName">E-mail: </label>
-                            <input id="userName" type="text" name="userLogin" minlength="3" maxlength="60" placeholder="E-mail" required/>
+                            <sf:label path="login">E-mail: </sf:label>
+                            <sf:input path="login" minlength="3" maxlength="60" placeholder="E-mail" required="true"/>
                         </div>
                         <div class="pure-control-group">
-                            <label for="userPassword">Password: </label>
-                            <input id="userPassword" type="password" name="userPassword" minlength="3" maxlength="15" placeholder="Password" required/>
+                            <sf:label path="password">Password: </sf:label>
+                            <sf:password path="password" minlength="3" maxlength="15" placeholder="Password"
+                                         required="true"/>
                         </div>
                         <div class="pure-controls">
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <input class="pure-button" type="submit" value="Login"/>
                         </div>
                         <input type="hidden" name="regPage" value="regPage"/>
-                        <c:if test="${!logUser.login.isEmpty()}">
-                            <script type="text/javascript">
-                                setLoginInputs('${logUser.login}');
-                            </script>
-                        </c:if>
+                        <%--<c:if test="${!logUser.login.isEmpty()}">--%>
+                            <%--<script type="text/javascript">--%>
+                                <%--setLoginInputs('${logUser.login}');--%>
+                            <%--</script>--%>
+                        <%--</c:if>--%>
                     </fieldset>
-                </form>
-                <a class="text-center" href="<c:url value="/registration"/>">Don't have an account? Register here</a>
+                </sf:form>
+                <a id="reg-redirect" class="text-center" href="<c:url value="/registration"/>">Don't have an account? Register here</a>
             </div>
         </div>
         <div class="pure-u-1">
