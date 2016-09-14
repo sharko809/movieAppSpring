@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf" %>
 <html>
 <head>
     <title>Create new user</title>
@@ -26,43 +27,56 @@
 <jsp:include page="adminmenu.jsp"/>
 <div class="pure-g custom-margin">
     <div class="pure-u-md-1-2 pure-u-sm-1-2 centered" style="text-align: center;">
-        <form class="pure-form pure-form-aligned" method="post" action="/admin/newuser">
+        <sf:form modelAttribute="user" class="pure-form pure-form-aligned" method="post">
             <fieldset>
                 <div class="pure-control-group">
-                    <label for="newUserName">Nickname: </label>
-                    <input id="newUserName" type="text" name="newUserName" minlength="1" maxlength="20" placeholder="Name to display" required/>
+                    <sf:label path="name">Nickname: </sf:label>
+                    <sf:input path="name" minlength="1" maxlength="20" placeholder="Name to display" cssErrorClass="error-input" required="true"/>
                 </div>
                 <div class="pure-control-group">
-                    <label for="newUserLogin">Your email:</label>
-                    <input id="newUserLogin" type="email" name="newUserLogin" minlength="3" maxlength="60" placeholder="E-mail" required/>
+                    <sf:label path="login">Your email:</sf:label>
+                    <sf:input path="login" type="email" minlength="3" maxlength="60" placeholder="E-mail" cssErrorClass="error-input" required="true"/>
                 </div>
                 <div class="pure-control-group">
-                    <label for="newUserPassword">Enter password: </label>
-                    <input id="newUserPassword" type="password" name="newUserPassword" minlength="3" maxlength="15" placeholder="Password" required/>
+                    <sf:label path="password">Enter password: </sf:label>
+                    <sf:password path="password" minlength="3" maxlength="15" placeholder="Password" cssErrorClass="error-input" required="true"/>
                 </div>
                 <div class="pure-controls">
-                    <label for="isAdmin" class="pure-checkbox" style="margin: 15px;">
-                        <input id="isAdmin" name="isAdmin" type="checkbox">Is Admin
-                    </label>
+                    <sf:label path="admin" class="pure-checkbox" style="margin: 15px;">
+                        <sf:checkbox path="admin"/>Is Admin
+                    </sf:label>
                     <input class="pure-button" type="submit" value="Register">
                 </div>
             </fieldset>
-            <c:if test="${!regUser.name.isEmpty()}">
-                <script type="text/javascript">
-                    setRegistrationInputs('${regUser.name}', '${regUser.login}');
-                </script>
-            </c:if>
-        </form>
+            <sf:errors path="*" element="p" cssClass="error-info"/>
+            <%--<c:if test="${!regUser.name.isEmpty()}">--%>
+            <%--<script type="text/javascript">--%>
+            <%--setRegistrationInputs('${regUser.name}', '${regUser.login}');--%>
+            <%--</script>--%>
+            <%--</c:if>--%>
+        </sf:form>
     </div>
     <div class="pure-u-1">
-        <c:if test="${result.size() ge 1}">
-            <div id="error-info" class="error-info">
-                <c:forEach items="${result}" var="r">
-                    <p>${r}</p>
-                </c:forEach>
+        <c:if test="${fail ne null}">
+            <div class="error-info">
+                <p>${fail}</p>
+            </div>
+        </c:if>
+        <c:if test="${success ne null}">
+            <div class="success-info">
+                <p>${success}</p>
             </div>
         </c:if>
     </div>
+    <%--<div class="pure-u-1">--%>
+        <%--<c:if test="${result.size() ge 1}">--%>
+            <%--<div id="error-info" class="error-info">--%>
+                <%--<c:forEach items="${result}" var="r">--%>
+                    <%--<p>${r}</p>--%>
+                <%--</c:forEach>--%>
+            <%--</div>--%>
+        <%--</c:if>--%>
+    <%--</div>--%>
 </div>
 </body>
 </html>

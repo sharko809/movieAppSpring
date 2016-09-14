@@ -50,6 +50,7 @@
                             <%--</script>--%>
                         <%--</c:if>--%>
                     </fieldset>
+                    <sf:errors path="*" element="p" cssClass="error-info"/>
                 </sf:form>
                 <a id="reg-redirect" class="text-center" href="<c:url value="/registration"/>">Don't have an account? Register here</a>
             </div>

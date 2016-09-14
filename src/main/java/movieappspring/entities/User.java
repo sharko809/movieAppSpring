@@ -1,6 +1,8 @@
 package movieappspring.entities;
 
+import com.sun.javafx.runtime.async.BackgroundExecutor;
 import movieappspring.validation.AccountValidation;
+import movieappspring.validation.AdminNewUserValidation;
 import movieappspring.validation.LoginValidation;
 import movieappspring.validation.RegistrationValidation;
 
@@ -16,37 +18,36 @@ public class User {
     /**
      * User id from database
      */
-    @NotNull
     private Long id;
 
     /**
      * Username used to display in UI
      */
-    @NotNull(groups = {AccountValidation.class, RegistrationValidation.class})
+    @NotNull(groups = {AccountValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     @Size(min = 3, max = 20, message = "{username.size}",
-            groups = {AccountValidation.class, RegistrationValidation.class})
+            groups = {AccountValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{username.pattern}",
-            groups = {AccountValidation.class, RegistrationValidation.class})
+            groups = {AccountValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     private String name;
 
     /**
      * Login is used to log in the service.
      * Only visible to admin.
      */
-    @NotNull(groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class})
+    @NotNull(groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     @Size(min = 3, max = 60, message = "{login.size}",
-            groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class})
+            groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
             message = "{login.pattern}",
-            groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class})
+            groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     private String login;
 
     /**
      * User password to access service.
      */
-    @NotNull(groups = {LoginValidation.class, RegistrationValidation.class})
+    @NotNull(groups = {LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     @Size(min = 3, max = 15, message = "{password.size}",
-            groups = {LoginValidation.class, RegistrationValidation.class})
+            groups = {LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     private String password;
 
     /**
@@ -111,6 +112,10 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getAdmin() {
+        return this.admin;
     }
 
 }
