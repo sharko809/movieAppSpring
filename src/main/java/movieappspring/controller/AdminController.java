@@ -4,12 +4,15 @@ import movieappspring.entities.Movie;
 import movieappspring.entities.PagedEntity;
 import movieappspring.entities.User;
 import movieappspring.security.PasswordManager;
+import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.MovieService;
 import movieappspring.service.ReviewService;
 import movieappspring.service.UserService;
 import movieappspring.validation.AdminNewUserValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.access.method.P;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -27,6 +30,7 @@ import java.util.List;
 public class AdminController {
 
     private static final String DEFAULT_PAGE_AS_STRING = "1";
+    private static final String DEF_USERS_REDIRECT = "/admin/users";
     private static final Integer RECORDS_PER_PAGE = 10;
     private MovieService movieService;
     private UserService userService;
@@ -49,17 +53,37 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/adminize", method = RequestMethod.POST)
-    public ModelAndView adminize() {
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView adminize(@RequestParam(value = "userId") Long userId,
+                                 @RequestParam(value = "redirect", defaultValue = DEF_USERS_REDIRECT) String redirect) {
+        Long currentUserId =
+                ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        User userToUpdate = userService.getUserById(userId);
 
-        return modelAndView;
+        if (!currentUserId.equals(userToUpdate.getId())) {
+            userToUpdate.setAdmin(!userToUpdate.isAdmin());
+            userService.updateUser(userToUpdate);
+        } else {
+            // TODO throw exception?
+        }
+
+        return new ModelAndView("redirect:" + redirect);
     }
 
     @RequestMapping(value = "/ban", method = RequestMethod.POST)
-    public ModelAndView ban() {
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView ban(@RequestParam(value = "userId") Long userId,
+                            @RequestParam(value = "redirect", defaultValue = DEF_USERS_REDIRECT) String redirect) {
+        Long currentUserId =
+                ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        User userToUpdate = userService.getUserById(userId);
 
-        return modelAndView;
+        if (!currentUserId.equals(userToUpdate.getId())) {
+            userToUpdate.setBanned(!userToUpdate.isBanned());
+            userService.updateUser(userToUpdate);
+        } else {
+            // TODO throw exception?
+        }
+
+        return new ModelAndView("redirect:" + redirect);
     }
 
     @RequestMapping(value = "/managemovies", method = RequestMethod.GET)

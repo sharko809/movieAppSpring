@@ -1,220 +1,123 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <title>Users</title>
-    <link rel="stylesheet" href="/resources/css/vendor/pure/pure-min.css">
-    <link rel="stylesheet" href="/resources/css/vendor/pure/base-min.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/pure-min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/base-min.css"/>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--[if lte IE 8]>
     <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-old-ie-min.css">
     <link rel="stylesheet" href="/resources/css/vendor/pure/layouts/side-menu-old-ie.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-min.css">
-    <link rel="stylesheet" href="/resources/css/vendor/pure/layouts/side-menu.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/grids-responsive-min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/layouts/side-menu.css"/>">
     <!--<![endif]-->
-    <link rel="stylesheet" href="/resources/css/mainPage.css">
-    <link rel="stylesheet" href="/resources/css/admin.css">
-    <link rel="stylesheet" href="/resources/css/pages.css">
-    <link rel="stylesheet" type="text/css" href="/resources/css/xs-screen.css">
-    <script src="/resources/js/vendor/jquery-3.1.0.min.js" type="text/javascript"></script>
-    <script src="/resources/js/admin-redirect-url.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="<c:url value="/resources/css/mainPage.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/admin.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/pages.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/usersadmin.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/xs-screen.css"/>">
+    <script src="<c:url value="/resources/js/vendor/jquery-3.1.0.min.js"/>" type="text/javascript"></script>
+    <script src="<c:url value="/resources/js/admin-redirect-url.js"/>" type="text/javascript"></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
 <div class="padding-top"></div>
 <jsp:include page="adminmenu.jsp"/>
 <div class="pure-g custom-margin">
-    <div class="pure-u-3-4  centered">
+    <div class="pure-u-3-4 centered">
         <div class="pure-u-1">
-            <div class="pure-u-1">
-                <div class="inline-flex">
-                    <form style="margin: 15px 0 5px 0;" method="get">
-                        <label for="id">ID</label>
-                        <input id="id" type="radio" name="sortBy" value="id"
-                        ${sortBy eq 'id' ? 'checked' : ''}>
-                        <label for="login">Login</label>
-                        <input id="login" type="radio" name="sortBy" value="login"
-                        ${sortBy eq 'login' ? 'checked' : ''}>
-                        <label for="username">Name</label>
-                        <input id="username" type="radio" name="sortBy" value="username"
-                        ${sortBy eq 'username' ? 'checked' : ''}>
-                        <label for="isadmin">Admin</label>
-                        <input id="isadmin" type="radio" name="sortBy" value="isadmin"
-                        ${sortBy eq 'isadmin' ? 'checked' : ''}>
-                        <label for="isbanned">Banned</label>
-                        <input id="isbanned" type="radio" name="sortBy" value="isbanned"
-                        ${sortBy eq 'isbanned' ? 'checked' : ''}>
-                        <label for="isDesc">Descending</label>
-                        <input id="isDesc" type="checkbox" name="isDesc" value="1" ${isDesc eq '1' ? 'checked' : ''}>
-                        <%--<input type="hidden" name="redirectFrom" value="">--%>
-                        <input type="hidden" name="page" value="${currentPage}">
-                        <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>--%>
-                        <button class="pure-button" style="padding-bottom: 5px; vertical-align: baseline;"
-                                type="submit">Sort
-                        </button>
-                    </form>
-                </div>
+            <div class="inline-flex">
+                <form id="sort-form" method="get">
+                    <label for="id">ID</label>
+                    <input id="id" type="radio" name="sortBy" value="id" ${sortBy eq 'id' ? 'checked' : ''}>
+                    <label for="login">Login</label>
+                    <input id="login" type="radio" name="sortBy" value="login" ${sortBy eq 'login' ? 'checked' : ''}>
+                    <label for="username">Name</label>
+                    <input id="username" type="radio" name="sortBy" value="username"
+                    ${sortBy eq 'username' ? 'checked' : ''}>
+                    <label for="isadmin">Admin</label>
+                    <input id="isadmin" type="radio" name="sortBy" value="isadmin"
+                    ${sortBy eq 'isadmin' ? 'checked' : ''}>
+                    <label for="isbanned">Banned</label>
+                    <input id="isbanned" type="radio" name="sortBy" value="isbanned"
+                    ${sortBy eq 'isbanned' ? 'checked' : ''}>
+                    <label for="isDesc">Descending</label>
+                    <input id="isDesc" type="checkbox" name="isDesc" value="1" ${isDesc eq '1' ? 'checked' : ''}>
+                    <input type="hidden" name="page" value="${currentPage}">
+                    <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>--%>
+                    <button id="sort-button" class="pure-button" type="submit">Sort</button>
+                </form>
             </div>
-            <table class="pure-table pure-table-bordered" style="width: 100%; margin: 10px auto 10px auto;">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Login</th>
-                    <th>Username</th>
-                    <th>Admin</th>
-                    <th>Banned</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:choose>
-                    <c:when test="${sortedUsers ne null}">
-                        <c:if test="${sortedUsers.size() ge 1}">
-                            <c:forEach items="${sortedUsers}" var="user">
+        </div>
+        <sec:authentication var="cUserId" property="principal.id"/>
+        <table id="users-table" class="pure-table pure-table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Login</th>
+                <th>Username</th>
+                <th>Admin</th>
+                <th>Banned</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:choose>
+                <c:when test="${users ne null}">
+                    <c:choose>
+                        <c:when test="${users.size() ge 1}">
+                            <c:forEach items="${users}" var="user">
                                 <tr>
                                     <td>${user.id}</td>
                                     <td>${user.login}</td>
                                     <td>${user.name}</td>
-                                    <c:choose>
-                                        <c:when test="${user.isAdmin()}">
-                                            <td>
-                                                <form method="post" action="/admin/adminize" style="margin: 0px;">
-                                                    <input type="hidden" name="userID" value="${user.id}"/>
-                                                    <input type="hidden" name="redirectFrom" value=""/>
-                                                    <button class="pure-button max-width"
-                                                            style="background-color: #7FFF00;"
-                                                            title="Remove admin permissions"
-                                                            type="submit">${user.isAdmin()}</button>
-                                                </form>
-                                            </td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td>
-                                                <form method="post" action="/admin/adminize" style="margin: 0px;">
-                                                    <input type="hidden" name="userID" value="${user.id}"/>
-                                                    <input type="hidden" name="redirectFrom" value=""/>
-                                                    <button class="pure-button max-width" title="Set admin"
-                                                            type="submit">${user.isAdmin()}</button>
-                                                </form>
-                                            </td>
-                                        </c:otherwise>
-                                    </c:choose>
-                                    <c:choose>
-                                        <c:when test="${user.isBanned()}">
-                                            <td>
-                                                <form method="post" action="/admin/ban" style="margin: 0px;">
-                                                    <input type="hidden" name="userID" value="${user.id}"/>
-                                                    <input type="hidden" name="redirectFrom" value=""/>
-                                                    <button class="pure-button max-width"
-                                                            style="background-color: #FFCCCC;"
-                                                            title="Unban user"
-                                                            type="submit">${user.isBanned()}</button>
-                                                </form>
-                                            </td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td>
-                                                <form method="post" action="/admin/ban" style="margin: 0px;">
-                                                    <input type="hidden" name="userID" value="${user.id}"/>
-                                                    <input type="hidden" name="redirectFrom" value=""/>
-                                                    <button class="pure-button max-width"
-                                                            title="Ban user"
-                                                            type="submit">${user.isBanned()}</button>
-                                                </form>
-                                            </td>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <td>
+                                        <form class="no-margin" method="post" action="<c:url value="/admin/adminize"/>">
+                                            <input type="hidden" name="userId" value="${user.id}"/>
+                                            <input type="hidden" name="redirect" value=""/>
+                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                            <button class="pure-button max-width"
+                                                    ${user.isAdmin() ? 'style="background-color: #7FFF00;"' : ''}
+                                                    title="${user.isAdmin() ? 'Remove admin permissions' : 'Set admin'}"
+                                                    type="submit" ${cUserId eq user.id ? 'disabled' : ''}>
+                                                    ${user.isAdmin()}
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form class="no-margin" method="post" action="<c:url value="/admin/ban"/>">
+                                            <input type="hidden" name="userId" value="${user.id}"/>
+                                            <input type="hidden" name="redirect" value=""/>
+                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                            <button class="pure-button max-width"
+                                                    ${user.isBanned() ? 'style="background-color: #FFCCCC;"' : ''}
+                                                    title="${user.isBanned() ? 'Unban user' : 'Ban user'}"
+                                                    type="submit" ${cUserId eq user.id ? 'disabled' : ''}>
+                                                    ${user.isBanned() ?  'Unban' : 'Ban'}
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                             </c:forEach>
-                        </c:if>
-                    </c:when>
-                    <c:otherwise>
-                        <c:choose>
-                            <c:when test="${users ne null}">
-                                <c:choose>
-                                    <c:when test="${users.size() ge 1}">
-                                        <c:forEach items="${users}" var="user">
-                                            <tr>
-                                                <td>${user.id}</td>
-                                                <td>${user.login}</td>
-                                                <td>${user.name}</td>
-                                                <c:choose>
-                                                    <c:when test="${user.isAdmin()}">
-                                                        <td>
-                                                            <form method="post" action="/admin/adminize"
-                                                                  style="margin: 0px;">
-                                                                <input type="hidden" name="userID" value="${user.id}"/>
-                                                                <input type="hidden" name="redirectFrom" value=""/>
-                                                                <button class="pure-button max-width"
-                                                                        style="background-color: #7FFF00;"
-                                                                        title="Remove admin permissions"
-                                                                        type="submit">${user.isAdmin()}</button>
-                                                            </form>
-                                                        </td>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <td>
-                                                            <form method="post" action="/admin/adminize"
-                                                                  style="margin: 0px;">
-                                                                <input type="hidden" name="userID" value="${user.id}"/>
-                                                                <input type="hidden" name="redirectFrom" value=""/>
-                                                                <button class="pure-button max-width" title="Set admin"
-                                                                        type="submit">${user.isAdmin()}</button>
-                                                            </form>
-                                                        </td>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                <c:choose>
-                                                    <c:when test="${user.isBanned()}">
-                                                        <td>
-                                                            <form method="post" action="/admin/ban"
-                                                                  style="margin: 0px;">
-                                                                <input type="hidden" name="userID" value="${user.id}"/>
-                                                                <input type="hidden" name="redirectFrom" value=""/>
-                                                                <button class="pure-button max-width"
-                                                                        style="background-color: #FFCCCC;"
-                                                                        title="Unban user"
-                                                                        type="submit">Unban
-                                                                </button>
-                                                            </form>
-                                                        </td>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <td>
-                                                            <form method="post" action="/admin/ban"
-                                                                  style="margin: 0px;">
-                                                                <input type="hidden" name="userID" value="${user.id}"/>
-                                                                <input type="hidden" name="redirectFrom" value=""/>
-                                                                <button class="pure-button max-width"
-                                                                        title="Ban user"
-                                                                        type="submit">Ban
-                                                                </button>
-                                                            </form>
-                                                        </td>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </tr>
-                                        </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <tr>
-                                            <td colspan=75% style="text-align: center;">No users found.</td>
-                                        </tr>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:when>
-                            <c:otherwise>
-                                <tr>
-                                    <td colspan=75% style="text-align: center;">No users found.</td>
-                                </tr>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:otherwise>
-                </c:choose>
-                </tbody>
-            </table>
-        </div>
+                        </c:when>
+                        <c:otherwise>
+                            <tr>
+                                <td colspan=75% class="text-center">No users found.</td>
+                            </tr>
+                        </c:otherwise>
+                    </c:choose>
+                </c:when>
+                <c:otherwise>
+                    <tr>
+                        <td colspan=75% class="text-center">No users found.</td>
+                    </tr>
+                </c:otherwise>
+            </c:choose>
+            </tbody>
+        </table>
         <c:set var="sortParam" value="${(sortBy ne null) ? ('sortBy='+=sortBy+='&') : ''}"/>
         <c:set var="descParam" value="${('1' eq isDesc) ? 'isDesc=1&' : ''}"/>
         <c:if test="${users ne null}">
@@ -227,12 +130,14 @@
                                     <c:if test="${currentPage ne 1}">
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="/admin/users?${sortParam}${descParam}page=1"
+                                                <a class="page-link"
+                                                   href="<c:url value="/admin/users?${sortParam}${descParam}page=1"/>"
                                                    style="margin-right: 5px;">First</a>
                                             </p>
                                         </c:if>
                                         <p>
-                                            <a class="page-link" href="/admin/users?${sortParam}${descParam}page=${currentPage - 1}">Prev</a>
+                                            <a class="page-link"
+                                               href="<c:url value="/admin/users?${sortParam}${descParam}page=${currentPage - 1}"/>">Prev</a>
                                         </p>
                                     </c:if>
                                 </div>
@@ -247,7 +152,8 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <p>
-                                                        <a class="page-link" href="/admin/users?${sortParam}${descParam}page=${i}">${i}</a>
+                                                        <a class="page-link"
+                                                           href="<c:url value="/admin/users?${sortParam}${descParam}page=${i}"/>">${i}</a>
                                                     </p>
                                                 </c:otherwise>
                                             </c:choose>
@@ -257,11 +163,13 @@
                                 <div class="page-number inline-flex">
                                     <c:if test="${currentPage ne numberOfPages}">
                                         <p>
-                                            <a class="page-link" href="/admin/users?${sortParam}${descParam}page=${currentPage + 1}">Next</a>
+                                            <a class="page-link"
+                                               href="<c:url value="/admin/users?${sortParam}${descParam}page=${currentPage + 1}"/>">Next</a>
                                         </p>
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="/admin/users?${sortParam}${descParam}page=${numberOfPages}"
+                                                <a class="page-link"
+                                                   href="<c:url value="/admin/users?${sortParam}${descParam}page=${numberOfPages}"/>"
                                                    style="margin-left: 5px;">Last</a>
                                             </p>
                                         </c:if>
@@ -273,7 +181,8 @@
                             <div class="pure-u-1 inline-flex">
                                 <div class="pure-u-1-4 centered">
                                     <select class="page-select"
-                                            onchange="javascript:goToPage(this, '/admin/users?${sortParam}${descParam}page=')">
+                                            onchange="goToPage(this, '/admin/users?${sortParam}${descParam}page=')"
+                                            title="Select page">
                                         <c:forEach begin="1" end="${numberOfPages}" var="i">
                                             <option ${currentPage eq i ? 'selected' : ''}>${i}</option>
                                         </c:forEach>
@@ -287,6 +196,6 @@
         </c:if>
     </div>
 </div>
-<script src="/resources/js/pages-sm.js"></script>
+<script src="<c:url value="/resources/js/pages-sm.js"/>"></script>
 </body>
 </html>
