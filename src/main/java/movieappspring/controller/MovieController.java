@@ -106,7 +106,7 @@ public class MovieController {
         Movie movie = movieService.getMovieByID(movieId);
         List<Review> reviews = reviewService.getReviewsByMovieId(movieId);
         reviews.sort((r1, r2) -> r2.getPostDate().compareTo(r1.getPostDate()));
-        Map<Long, String> users = new HashMap<>();
+        Map<Long, Object> users = new HashMap<>();
         if (reviews.size() > 0) {
             for (Review review : reviews) {
                 // TODO check this spot. Tricky place

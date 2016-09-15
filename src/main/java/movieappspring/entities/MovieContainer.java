@@ -10,7 +10,7 @@ public class MovieContainer {
 
     private Movie movie;
     private List<Review> reviews;
-    private Map<Long, String> users;
+    private Map<Long, Object> users;
 
     public Movie getMovie() {
         return movie;
@@ -28,11 +28,11 @@ public class MovieContainer {
         this.reviews = reviews;
     }
 
-    public Map<Long, String> getUsers() {
+    public Map<Long, Object> getUsers() {
         return users;
     }
 
-    public void setUsers(Map<Long, String> users) {
+    public void setUsers(Map<Long, Object> users) {
         this.users = users;
     }
 }

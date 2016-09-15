@@ -39,7 +39,7 @@
                                         <div>
                                             <h4 class="inline">Title: </h4>
                                             <a class="remove-link-style"
-                                               href="<c:url value="/movies?movieId=${movie.id}"/>">
+                                               href="<c:url value="/movies/${movie.id}"/>">
                                                     ${movie.movieName}
                                             </a>
                                         </div>
@@ -86,8 +86,8 @@
                                                     style="width: 100%; overflow: hidden;">Rating
                                             </button>
                                         </form>
-                                        <form method="get" action="<c:url value="/admin/editmovie"/>">
-                                            <input type="hidden" name="movieId" value="${movie.id}"/>
+                                        <form method="get" action="<c:url value="/admin/managemovies/${movie.id}"/>">
+                                            <%--<input type="hidden" name="movieId" value="${movie.id}"/>--%>
                                             <button class="pure-button" title="Allows to edit movie data"
                                                     style="width: 100%; overflow: hidden;">Edit
                                             </button>

@@ -2,7 +2,7 @@ var editTitle = document.getElementById('editTitle');
 if (editTitle != null) {
     editTitle.addEventListener('click', function (event) {
         event.preventDefault();
-        var title = document.getElementById('title');
+        var title = document.getElementById('movieName');
         if (title != null) {
             title.removeAttribute('readonly');
         }
@@ -35,7 +35,7 @@ var editPoster = document.getElementById('editPoster');
 if (editPoster != null) {
     editPoster.addEventListener('click', function (event) {
         event.preventDefault();
-        var posterUrl = document.getElementById('posterUrl');
+        var posterUrl = document.getElementById('posterURL');
         if (posterUrl != null) {
             posterUrl.removeAttribute('readonly');
         }
@@ -46,7 +46,7 @@ var editTrailer = document.getElementById('editTrailer');
 if (editTrailer != null) {
     editTrailer.addEventListener('click', function (event) {
         event.preventDefault();
-        var trailerUrl = document.getElementById('trailerUrl');
+        var trailerUrl = document.getElementById('trailerURL');
         if (trailerUrl != null) {
             trailerUrl.removeAttribute('readonly');
         }

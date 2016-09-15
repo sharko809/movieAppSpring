@@ -1,9 +1,6 @@
 package movieappspring.controller;
 
-import movieappspring.entities.Movie;
-import movieappspring.entities.PagedEntity;
-import movieappspring.entities.Review;
-import movieappspring.entities.User;
+import movieappspring.entities.*;
 import movieappspring.security.PasswordManager;
 import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.MovieService;
@@ -26,7 +23,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.sql.Date;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -43,6 +42,16 @@ public class AdminController {
      * This value is used by default when page parameter is not found during pagination
      */
     private static final String DEFAULT_PAGE_AS_STRING = "1";
+
+    /**
+     * Default user sorting value in users page
+     */
+    private static final String DEFAULT_SORT_TYPE = "id";
+
+    /**
+     * Default value for descending parameter
+     */
+    private static final String DEFAULT_SORT_DESCENDING = "0";
 
     /**
      * Default redirect path for managemovies page
@@ -92,9 +101,7 @@ public class AdminController {
 
     @RequestMapping(value = "/addmovie", method = RequestMethod.GET)
     public ModelAndView addMovieView() {
-        ModelAndView modelAndView = new ModelAndView("addmovie");
-        modelAndView.addObject(new Movie());
-        return modelAndView;
+        return new ModelAndView("addmovie", "movie", new Movie());
     }
 
     @RequestMapping(value = "/addmovie", method = RequestMethod.POST)
@@ -135,7 +142,8 @@ public class AdminController {
 
         if (reviews.isEmpty()) {
             movieToUpdate.setRating(0d);
-            LOGGER.warn("No reviews found. So rating can't be updated. Rating set to 0.");
+            LOGGER.warn("No reviews found for movie " + movieToUpdate.getMovieName() +
+                    ". So rating can't be updated. Rating set to 0.");
         } else {
             movieToUpdate.setRating(recountRating(reviews));
         }
@@ -144,31 +152,55 @@ public class AdminController {
         return new ModelAndView("redirect:" + redirect);
     }
 
-    @RequestMapping(value = "/editmovie", method = RequestMethod.GET)
-    public ModelAndView editMovieView() {
-        ModelAndView modelAndView = new ModelAndView();
+    @RequestMapping(value = "/managemovies/{movieId}", method = RequestMethod.GET)
+    public ModelAndView editMovieView(@PathVariable Long movieId) {
+        // TODO handle invalid moviesId
+        ModelAndView modelAndView = new ModelAndView("editmovie");
 
+        MovieContainer movieContainer = completeMovie(movieId);
+
+        modelAndView.addObject("movie", movieContainer.getMovie());
+        modelAndView.addObject("reviews", movieContainer.getReviews());
+        modelAndView.addObject("users", movieContainer.getUsers());
         return modelAndView;
     }
 
-    @RequestMapping(value = "/editmovie", method = RequestMethod.POST)
-    public ModelAndView editMovie() {
-        ModelAndView modelAndView = new ModelAndView();
+    @RequestMapping(value = "/managemovies/{movieId}", method = RequestMethod.POST)
+    public ModelAndView editMovie(@Validated @ModelAttribute Movie movie, Errors errors,
+                                  @RequestParam String redirect) {
+        if (errors.hasErrors()) {
+            ModelAndView modelAndView = new ModelAndView("editmovie");
+            modelAndView.addObject("reviews", completeMovie(movie.getId()).getReviews());
+            modelAndView.addObject("users", completeMovie(movie.getId()).getUsers());
+            return modelAndView;
+        }
 
-        return modelAndView;
+        if (true) {
+            movieService.updateMovie(movie);
+        } else {
+            // TODO exception
+        }
+        //if movie exists
+
+        return new ModelAndView("redirect:" + redirect);
     }
 
     @RequestMapping(value = "/delreview", method = RequestMethod.POST)
-    public ModelAndView deleteReview() {
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView deleteReview(@RequestParam Long reviewId,
+                                     @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect) {
+        // TODO handle invalid review id
 
-        return modelAndView;
+        if (!reviewService.deleteReview(reviewId)) {
+            // TODO some error here?
+        }
+
+        return new ModelAndView("redirect:" + redirect);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ModelAndView users(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page,
-                              @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
-                              @RequestParam(value = "isDesc", defaultValue = "0") String isDesc) {
+                              @RequestParam(value = "sortBy", defaultValue = DEFAULT_SORT_TYPE) String sortBy,
+                              @RequestParam(value = "isDesc", defaultValue = DEFAULT_SORT_DESCENDING) String isDesc) {
         ModelAndView modelAndView = new ModelAndView("users");
         if (page < 1) {
             // TODO some logic
@@ -226,9 +258,7 @@ public class AdminController {
 
     @RequestMapping(value = "/newuser", method = RequestMethod.GET)
     public ModelAndView newUser() {
-        ModelAndView modelAndView = new ModelAndView("adminnewuser");
-        modelAndView.addObject(new User());
-        return modelAndView;
+        return new ModelAndView("adminnewuser", "user", new User());
     }
 
     @RequestMapping(value = "/newuser", method = RequestMethod.POST)
@@ -271,6 +301,33 @@ public class AdminController {
             LOGGER.error("Error parsing rating during movie rating update.", e);
         }
         return newRating;
+    }
+
+    /**
+     * Helper method to get and pack movie data, users and their reviews into one single <code>MovieContainer</code> object
+     * for convenience.
+     *
+     * @param movieId id of movie for witch to retrieve data
+     * @return <code>MovieContainer</code> object with all movie-related data
+     * @see MovieContainer
+     */
+    private MovieContainer completeMovie(Long movieId) {
+        MovieContainer movieContainer = new MovieContainer();
+        Movie movie = movieService.getMovieByID(movieId);
+        List<Review> reviews = reviewService.getReviewsByMovieId(movieId);
+        reviews.sort((r1, r2) -> r2.getPostDate().compareTo(r1.getPostDate()));
+        Map<Long, Object> users = new HashMap<>();
+        if (reviews.size() > 0) {
+            for (Review review : reviews) {
+                // TODO check this spot. Tricky place
+                User user = userService.getUserById(review.getUserId());
+                users.put(review.getUserId(), user);
+            }
+        }
+        movieContainer.setMovie(movie);
+        movieContainer.setReviews(reviews);
+        movieContainer.setUsers(users);
+        return movieContainer;
     }
 
 }

@@ -4,22 +4,22 @@
 <html>
 <head>
     <title>Create new user</title>
-    <link rel="stylesheet" href="/resources/css/vendor/pure/pure-min.css">
-    <link rel="stylesheet" href="/resources/css/vendor/pure/base-min.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/pure-min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/base-min.css"/>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--[if lte IE 8]>
     <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-old-ie-min.css">
     <link rel="stylesheet" href="/resources/css/vendor/pure/layouts/side-menu-old-ie.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-min.css">
-    <link rel="stylesheet" href="/resources/css/vendor/pure/layouts/side-menu.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/grids-responsive-min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/layouts/side-menu.css"/>">
     <!--<![endif]-->
-    <link rel="stylesheet" href="/resources/css/mainPage.css">
-    <link rel="stylesheet" href="/resources/css/admin.css">
-    <link rel="stylesheet" href="/resources/css/adminReg.css">
-    <link rel="stylesheet" type="text/css" href="/resources/css/xs-screen.css">
-    <script src="/resources/js/reset-variables.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="<c:url value="/resources/css/mainPage.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/admin.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/adminReg.css"/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/xs-screen.css"/>">
+    <script src="<c:url value="/resources/js/reset-variables.js"/>" type="text/javascript"></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -49,11 +49,6 @@
                 </div>
             </fieldset>
             <sf:errors path="*" element="p" cssClass="error-info"/>
-            <%--<c:if test="${!regUser.name.isEmpty()}">--%>
-            <%--<script type="text/javascript">--%>
-            <%--setRegistrationInputs('${regUser.name}', '${regUser.login}');--%>
-            <%--</script>--%>
-            <%--</c:if>--%>
         </sf:form>
     </div>
     <div class="pure-u-1">
@@ -68,15 +63,6 @@
             </div>
         </c:if>
     </div>
-    <%--<div class="pure-u-1">--%>
-        <%--<c:if test="${result.size() ge 1}">--%>
-            <%--<div id="error-info" class="error-info">--%>
-                <%--<c:forEach items="${result}" var="r">--%>
-                    <%--<p>${r}</p>--%>
-                <%--</c:forEach>--%>
-            <%--</div>--%>
-        <%--</c:if>--%>
-    <%--</div>--%>
 </div>
 </body>
 </html>
