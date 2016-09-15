@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <title>Edit movie ${movie.movieName}</title>
@@ -85,11 +86,6 @@
                     </div>
                 </div>
             </fieldset>
-            <%--<c:if test="${updMovie ne null}">--%>
-            <%--<script type="text/javascript">--%>
-            <%--setMovieInputs('${updMovie.movieName}', '${updMovie.director}', '${updMovie.releaseDate}', '${updMovie.posterURL}', '${updMovie.trailerURL}', '${updMovie.description}');--%>
-            <%--</script>--%>
-            <%--</c:if>--%>
             <div class="pure-controls" style="text-align: center;">
                 <sf:hidden path="id" value="${movie.id}"/>
                 <sf:hidden path="rating" value="${movie.rating}"/>
@@ -141,12 +137,14 @@
                     <div class="pure-u-md-5-8 pure-u-sm-5-8 max-width" style="padding-top: 14px;">
                             ${review.reviewText}
                     </div>
+                    <sec:authentication var="cUserId" property="principal.id"/>
                     <div class="pure-u-md-3-8 pure-u-sm-3-8 inline-flex" style="text-align: end; margin-right: 20px;">
                         <form method="post" action="<c:url value="/admin/ban"/>" style="margin: 2px; width: 100%;">
                             <input name="userId" type="hidden" value="${users.get(review.userId).id}"/>
                             <input name="redirect" type="hidden" value=""/>
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            <button class="pure-button" type="submit">
+                            <button class="pure-button" type="submit"
+                                ${cUserId eq users.get(review.userId).id ? 'disabled' : ''}>
                                     ${(users.get(review.userId).isBanned()) ? 'Unban' : 'Ban'}
                             </button>
                         </form>
