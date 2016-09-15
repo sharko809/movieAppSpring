@@ -3,23 +3,23 @@
 <html>
 <head>
     <title>Movie management</title>
-    <link rel="stylesheet" href="/resources/css/vendor/pure/pure-min.css">
-    <link rel="stylesheet" href="/resources/css/vendor/pure/base-min.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/pure-min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/base-min.css"/>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--[if lte IE 8]>
     <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-old-ie-min.css">
     <link rel="stylesheet" href="/resources/css/vendor/pure/layouts/side-menu-old-ie.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="/resources/css/vendor/pure/grids-responsive-min.css">
-    <link rel="stylesheet" href="/resources/css/vendor/pure/layouts/side-menu.css">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/grids-responsive-min.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/layouts/side-menu.css"/>">
     <!--<![endif]-->
-    <link rel="stylesheet" href="/resources/css/mainPage.css">
-    <link rel="stylesheet" href="/resources/css/admin.css">
-    <link rel="stylesheet" href="/resources/css/pages.css">
-    <link rel="stylesheet" href="/resources/css/xs-screen.css">
-    <script src="/resources/js/vendor/jquery-3.1.0.min.js" type="text/javascript"></script>
-    <script src="/resources/js/admin-redirect-url.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="<c:url value="/resources/css/mainPage.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/admin.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/pages.css"/>">
+    <link rel="stylesheet" href="<c:url value="/resources/css/xs-screen.css"/>">
+    <script src="<c:url value="/resources/js/vendor/jquery-3.1.0.min.js"/>" type="text/javascript"></script>
+    <script src="<c:url value="/resources/js/admin-redirect-url.js"/>" type="text/javascript"></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -38,7 +38,8 @@
                                     <div class="pure-u-lg-11-24 pure-u-sm-2-5" style="margin: 15px; width: 100%;">
                                         <div>
                                             <h4 class="inline">Title: </h4>
-                                            <a class="remove-link-style" href="/movies?movieId=${movie.id}">
+                                            <a class="remove-link-style"
+                                               href="<c:url value="/movies?movieId=${movie.id}"/>">
                                                     ${movie.movieName}
                                             </a>
                                         </div>
@@ -65,24 +66,31 @@
                                     <div class="pure-u-lg-11-24 pure-u-sm-2-5" style="width: 40%;">
                                         <c:choose>
                                             <c:when test="${movie.posterURL ne null && !movie.posterURL.isEmpty()}">
-                                                <img style="height: 100px; float: right; margin-right: 10px;" class="pure-img"
+                                                <img style="height: 100px; float: right; margin-right: 10px;"
+                                                     class="pure-img"
                                                      src="${movie.posterURL}"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <img style="height: 100px; float: right; margin-right: 10px;" class="pure-img"
-                                                     src="/resources/images/no-poster-available.png"/>
+                                                <img style="height: 100px; float: right; margin-right: 10px;"
+                                                     class="pure-img"
+                                                     src="<c:url value="/resources/images/no-poster-available.png"/>"/>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
                                     <div class="pure-u-lg-2-24 pure-u-sm-1-5" style="margin: 8px; width: 15%;">
-                                        <form method="post" action="/admin/updrating">
-                                            <input type="hidden" id="redirectFrom" name="redirectFrom" value=""/>
-                                            <input type="hidden" name="movieID" value="${movie.id}"/>
-                                            <button type="submit" class="pure-button" title="Recalculates movie rating" style="width: 100%; overflow: hidden;">Rating</button>
+                                        <form method="post">
+                                            <input type="hidden" id="redirect" name="redirect" value=""/>
+                                            <input type="hidden" name="movieId" value="${movie.id}"/>
+                                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                            <button type="submit" class="pure-button" title="Recalculates movie rating"
+                                                    style="width: 100%; overflow: hidden;">Rating
+                                            </button>
                                         </form>
-                                        <form method="get" action="/admin/editmovie">
-                                            <input type="hidden" name="movieID" value="${movie.id}"/>
-                                            <button class="pure-button" title="Allows to edit movie data" style="width: 100%; overflow: hidden;">Edit</button>
+                                        <form method="get" action="<c:url value="/admin/editmovie"/>">
+                                            <input type="hidden" name="movieId" value="${movie.id}"/>
+                                            <button class="pure-button" title="Allows to edit movie data"
+                                                    style="width: 100%; overflow: hidden;">Edit
+                                            </button>
                                         </form>
                                     </div>
                                 </div>
@@ -116,15 +124,19 @@
                                     <c:if test="${currentPage ne 1}">
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="/admin/managemovies?page=1" style="margin-right: 5px;">First</a>
+                                                <a class="page-link" href="<c:url value="/admin/managemovies?page=1"/>"
+                                                   style="margin-right: 5px;">First</a>
                                             </p>
                                         </c:if>
                                         <p>
-                                            <a class="page-link" href="/admin/managemovies?page=${currentPage - 1}">Prev</a>
+                                            <a class="page-link"
+                                               href="<c:url value="/admin/managemovies?page=${currentPage - 1}"/>">Prev</a>
                                         </p>
                                     </c:if>
                                 </div>
-                                <c:forEach begin="${(numberOfPages gt 10) ? (currentPage gt 5 ? (currentPage - 5) : 1) : 1}" end="${(numberOfPages gt 10) ? (currentPage + 5) : numberOfPages}" var="i">
+                                <c:forEach
+                                        begin="${(numberOfPages gt 10) ? (currentPage gt 5 ? (currentPage - 5) : 1) : 1}"
+                                        end="${(numberOfPages gt 10) ? (currentPage + 5) : numberOfPages}" var="i">
                                     <c:if test="${i le numberOfPages}">
                                         <div class="page-number">
                                             <c:choose>
@@ -133,7 +145,8 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <p>
-                                                        <a class="page-link" href="/admin/managemovies?page=${i}">${i}</a>
+                                                        <a class="page-link"
+                                                           href="<c:url value="/admin/managemovies?page=${i}"/>">${i}</a>
                                                     </p>
                                                 </c:otherwise>
                                             </c:choose>
@@ -143,11 +156,13 @@
                                 <div class="page-number inline-flex">
                                     <c:if test="${currentPage ne numberOfPages}">
                                         <p>
-                                            <a class="page-link" href="/admin/managemovies?page=${currentPage + 1}">Next</a>
+                                            <a class="page-link"
+                                               href="<c:url value="/admin/managemovies?page=${currentPage + 1}"/>">Next</a>
                                         </p>
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="/admin/managemovies?page=${numberOfPages}" style="margin-left: 5px;">Last</a>
+                                                <a class="page-link" href="<c:url value="/admin/managemovies?page=${numberOfPages}"/>"
+                                                   style="margin-left: 5px;">Last</a>
                                             </p>
                                         </c:if>
                                     </c:if>
@@ -157,7 +172,9 @@
                         <div id="pages-sm" class="pure-g">
                             <div class="pure-u-1 inline-flex">
                                 <div class="pure-u-1-4 centered">
-                                    <select style="margin: 10px;" class="page-select" onchange="javascript:goToPage(this, '/admin/managemovies?page=')">
+                                    <select style="margin: 10px;" class="page-select"
+                                            onchange="goToPage(this, '/admin/managemovies?page=')"
+                                            title="Select page">
                                         <c:forEach begin="1" end="${numberOfPages}" var="i">
                                             <option ${currentPage eq i ? 'selected' : ''}>${i}</option>
                                         </c:forEach>
@@ -171,6 +188,6 @@
         </c:if>
     </div>
 </div>
-<script src="/resources/js/pages-sm.js"></script>
+<script src="<c:url value="/resources/js/pages-sm.js"/>"></script>
 </body>
 </html>

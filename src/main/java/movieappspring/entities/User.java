@@ -1,6 +1,5 @@
 package movieappspring.entities;
 
-import com.sun.javafx.runtime.async.BackgroundExecutor;
 import movieappspring.validation.AccountValidation;
 import movieappspring.validation.AdminNewUserValidation;
 import movieappspring.validation.LoginValidation;

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -43,8 +42,7 @@ public class MovieController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView movies(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("home");
+        ModelAndView modelAndView = new ModelAndView("home");
 
         if (page <= 0) {
             // TODO some logic
