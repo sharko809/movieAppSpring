@@ -15,6 +15,7 @@
         <security:intercept-url pattern="/search**" access="permitAll"/>
         <security:intercept-url pattern="/account" access="isAuthenticated()"/>
         <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+        <security:custom-filter before="CHANNEL_FILTER" ref="encodingFilter"/>
         <security:form-login login-page="/"
                              default-target-url="/home"
                              authentication-success-handler-ref="authSuccessHandler"
@@ -32,6 +33,7 @@
         </security:authentication-provider>
     </security:authentication-manager>
 
+    <bean id="encodingFilter" class="movieappspring.filter.EncodingFilter"/>
     <bean id="userDetailsServiceImpl" class="movieappspring.security.UserDetailsServiceImpl"/>
     <bean id="passEncoder" class="movieappspring.security.PasswordManager">
         <constructor-arg ref="propertiesManager"/>
