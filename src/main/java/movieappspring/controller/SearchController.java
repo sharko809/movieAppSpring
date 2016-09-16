@@ -28,12 +28,11 @@ public class SearchController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView searchMovie(@RequestParam(value = "searchInput", defaultValue = "") String searchInput,
                                     @RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page) {
-        ModelAndView modelAndView = new ModelAndView("searchresult");
-
         if (page <= 0) {
             // TODO some logic
         }
 
+        ModelAndView modelAndView = new ModelAndView("searchresult");
         PagedEntity pagedMovies = movieService.searchMovies(searchInput, (page - 1) * RECORDS_PER_PAGE, RECORDS_PER_PAGE);
         List<Movie> movies = (List<Movie>) pagedMovies.getEntity();
         int numberOfRecords = pagedMovies.getNumberOfRecords();
@@ -45,6 +44,5 @@ public class SearchController {
         modelAndView.addObject("searchRequest", searchInput);
         return modelAndView;
     }
-
 
 }

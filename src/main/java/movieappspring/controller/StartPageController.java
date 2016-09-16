@@ -12,9 +12,7 @@ public class StartPageController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView start() {
-        ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject(new User());
-        return modelAndView;
+        return new ModelAndView("index", "user", new User());
     }
 
 }

@@ -10,22 +10,16 @@ import movieappspring.validation.AdminNewUserValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.sql.Date;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -92,13 +86,6 @@ public class AdminController {
         return new ModelAndView("admin");
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setLenient(false);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
-    }
-
     @RequestMapping(value = "/addmovie", method = RequestMethod.GET)
     public ModelAndView addMovieView() {
         return new ModelAndView("addmovie", "movie", new Movie());
@@ -119,7 +106,7 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("adminmovies");
 
         if (page < 1) {
-            // TODO some logic
+            return new ModelAndView("redirect:/admin/managemovies");
         }
 
         PagedEntity pagedMovies = movieService.getAllMoviesLimit((page - 1) * M_RECORDS_PER_PAGE, M_RECORDS_PER_PAGE);
@@ -174,13 +161,12 @@ public class AdminController {
             modelAndView.addObject("users", completeMovie(movie.getId()).getUsers());
             return modelAndView;
         }
-
-        if (true) {
+            // TODO what is the best place to take id from?
+//        if (if movie exists) {
             movieService.updateMovie(movie);
-        } else {
+//        } else {
             // TODO exception
-        }
-        //if movie exists
+//        }
 
         return new ModelAndView("redirect:" + redirect);
     }
@@ -200,14 +186,16 @@ public class AdminController {
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ModelAndView users(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page,
                               @RequestParam(value = "sortBy", defaultValue = DEFAULT_SORT_TYPE) String sortBy,
-                              @RequestParam(value = "isDesc", defaultValue = DEFAULT_SORT_DESCENDING) String isDesc) {
-        ModelAndView modelAndView = new ModelAndView("users");
-        if (page < 1) {
-            // TODO some logic
+                              @RequestParam(value = "isDesc", defaultValue = DEFAULT_SORT_DESCENDING) Integer isDesc) {
+        // TODO make it adequate
+        List<String> types = new ArrayList<>(Arrays.asList("id", "login", "username", "isadmin", "isbanned"));
+        if (page < 1 || isDesc < 0 || isDesc > 1 || !(types.stream().anyMatch(sortBy::equals))) {
+            return new ModelAndView("redirect:/admin/users");
         }
 
+        ModelAndView modelAndView = new ModelAndView("users");
         PagedEntity pagedUsers = userService.getUsersSortedBy(
-                (page - 1) * U_RECORDS_PER_PAGE, U_RECORDS_PER_PAGE, sortBy, ("1".equals(isDesc)));
+                (page - 1) * U_RECORDS_PER_PAGE, U_RECORDS_PER_PAGE, sortBy, (1 == isDesc));
         List<User> users = (List<User>) pagedUsers.getEntity();
         int numberOfRecords = pagedUsers.getNumberOfRecords();
         int numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / U_RECORDS_PER_PAGE);
