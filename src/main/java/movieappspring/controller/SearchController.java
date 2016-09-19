@@ -17,6 +17,10 @@ import java.util.List;
 public class SearchController {
 
     private static final String DEFAULT_PAGE_AS_STRING = "1";
+    /**
+     * Not a space. alt+255
+     */
+    private static final String DEFAULT_SEARCH_INPUT = " ";
     private static final Integer RECORDS_PER_PAGE = 5;
     private MovieService movieService;
 
@@ -26,10 +30,10 @@ public class SearchController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView searchMovie(@RequestParam(value = "searchInput", defaultValue = "") String searchInput,
+    public ModelAndView searchMovie(@RequestParam(value = "searchInput", defaultValue = DEFAULT_SEARCH_INPUT) String searchInput,
                                     @RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page) {
-        if (page <= 0) {
-            // TODO some logic
+        if (page < 1) {
+            return new ModelAndView("redirect:/search?searchInput=");
         }
 
         ModelAndView modelAndView = new ModelAndView("searchresult");

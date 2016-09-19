@@ -86,9 +86,14 @@
                     </div>
                 </div>
             </fieldset>
+            <c:if test="${success ne null}">
+                <div class="success-info">
+                    <p>${success}</p>
+                </div>
+            </c:if>
             <div class="pure-controls" style="text-align: center;">
-                <sf:hidden path="id" value="${movie.id}"/>
-                <sf:hidden path="rating" value="${movie.rating}"/>
+                <%--<sf:hidden path="id" value="${movie.id}"/>--%>
+                <%--<sf:hidden path="rating" value="${movie.rating}"/>--%>
                 <input type="hidden" name="redirect" value="">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <button type="submit" class="pure-button pure-input-1-2 pure-button-primary">Update movie</button>
@@ -99,7 +104,7 @@
             <span style="margin: 9px;">Rating: ${movie.rating}</span>
             <form method="post" action="<c:url value="/admin/managemovies"/>">
                 <input type="hidden" name="redirect" value=""/>
-                <input type="hidden" name="movieId" value="${movie.id}"/>
+                <%--<input type="hidden" name="movieId" value="${movie.id}"/>--%>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <button type="submit" class="pure-button" title="Recalculates movie rating"
                         style="width: 100%; overflow: hidden;">Rating

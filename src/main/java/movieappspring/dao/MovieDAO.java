@@ -74,6 +74,8 @@ public class MovieDAO {
     private static final String SQL_GET_MOVIES_SORTED_BY = "SELECT SQL_CALC_FOUND_ROWS * FROM MOVIE " +
             "ORDER BY @ LIMIT ?, ?";
 
+    private static final String SQL_GET_MAX_ID = "SELECT id FROM movie ORDER BY id DESC LIMIT 1";
+
     private Integer numberOfRecords;
 
     private ConnectionManager connectionManager;
@@ -389,6 +391,54 @@ public class MovieDAO {
      */
     public Integer getNumberOfRecords() {
         return this.numberOfRecords;
+    }
+
+    /**
+     * Searches for maximum movie id stored in database
+     *
+     * @return <code>Long</code> value representing largest movie id in database if any movies found. Else returns 0.
+     */
+    public Long maxMovieId() {
+        Long userId = 0L;
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_GET_MAX_ID)) {
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    userId = resultSet.getLong(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Can't get max movie id.", e);
+            return null;
+        }
+        return userId;
+    }
+
+    /**
+     * Checks whether movie with such id exists in database
+     *
+     * @param movieId id of movie to look for
+     * @return <b>true</b> is movie with such id exists in database. Otherwise returns <b>false</b>
+     */
+    public boolean ifMovieExists(Long movieId) {
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_GET_MOVIE_BY_ID)) {
+
+            statement.setLong(1, movieId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return true;
+                }
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Error during checking movie id.", e);
+            return false;
+        }
+        return false;
     }
 
     /**

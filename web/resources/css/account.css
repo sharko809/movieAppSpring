@@ -14,10 +14,20 @@
     text-align: center;
     margin: 10px auto 10px auto;
     background-color: #FFCCCC;
-    width: 40%;
+    width: 70%;
     padding: 5px;
 }
 
 .error-input {
     background-color: #FFCCCC !important;
+}
+
+.success-info {
+    border: 1px double darkgray;
+    border-radius: 4px;
+    text-align: center;
+    margin: 10px auto 10px auto;
+    background-color: #ccf1ff;
+    width: 70%;
+    padding: 5px;
 }

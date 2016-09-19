@@ -1,6 +1,8 @@
 package movieappspring.controller;
 
 import movieappspring.entities.*;
+import movieappspring.entities.dto.MovieTransferObject;
+import movieappspring.entities.dto.UserTransferObject;
 import movieappspring.security.PasswordManager;
 import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.MovieService;
@@ -93,22 +95,20 @@ public class AdminController {
 
     @RequestMapping(value = "/addmovie", method = RequestMethod.POST)
     public ModelAndView addMovie(@Validated @ModelAttribute Movie movie, Errors errors) {
-        ModelAndView modelAndView = new ModelAndView();
         if (errors.hasErrors()) {
             return new ModelAndView("addmovie");
         }
-
+        // TODO
         return new ModelAndView("redirect:/admin/addmovie");
     }
 
     @RequestMapping(value = "/managemovies", method = RequestMethod.GET)
     public ModelAndView manageMovies(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page) {
-        ModelAndView modelAndView = new ModelAndView("adminmovies");
-
         if (page < 1) {
-            return new ModelAndView("redirect:/admin/managemovies");
+            return new ModelAndView("redirect:" + DEFAULT_MOVIES_REDIRECT);
         }
 
+        ModelAndView modelAndView = new ModelAndView("adminmovies");
         PagedEntity pagedMovies = movieService.getAllMoviesLimit((page - 1) * M_RECORDS_PER_PAGE, M_RECORDS_PER_PAGE);
         List<Movie> movies = (List<Movie>) pagedMovies.getEntity();
         int numberOfRecords = pagedMovies.getNumberOfRecords();
@@ -123,61 +123,71 @@ public class AdminController {
     @RequestMapping(value = "/managemovies", method = RequestMethod.POST)
     public ModelAndView rating(@RequestParam Long movieId,
                                @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect) {
-        // TODO handle invalid movie id
-        Movie movieToUpdate = movieService.getMovieByID(movieId);
-        List<Review> reviews = reviewService.getReviewsByMovieId(movieId);
+        if (movieId > 0 && movieId <= movieService.getMaxMovieId() && movieService.ifMovieExists(movieId)) {
+            Movie movieToUpdate = movieService.getMovieByID(movieId);
+            List<Review> reviews = reviewService.getReviewsByMovieId(movieId);
 
-        if (reviews.isEmpty()) {
-            movieToUpdate.setRating(0d);
-            LOGGER.warn("No reviews found for movie " + movieToUpdate.getMovieName() +
-                    ". So rating can't be updated. Rating set to 0.");
-        } else {
-            movieToUpdate.setRating(recountRating(reviews));
+            if (reviews.isEmpty()) {
+                movieToUpdate.setRating(0d);
+                LOGGER.warn("No reviews found for movie " + movieToUpdate.getMovieName() +
+                        ". So rating can't be updated. Rating set to 0.");
+            } else {
+                movieToUpdate.setRating(recountRating(reviews));
+            }
+
+            movieService.updateMovie(movieToUpdate);
         }
 
-        movieService.updateMovie(movieToUpdate);
         return new ModelAndView("redirect:" + redirect);
     }
 
     @RequestMapping(value = "/managemovies/{movieId}", method = RequestMethod.GET)
     public ModelAndView editMovieView(@PathVariable Long movieId) {
-        // TODO handle invalid moviesId
-        ModelAndView modelAndView = new ModelAndView("editmovie");
 
-        MovieContainer movieContainer = completeMovie(movieId);
+        if (movieId > 0 && movieId <= movieService.getMaxMovieId() && movieService.ifMovieExists(movieId)) {
+            ModelAndView modelAndView = new ModelAndView("editmovie");
 
-        modelAndView.addObject("movie", movieContainer.getMovie());
-        modelAndView.addObject("reviews", movieContainer.getReviews());
-        modelAndView.addObject("users", movieContainer.getUsers());
-        return modelAndView;
+            MovieContainer movieContainer = completeMovie(movieId);
+
+            modelAndView.addObject("movie", movieContainer.getMovie());
+            modelAndView.addObject("reviews", movieContainer.getReviews());
+            modelAndView.addObject("users", movieContainer.getUsers());
+            return modelAndView;
+        }
+
+        return new ModelAndView("redirect:" + DEFAULT_MOVIES_REDIRECT);
     }
 
     @RequestMapping(value = "/managemovies/{movieId}", method = RequestMethod.POST)
-    public ModelAndView editMovie(@Validated @ModelAttribute Movie movie, Errors errors,
-                                  @RequestParam String redirect) {
+    public ModelAndView editMovie(@PathVariable Long movieId,
+                                  @Validated @ModelAttribute(value = "movie") MovieTransferObject movie, Errors errors,
+                                  @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect,
+                                  RedirectAttributes redirectAttributes) {
+        if (movieId < 1 && movieId > movieService.getMaxMovieId() && !movieService.ifMovieExists(movieId)) {
+            return new ModelAndView("redirect:" + DEFAULT_MOVIES_REDIRECT);
+        }
         if (errors.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView("editmovie");
-            modelAndView.addObject("reviews", completeMovie(movie.getId()).getReviews());
-            modelAndView.addObject("users", completeMovie(movie.getId()).getUsers());
+            modelAndView.addObject("reviews", completeMovie(movieId).getReviews());
+            modelAndView.addObject("users", completeMovie(movieId).getUsers());
             return modelAndView;
         }
-            // TODO what is the best place to take id from?
-//        if (if movie exists) {
-            movieService.updateMovie(movie);
-//        } else {
-            // TODO exception
-//        }
 
+        Movie movieToUpdate = movieService.getMovieByID(movieId);
+        movieService.updateMovie(updateMovieFields(movieToUpdate, movie));
+
+        redirectAttributes.addFlashAttribute("success", "Movie updated successfully");
         return new ModelAndView("redirect:" + redirect);
     }
 
     @RequestMapping(value = "/delreview", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam Long reviewId,
                                      @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect) {
-        // TODO handle invalid review id
-
-        if (!reviewService.deleteReview(reviewId)) {
-            // TODO some error here?
+        if (reviewId > 0) {
+            if (!reviewService.deleteReview(reviewId)) {
+                LOGGER.warn("Unable to delete review. Review id: " + reviewId);
+                // TODO some error here?
+            }
         }
 
         return new ModelAndView("redirect:" + redirect);
@@ -190,7 +200,7 @@ public class AdminController {
         // TODO make it adequate
         List<String> types = new ArrayList<>(Arrays.asList("id", "login", "username", "isadmin", "isbanned"));
         if (page < 1 || isDesc < 0 || isDesc > 1 || !(types.stream().anyMatch(sortBy::equals))) {
-            return new ModelAndView("redirect:/admin/users");
+            return new ModelAndView("redirect:" + DEFAULT_USERS_REDIRECT);
         }
 
         ModelAndView modelAndView = new ModelAndView("users");
@@ -211,16 +221,17 @@ public class AdminController {
     @RequestMapping(value = "/adminize", method = RequestMethod.POST)
     public ModelAndView adminize(@RequestParam Long userId,
                                  @RequestParam(defaultValue = DEFAULT_USERS_REDIRECT) String redirect) {
-        // TODO validate params
-        Long currentUserId =
-                ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        User userToUpdate = userService.getUserById(userId);
+        if (userId > 0) {
+            Long currentUserId =
+                    ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            User userToUpdate = userService.getUserById(userId);
 
-        if (!currentUserId.equals(userToUpdate.getId())) {
-            userToUpdate.setAdmin(!userToUpdate.isAdmin());
-            userService.updateUser(userToUpdate);
-        } else {
-            // TODO throw exception?
+            if (!currentUserId.equals(userToUpdate.getId())) {
+                userToUpdate.setAdmin(!userToUpdate.isAdmin());
+                userService.updateUser(userToUpdate);
+            } else {
+                LOGGER.warn("Can't modify own admin state. User id: " + currentUserId);
+            }
         }
 
         return new ModelAndView("redirect:" + redirect);
@@ -229,16 +240,17 @@ public class AdminController {
     @RequestMapping(value = "/ban", method = RequestMethod.POST)
     public ModelAndView ban(@RequestParam Long userId,
                             @RequestParam(defaultValue = DEFAULT_USERS_REDIRECT) String redirect) {
-        // TODO validate params
-        Long currentUserId =
-                ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        User userToUpdate = userService.getUserById(userId);
+        if (userId > 0) {
+            Long currentUserId =
+                    ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            User userToUpdate = userService.getUserById(userId);
 
-        if (!currentUserId.equals(userToUpdate.getId())) {
-            userToUpdate.setBanned(!userToUpdate.isBanned());
-            userService.updateUser(userToUpdate);
-        } else {
-            // TODO throw exception?
+            if (!currentUserId.equals(userToUpdate.getId())) {
+                userToUpdate.setBanned(!userToUpdate.isBanned());
+                userService.updateUser(userToUpdate);
+            } else {
+                LOGGER.warn("Can't ban yourself. User id: " + currentUserId);
+            }
         }
 
         return new ModelAndView("redirect:" + redirect);
@@ -250,15 +262,16 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/newuser", method = RequestMethod.POST)
-    public ModelAndView addNewUser(@Validated({AdminNewUserValidation.class}) @ModelAttribute User user, Errors errors,
-                                   RedirectAttributes redirectAttributes) {
+    public ModelAndView addNewUser(@Validated({AdminNewUserValidation.class})
+                                   @ModelAttribute(value = "user") UserTransferObject user,
+                                   Errors errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
             return new ModelAndView("adminnewuser");
         }
 
         if (!userService.ifUserExists(user.getLogin())) {
             String encodedPassword = passwordManager.encode(user.getPassword());
-            userService.createUser(user.getName(), user.getLogin(), encodedPassword, user.isAdmin());
+            userService.createUser(user.getName(), user.getLogin(), encodedPassword, user.getAdmin());
         } else {
             ModelAndView modelAndView = new ModelAndView("adminnewuser");
             modelAndView.addObject("fail", "User with login <b>" + user.getLogin() + "</b> already exists.");
@@ -308,14 +321,57 @@ public class AdminController {
         if (reviews.size() > 0) {
             for (Review review : reviews) {
                 // TODO check this spot. Tricky place
-                User user = userService.getUserById(review.getUserId());
-                users.put(review.getUserId(), user);
+                if (review != null)
+                    if (review.getUserId() != null)
+                        if (review.getUserId() > 0) {
+                            User user = userService.getUserById(review.getUserId());
+                            users.put(review.getUserId(), user);
+                        }
             }
         }
         movieContainer.setMovie(movie);
         movieContainer.setReviews(reviews);
         movieContainer.setUsers(users);
         return movieContainer;
+    }
+
+    /**
+     * Populates given movie object with new data from updated movie transfer object
+     *
+     * @param movieToUpdate movie to be updated
+     * @param updatedMovie  updated movie info (movie transfer object)
+     * @return <code>Movie</code> object with data populated from updated movie transfer object
+     * @see MovieTransferObject
+     * @see Movie
+     */
+    private Movie updateMovieFields(Movie movieToUpdate, MovieTransferObject updatedMovie) {
+        movieToUpdate.setMovieName(updatedMovie.getMovieName());
+        movieToUpdate.setDirector(updatedMovie.getDirector());
+        movieToUpdate.setReleaseDate(updatedMovie.getReleaseDate());
+        movieToUpdate.setPosterURL(updatedMovie.getPosterURL());
+        movieToUpdate.setTrailerURL(updatedMovie.getTrailerURL());
+        movieToUpdate.setDescription(updatedMovie.getDescription());
+        return movieToUpdate;
+    }
+
+    /**
+     * Transfers data from <code>Movie</code> object to <code>MovieTransferObject</code>
+     *
+     * @param movie movie to get data from
+     * @return <code>MovieTransferObject</code> populated with data from provided movie
+     * @see MovieTransferObject
+     * @see Movie
+     */
+    private MovieTransferObject toMovieTransferObject(Movie movie) {
+        MovieTransferObject movieTransferObject = new MovieTransferObject();
+        movieTransferObject.setMovieName(movie.getMovieName());
+        movieTransferObject.setDirector(movie.getDirector());
+        movieTransferObject.setReleaseDate(movie.getReleaseDate());
+        movieTransferObject.setPosterURL(movie.getPosterURL());
+        movieTransferObject.setTrailerURL(movie.getTrailerURL());
+//        movieTransferObject.setRating(movie.getRating());
+        movieTransferObject.setDescription(movie.getDescription());
+        return movieTransferObject;
     }
 
 }

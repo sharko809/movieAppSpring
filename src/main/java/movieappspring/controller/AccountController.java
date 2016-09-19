@@ -1,6 +1,7 @@
 package movieappspring.controller;
 
 import movieappspring.entities.User;
+import movieappspring.entities.dto.UserTransferObject;
 import movieappspring.security.PasswordManager;
 import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping(value = "/account")
@@ -33,25 +35,28 @@ public class AccountController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView account(@RequestParam(value = "id") Long userId) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("account");
-
-        if (userId <= 0) {
-            // TODO handle + foreign acct handler
+    public ModelAndView account(@RequestParam(value = "id", defaultValue = "0") Long userId) {
+        Long currentUserId =
+                ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        if (userId < 1 || !currentUserId.equals(userId)) {
+            return new ModelAndView("redirect:/account?id=" + currentUserId);
         }
 
         User user = userService.getUserById(userId);
-        modelAndView.addObject("thisUser", user);
-        return modelAndView;
+        return new ModelAndView("account", "thisUser", user);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String updateAccount(@Validated({AccountValidation.class}) @ModelAttribute(name = "thisUser") User user, Errors errors) {
+    public String updateAccount(@Validated({AccountValidation.class})
+                                @ModelAttribute(name = "thisUser") UserTransferObject user, Errors errors,
+                                RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
             return "account";
         }
-        User currentUser = userService.getUserById(user.getId());
+
+        Long currentUserId =
+                ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        User currentUser = userService.getUserById(currentUserId);
         currentUser.setLogin(user.getLogin());
         currentUser.setName(user.getName());
         if (!user.getPassword().isEmpty()) {
@@ -61,6 +66,7 @@ public class AccountController {
 
         resetAuthentication(currentUser);
 
+        redirectAttributes.addFlashAttribute("success", "Account info updated successfully");
         return "redirect:/account?id=" + currentUser.getId();
     }
 

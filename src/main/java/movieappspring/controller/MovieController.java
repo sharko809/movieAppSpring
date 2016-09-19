@@ -1,6 +1,7 @@
 package movieappspring.controller;
 
 import movieappspring.entities.*;
+import movieappspring.entities.dto.ReviewTransferObject;
 import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.MovieService;
 import movieappspring.service.ReviewService;
@@ -60,24 +61,29 @@ public class MovieController {
 
     @RequestMapping(value = "/{movieId}", method = RequestMethod.GET)
     public ModelAndView movie(@PathVariable Long movieId) {
-        ModelAndView modelAndView = new ModelAndView("movie");
-        // TODO handle invalid movieId
+        if (movieId > 0 && movieId <= movieService.getMaxMovieId() && movieService.ifMovieExists(movieId)) {
+            ModelAndView modelAndView = new ModelAndView("movie");
 
-        MovieContainer movieContainer = completeMovie(movieId);
+            MovieContainer movieContainer = completeMovie(movieId);
 
-        modelAndView.addObject("postedReview", new Review());
-        modelAndView.addObject("movieContainer", movieContainer);
-        return modelAndView;
+            modelAndView.addObject("postedReview", new ReviewTransferObject());
+            modelAndView.addObject("movieContainer", movieContainer);
+            return modelAndView;
+        }
+        return new ModelAndView("redirect:/movies");
     }
 
     @RequestMapping(value = "/{movieId}", method = RequestMethod.POST)
-    public ModelAndView postReview(
-            @Validated({PostReviewValidation.class}) @ModelAttribute("postedReview") Review review, Errors errors) {
-        // TODO handle invalid movieId
-
+    public ModelAndView postReview(@PathVariable Long movieId,
+                                   @Validated({PostReviewValidation.class})
+                                   @ModelAttribute("postedReview") ReviewTransferObject reviewTransferObject,
+                                   Errors errors) {
+        if (movieId < 1 && movieId > movieService.getMaxMovieId() && !movieService.ifMovieExists(movieId)) {
+            return new ModelAndView("redirect:/movies");
+        }
         if (errors.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView("movie");
-            MovieContainer movieContainer = completeMovie(review.getMovieId());
+            MovieContainer movieContainer = completeMovie(movieId);
             modelAndView.addObject("movieContainer", movieContainer);
             return modelAndView;
         }
@@ -85,11 +91,12 @@ public class MovieController {
         Long currentUserId = ((UserDetailsImpl)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         Date postDate = new Date(new java.util.Date().getTime());
-        reviewService.createReview(currentUserId, review.getMovieId(), postDate, review.getTitle(),
-                review.getRating(), review.getReviewText());
-        updateMovieRating(review.getMovieId(), review.getRating());
 
-        return new ModelAndView("redirect:/movies/" + review.getMovieId());
+        reviewService.createReview(currentUserId, movieId, postDate, reviewTransferObject.getTitle(),
+                reviewTransferObject.getRating(), reviewTransferObject.getText());
+        updateMovieRating(movieId, reviewTransferObject.getRating());
+
+        return new ModelAndView("redirect:/movies/" + movieId);
     }
 
     /**

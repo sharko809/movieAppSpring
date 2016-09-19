@@ -159,4 +159,16 @@ public class MovieService {
         return pagedMovies;
     }
 
+    public Long getMaxMovieId() {
+        Long movieId = movieDAO.maxMovieId();
+        if (movieId == null || movieId < 1) {
+            // TODO handle exception
+        }
+        return movieId;
+    }
+
+    public boolean ifMovieExists(Long movieId) {
+        return movieDAO.ifMovieExists(movieId);
+    }
+
 }

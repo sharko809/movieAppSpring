@@ -86,12 +86,10 @@
                                                     style="width: 100%; overflow: hidden;">Rating
                                             </button>
                                         </form>
-                                        <form method="get" action="<c:url value="/admin/managemovies/${movie.id}"/>">
-                                            <%--<input type="hidden" name="movieId" value="${movie.id}"/>--%>
-                                            <button class="pure-button" title="Allows to edit movie data"
-                                                    style="width: 100%; overflow: hidden;">Edit
-                                            </button>
-                                        </form>
+                                        <button class="pure-button" title="Allows to edit movie data"
+                                                onclick="window.location = '/admin/managemovies/${movie.id}'"
+                                                style="width: 100%; overflow: hidden;">Edit
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -161,7 +159,8 @@
                                         </p>
                                         <c:if test="${numberOfPages gt 10}">
                                             <p>
-                                                <a class="page-link" href="<c:url value="/admin/managemovies?page=${numberOfPages}"/>"
+                                                <a class="page-link"
+                                                   href="<c:url value="/admin/managemovies?page=${numberOfPages}"/>"
                                                    style="margin-left: 5px;">Last</a>
                                             </p>
                                         </c:if>

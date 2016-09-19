@@ -63,17 +63,13 @@
                             <button type="submit" class="pure-button">Update account</button>
                         </div>
                         <sf:errors path="*" element="p" cssClass="error-info"/>
+                        <c:if test="${success ne null}">
+                            <div class="success-info">
+                                <p>${success}</p>
+                            </div>
+                        </c:if>
                     </fieldset>
                 </sf:form>
-            </c:if>
-        </div>
-        <div class="pure-u-1">
-            <c:if test="${result ne null}">
-                <c:forEach items="${result}" var="r">
-                    <div id="error-info" class="error-info">
-                        <p>${r}</p>
-                    </div>
-                </c:forEach>
             </c:if>
         </div>
     </div>

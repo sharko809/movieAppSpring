@@ -6,6 +6,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,14 +16,14 @@ import javax.servlet.http.HttpServletResponse;
 public class LogoutController {
 
     @RequestMapping(method = RequestMethod.POST)
-    public String logout(HttpServletRequest req, HttpServletResponse resp) {
+    public ModelAndView logout(HttpServletRequest req, HttpServletResponse resp) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(req, resp, auth);
         }
 
-        return "redirect:/";
+        return new ModelAndView("redirect:/");
     }
 
 }
