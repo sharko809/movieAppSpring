@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 
 @ControllerAdvice
-public class Handler {
+public class ControllerExceptionHandler {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

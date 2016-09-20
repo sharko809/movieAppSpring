@@ -305,8 +305,8 @@ public class AdminController {
     }
 
     /**
-     * Helper method to get and pack movie data, users and their reviews into one single <code>MovieContainer</code> object
-     * for convenience.
+     * Helper method to get and pack movie data, users and their reviews into one single <code>MovieContainer</code>
+     * object for convenience.
      *
      * @param movieId id of movie for witch to retrieve data
      * @return <code>MovieContainer</code> object with all movie-related data

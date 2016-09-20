@@ -21,12 +21,13 @@ public class UserTransferObject {
             groups = {AccountValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     private String name;
 
-    @NotNull(groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
-    @Size(min = 3, max = 60, message = "{login.size}",
-            groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
+    @NotNull(groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class,
+            AdminNewUserValidation.class})
+    @Size(min = 3, max = 60, message = "{login.size}", groups = {AccountValidation.class, LoginValidation.class,
+            RegistrationValidation.class, AdminNewUserValidation.class})
     @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
-            message = "{login.pattern}",
-            groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
+            message = "{login.pattern}", groups = {AccountValidation.class, LoginValidation.class,
+            RegistrationValidation.class, AdminNewUserValidation.class})
     private String login;
 
     @NotNull(groups = {LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
