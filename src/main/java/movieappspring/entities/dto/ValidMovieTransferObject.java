@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {TransferObjectValidator.class})
 public @interface ValidMovieTransferObject {
 
-    String message() default "violation message";
+    String message() default "{movie.poster.pattern}";
 
     Class<?>[] groups() default {};
 

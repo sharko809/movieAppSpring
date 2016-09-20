@@ -17,8 +17,6 @@ public class TransferObjectValidator implements ConstraintValidator<ValidMovieTr
 
         UrlValidator urlValidator = new UrlValidator();
 
-        System.out.println("validating");
-
         return urlValidator.isValid(movieTransferObject.getPosterURL());
     }
 }

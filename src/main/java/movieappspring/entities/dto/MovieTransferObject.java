@@ -10,8 +10,8 @@ import java.sql.Date;
 public class MovieTransferObject {
 
     @NotNull
-    @Size(min = 1, max = 30, message = "{movie.movieName.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{movie.movieName.pattern}")
+    @Size(min = 1, max = 30, message = "{movie.title.size}")
+    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{movie.title.pattern}")
     private String movieName;
 
     @Size(min = 1, max = 30, message = "{movie.director.size}")
