@@ -5,7 +5,6 @@ import movieappspring.entities.PagedEntity;
 import movieappspring.entities.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ public class UserService {
     private static final Logger LOGGER = LogManager.getLogger();
     private UserDAO userDAO;
 
-    @Autowired
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }

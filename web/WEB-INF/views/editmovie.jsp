@@ -104,7 +104,7 @@
             <span style="margin: 9px;">Rating: ${movie.rating}</span>
             <form method="post" action="<c:url value="/admin/managemovies"/>">
                 <input type="hidden" name="redirect" value=""/>
-                <%--<input type="hidden" name="movieId" value="${movie.id}"/>--%>
+                <input type="hidden" name="movieId" value="${movie.id}"/>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <button type="submit" class="pure-button" title="Recalculates movie rating"
                         style="width: 100%; overflow: hidden;">Rating

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
@@ -34,17 +34,20 @@
     <bean id="validator"
           class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
-    <bean id="movieService" class="movieappspring.service.MovieService" scope="request"/>
+    <bean id="movieService" class="movieappspring.service.MovieService" scope="request">
+        <!--<constructor-arg ref="movieDao"/>-->
+        <constructor-arg ref="hibernateMovieDAO"/>
+    </bean>
+    <bean id="userService" class="movieappspring.service.UserService" scope="request">
+        <constructor-arg ref="userDao"/>
+    </bean>
+    <bean id="reviewService" class="movieappspring.service.ReviewService">
+        <constructor-arg ref="reviewDao"/>
+    </bean>
 
-    <bean id="userService" class="movieappspring.service.UserService" scope="request"/>
-
-    <bean id="reviewService" class="movieappspring.service.ReviewService"/>
-
-    <bean id="movieDao" class="movieappspring.dao.MovieDAO" scope="request"/>
-
-    <bean id="userDao" class="movieappspring.dao.UserDAO" scope="request"/>
-
-    <bean id="reviewDao" class="movieappspring.dao.ReviewDAO" scope="request"/>
+    <bean id="movieDao" class="movieappspring.dao.custom.MovieDAOImpl" scope="request"/>
+    <bean id="userDao" class="movieappspring.dao.custom.UserDAOImpl" scope="request"/>
+    <bean id="reviewDao" class="movieappspring.dao.custom.ReviewDAOImpl" scope="request"/>
 
     <import resource="applicationContext.xml"/>
     <import resource="securityContext.xml"/>

@@ -5,7 +5,6 @@ import movieappspring.entities.Movie;
 import movieappspring.entities.PagedEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -19,7 +18,6 @@ public class MovieService {
     private static final Logger LOGGER = LogManager.getLogger();
     private MovieDAO movieDAO;
 
-    @Autowired
     public MovieService(MovieDAO movieDAO) {
         this.movieDAO = movieDAO;
     }

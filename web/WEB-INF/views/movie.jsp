@@ -26,16 +26,13 @@
 <div class="padding-top"></div>
 <div class="pure-g">
     <div class="pure-u-md-3-4 pure-u-sm-1 centered">
-        <c:if test="${pageContext.request.remoteUser ne null}">
-            <sec:authentication var="userRole" property="principal.authorities"/>
-            <c:if test="${userRole eq '[ROLE_ADMIN]'}">
-                <div class="pure-g">
-                    <button type="button" class="pure-button" style="margin: 5px 0 0 5px;"
-                            onclick="window.location = 'admin/editmovie?movieID=${movieContainer.movie.id}'">Edit movie
-                    </button>
-                </div>
-            </c:if>
-        </c:if>
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <div class="pure-g">
+                <button type="button" class="pure-button" style="margin: 5px 0 0 5px;"
+                        onclick="window.location = 'admin/editmovie?movieID=${movieContainer.movie.id}'">Edit movie
+                </button>
+            </div>
+        </sec:authorize>
         <div id="movie-content" class="pure-u-1 inline-flex" style="margin-top: 15px; margin-bottom: 10px;">
             <div class="pure-u-md-1-3 pure-u-sm-1" style="margin: 5px;">
                 <c:choose>
@@ -117,9 +114,9 @@
                                 </div>
                             </div>
                             <div class="pure-u-1" style="height: 200px; margin-bottom: 5px;">
-                                <sf:textarea path="reviewText" style="height: 100%;" class="max-width"
+                                <sf:textarea path="text" style="height: 100%;" class="max-width"
                                              cssErrorClass="error-input" placeholder="Your review"/>
-                                <sf:input path="movieId" type="hidden" value="${movieContainer.movie.id}"/>
+                                    <%--<sf:input path="movieId" type="hidden" value="${movieContainer.movie.id}"/>--%>
                                     <%--<input type="hidden" id="redirectFrom" name="redirectFrom" value=""/>--%>
                             </div>
                             <div class="pure-u-1 inline-flex">

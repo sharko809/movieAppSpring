@@ -46,7 +46,6 @@ public class MovieController {
         if (page < 1) {
             return new ModelAndView("redirect:/movies");
         }
-
         ModelAndView modelAndView = new ModelAndView("home");
         PagedEntity pagedMovies = movieService.getAllMoviesLimit((page - 1) * RECORDS_PER_PAGE, RECORDS_PER_PAGE);
         List<Movie> movies = (List<Movie>) pagedMovies.getEntity();

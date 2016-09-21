@@ -4,7 +4,6 @@ import movieappspring.dao.ReviewDAO;
 import movieappspring.entities.Review;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Date;
 import java.util.List;
@@ -17,7 +16,6 @@ public class ReviewService {
     private static final Logger LOGGER = LogManager.getLogger();
     private ReviewDAO reviewDAO;
 
-    @Autowired
     public ReviewService(ReviewDAO reviewDAO) {
         this.reviewDAO = reviewDAO;
     }
