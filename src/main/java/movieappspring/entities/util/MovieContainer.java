@@ -1,4 +1,7 @@
-package movieappspring.entities;
+package movieappspring.entities.util;
+
+import movieappspring.entities.Movie;
+import movieappspring.entities.Review;
 
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,7 @@
 package movieappspring.controller;
 
 import movieappspring.entities.Movie;
-import movieappspring.entities.PagedEntity;
+import movieappspring.entities.util.PagedEntity;
 import movieappspring.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

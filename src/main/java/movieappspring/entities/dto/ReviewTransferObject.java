@@ -1,7 +1,5 @@
 package movieappspring.entities.dto;
 
-import movieappspring.validation.PostReviewValidation;
-
 import javax.validation.constraints.*;
 
 /**
@@ -9,21 +7,20 @@ import javax.validation.constraints.*;
  */
 public class ReviewTransferObject {
 
-    @NotNull(groups = PostReviewValidation.class)
-    @Size(min = 3, max = 100, message = "{review.title.size}", groups = PostReviewValidation.class)
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{review.title.pattern}",
-            groups = PostReviewValidation.class)
+    @NotNull
+    @Size(min = 3, max = 100, message = "{review.title.size}")
+    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{review.title.pattern}")
     private String title;
 
-    @NotNull(groups = PostReviewValidation.class)
-    @Min(value = 1, message = "{review.rating.min}", groups = PostReviewValidation.class)
-    @Max(value = 10, message = "{review.rating.max}", groups = PostReviewValidation.class)
+    @NotNull
+    @Min(value = 1, message = "{review.rating.min}")
+    @Max(value = 10, message = "{review.rating.max}")
     private Integer rating;
 
-    @NotNull(groups = PostReviewValidation.class)
-    @Size(min = 5, max = 2000, message = "{review.reviewText.size}", groups = PostReviewValidation.class)
+    @NotNull
+    @Size(min = 5, max = 2000, message = "{review.reviewText.size}")
     @Pattern(regexp = "[a-zA-zа-яА-я0-9@()!.,+&=?:\\-\"'\\[\\]{\\}]+([ '-][a-zA-Zа-яА-Я0-9@()!.,+&=?:\\\\\"'\\-\\[\\]{\\}]+)*",
-            message = "{review.reviewText.pattern}", groups = PostReviewValidation.class)
+            message = "{review.reviewText.pattern}")
     private String text;
 
     public ReviewTransferObject() {}

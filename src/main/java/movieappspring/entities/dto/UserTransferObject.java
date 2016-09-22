@@ -1,9 +1,9 @@
 package movieappspring.entities.dto;
 
-import movieappspring.validation.AccountValidation;
-import movieappspring.validation.AdminNewUserValidation;
-import movieappspring.validation.LoginValidation;
-import movieappspring.validation.RegistrationValidation;
+import movieappspring.validation.annotation.ValidUserTransferObjectPassword;
+import movieappspring.validation.marker.AccountValidation;
+import movieappspring.validation.marker.CreateUserValidation;
+import movieappspring.validation.marker.RegistrationValidation;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -14,31 +14,26 @@ import javax.validation.constraints.Size;
  */
 public class UserTransferObject {
 
-    @NotNull(groups = {AccountValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
-    @Size(min = 3, max = 20, message = "{username.size}",
-            groups = {AccountValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{username.pattern}",
-            groups = {AccountValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
+    @NotNull
+    @Size(min = 3, max = 20, message = "{username.size}")
+    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{username.pattern}")
     private String name;
 
-    @NotNull(groups = {AccountValidation.class, LoginValidation.class, RegistrationValidation.class,
-            AdminNewUserValidation.class})
-    @Size(min = 3, max = 60, message = "{login.size}", groups = {AccountValidation.class, LoginValidation.class,
-            RegistrationValidation.class, AdminNewUserValidation.class})
-    @Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
-            message = "{login.pattern}", groups = {AccountValidation.class, LoginValidation.class,
-            RegistrationValidation.class, AdminNewUserValidation.class})
+    @NotNull
+    @Size(min = 3, max = 60, message = "{login.size}")
+    @Pattern(regexp = "^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$",
+            message = "{login.pattern}")
     private String login;
 
-    @NotNull(groups = {LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
+    @NotNull(groups = {RegistrationValidation.class, CreateUserValidation.class})
     @Size(min = 3, max = 15, message = "{password.size}",
-            groups = {LoginValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
+            groups = {RegistrationValidation.class, CreateUserValidation.class})
+    @ValidUserTransferObjectPassword(min = 3, max = 15, message = "{password.size}", groups = AccountValidation.class)
     private String password;
 
     private Boolean admin;
 
-    public UserTransferObject() {
-    }
+    public UserTransferObject() {}
 
     public Boolean getAdmin() {
         return admin;
@@ -71,4 +66,5 @@ public class UserTransferObject {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

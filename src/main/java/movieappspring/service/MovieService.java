@@ -2,7 +2,7 @@ package movieappspring.service;
 
 import movieappspring.dao.MovieDAO;
 import movieappspring.entities.Movie;
-import movieappspring.entities.PagedEntity;
+import movieappspring.entities.util.PagedEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

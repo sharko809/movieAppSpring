@@ -1,12 +1,15 @@
 package movieappspring.controller;
 
-import movieappspring.entities.*;
+import movieappspring.entities.Movie;
+import movieappspring.entities.Review;
+import movieappspring.entities.User;
 import movieappspring.entities.dto.ReviewTransferObject;
+import movieappspring.entities.util.MovieContainer;
+import movieappspring.entities.util.PagedEntity;
 import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.MovieService;
 import movieappspring.service.ReviewService;
 import movieappspring.service.UserService;
-import movieappspring.validation.PostReviewValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,8 +77,7 @@ public class MovieController {
 
     @RequestMapping(value = "/{movieId}", method = RequestMethod.POST)
     public ModelAndView postReview(@PathVariable Long movieId,
-                                   @Validated({PostReviewValidation.class})
-                                   @ModelAttribute("postedReview") ReviewTransferObject reviewTransferObject,
+                                   @Validated @ModelAttribute("postedReview") ReviewTransferObject reviewTransferObject,
                                    Errors errors) {
         if (movieId < 1 && movieId > movieService.getMaxMovieId() && !movieService.ifMovieExists(movieId)) {
             return new ModelAndView("redirect:/movies");

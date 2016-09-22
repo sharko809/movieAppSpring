@@ -1,14 +1,18 @@
 package movieappspring.controller;
 
-import movieappspring.entities.*;
+import movieappspring.entities.Movie;
+import movieappspring.entities.Review;
+import movieappspring.entities.User;
 import movieappspring.entities.dto.MovieTransferObject;
 import movieappspring.entities.dto.UserTransferObject;
+import movieappspring.entities.util.MovieContainer;
+import movieappspring.entities.util.PagedEntity;
 import movieappspring.security.PasswordManager;
 import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.MovieService;
 import movieappspring.service.ReviewService;
 import movieappspring.service.UserService;
-import movieappspring.validation.AdminNewUserValidation;
+import movieappspring.validation.marker.CreateUserValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.groups.Default;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -263,7 +268,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/newuser", method = RequestMethod.POST)
-    public ModelAndView addNewUser(@Validated({AdminNewUserValidation.class})
+    public ModelAndView addNewUser(@Validated({Default.class, CreateUserValidation.class})
                                    @ModelAttribute(value = "user") UserTransferObject user,
                                    Errors errors, RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
@@ -353,26 +358,6 @@ public class AdminController {
         movieToUpdate.setTrailerURL(updatedMovie.getTrailerURL());
         movieToUpdate.setDescription(updatedMovie.getDescription());
         return movieToUpdate;
-    }
-
-    /**
-     * Transfers data from <code>Movie</code> object to <code>MovieTransferObject</code>
-     *
-     * @param movie movie to get data from
-     * @return <code>MovieTransferObject</code> populated with data from provided movie
-     * @see MovieTransferObject
-     * @see Movie
-     */
-    private MovieTransferObject toMovieTransferObject(Movie movie) {
-        MovieTransferObject movieTransferObject = new MovieTransferObject();
-        movieTransferObject.setMovieName(movie.getMovieName());
-        movieTransferObject.setDirector(movie.getDirector());
-        movieTransferObject.setReleaseDate(movie.getReleaseDate());
-        movieTransferObject.setPosterURL(movie.getPosterURL());
-        movieTransferObject.setTrailerURL(movie.getTrailerURL());
-//        movieTransferObject.setRating(movie.getRating());
-        movieTransferObject.setDescription(movie.getDescription());
-        return movieTransferObject;
     }
 
 }

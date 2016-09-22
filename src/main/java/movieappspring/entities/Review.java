@@ -1,6 +1,5 @@
 package movieappspring.entities;
 
-import movieappspring.validation.PostReviewValidation;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -30,13 +29,6 @@ public class Review {
     private Long userId;
 
     /**
-     * id of the movie which review is written to
-     */
-    @NotNull(groups = PostReviewValidation.class)
-    @Min(value = 1, groups = PostReviewValidation.class)
-    private Long movieId;
-
-    /**
      * Date when review has been posted
      */
     private Date postDate;
@@ -44,28 +36,34 @@ public class Review {
     /**
      * Title of review
      */
-    @NotNull(groups = PostReviewValidation.class)
-    @Size(min = 3, max = 100, message = "{review.title.size}", groups = PostReviewValidation.class)
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{review.title.pattern}",
-            groups = PostReviewValidation.class)
+    @NotNull
+    @Size(min = 3, max = 100, message = "{review.title.size}")
+    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{review.title.pattern}")
     @Column(name = "reviewtitle")
     private String title;
 
     /**
+     * id of the movie which review is written to
+     */
+    @NotNull
+    @Min(value = 1)
+    private Long movieId;
+
+    /**
      * Review text written by user
      */
-    @NotNull(groups = PostReviewValidation.class)
-    @Size(min = 5, max = 2000, message = "{review.reviewText.size}", groups = PostReviewValidation.class)
+    @NotNull
+    @Size(min = 5, max = 2000, message = "{review.reviewText.size}")
     @Pattern(regexp = "[a-zA-zа-яА-я0-9@()!.,+&=?:\\\\-\\\\\"']+([ '-][a-zA-Zа-яА-Я0-9@()!.,+&=?:\\\\\"'\\\\-]+)*",
-            message = "{review.reviewText.pattern}", groups = PostReviewValidation.class)
+            message = "{review.reviewText.pattern}")
     private String reviewText;
 
     /**
      * Rating given by user to movie
      */
-    @NotNull(groups = PostReviewValidation.class)
-    @Min(value = 1, message = "{review.rating.min}", groups = PostReviewValidation.class)
-    @Max(value = 10, message = "{review.rating.max}", groups = PostReviewValidation.class)
+    @NotNull
+    @Min(value = 1, message = "{review.rating.min}")
+    @Max(value = 10, message = "{review.rating.max}")
     private Integer rating;
 
     public Review() {

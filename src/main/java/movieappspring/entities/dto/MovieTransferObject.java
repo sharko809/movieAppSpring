@@ -1,5 +1,7 @@
 package movieappspring.entities.dto;
 
+import movieappspring.validation.annotation.ValidMovieTransferObject;
+
 import javax.validation.constraints.*;
 import java.sql.Date;
 

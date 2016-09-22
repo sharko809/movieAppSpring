@@ -5,14 +5,15 @@ import movieappspring.entities.dto.UserTransferObject;
 import movieappspring.security.PasswordManager;
 import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.UserService;
-import movieappspring.validation.AccountValidation;
+import movieappspring.validation.marker.AccountValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.groups.Default;
 
 @Controller
 @RequestMapping(value = "/account")
@@ -47,15 +50,23 @@ public class AccountController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String updateAccount(@Validated({AccountValidation.class})
-                                @ModelAttribute(name = "thisUser") UserTransferObject user, Errors errors,
+    public ModelAndView updateAccount(@Validated({Default.class, AccountValidation.class})
+                                @ModelAttribute(name = "thisUser") UserTransferObject user, BindingResult errors,
                                 RedirectAttributes redirectAttributes) {
         if (errors.hasErrors()) {
-            return "account";
+            return new ModelAndView("account");
         }
 
         Long currentUserId =
-                ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+                ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+
+        if (userService.ifUserExists(user.getLogin())) {
+            if (!userService.getUserByLogin(user.getLogin()).getId().equals(currentUserId)) {
+                errors.addError(new ObjectError("login", "This login is already in use"));
+                return new ModelAndView("account");
+            }
+        }
+
         User currentUser = userService.getUserById(currentUserId);
         currentUser.setLogin(user.getLogin());
         currentUser.setName(user.getName());
@@ -67,7 +78,7 @@ public class AccountController {
         resetAuthentication(currentUser);
 
         redirectAttributes.addFlashAttribute("success", "Account info updated successfully");
-        return "redirect:/account?id=" + currentUser.getId();
+        return new ModelAndView("redirect:/account?id=" + currentUser.getId());
     }
 
     /**

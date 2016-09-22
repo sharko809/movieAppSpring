@@ -1,4 +1,6 @@
-package movieappspring.entities.dto;
+package movieappspring.validation.annotation;
+
+import movieappspring.validation.MovieTransferObjectValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -10,9 +12,9 @@ import java.lang.annotation.Target;
 /**
  * Created by dsharko on 9/19/2016.
  */
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = {TransferObjectValidator.class})
+@Constraint(validatedBy = {MovieTransferObjectValidator.class})
 public @interface ValidMovieTransferObject {
 
     String message() default "{movie.poster.pattern}";
@@ -20,7 +22,5 @@ public @interface ValidMovieTransferObject {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-//    String value();
 
 }

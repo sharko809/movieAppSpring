@@ -1,4 +1,4 @@
-package movieappspring.entities;
+package movieappspring.entities.util;
 
 import java.util.List;
 
