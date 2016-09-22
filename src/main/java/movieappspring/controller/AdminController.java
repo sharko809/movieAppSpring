@@ -99,7 +99,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/addmovie", method = RequestMethod.POST)
-    public ModelAndView addMovie(@Validated @ModelAttribute Movie movie, Errors errors) {
+    public ModelAndView addMovie(@Validated @ModelAttribute(name = "movie") MovieTransferObject movie, Errors errors) {
         if (errors.hasErrors()) {
             return new ModelAndView("addmovie");
         }

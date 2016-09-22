@@ -10,14 +10,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by dsharko on 9/19/2016.
+ * This annotation is to be placed onto <code>MovieTransferObject</code> URL fields.
  */
-@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {MovieTransferObjectValidator.class})
-public @interface ValidMovieTransferObject {
+public @interface ValidMovieTransferObjectURL {
 
-    String message() default "{movie.poster.pattern}";
+    String message() default "{movie.url}";
+
+    int min() default 0;
+
+    int max() default 2147483647;
 
     Class<?>[] groups() default {};
 
