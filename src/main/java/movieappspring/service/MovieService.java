@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ public class MovieService {
      * @return ID of created movie record in database. If record hasn't been created returns 0.
      */
     public Long addMovie(String movieName, String director, Date releaseDate, String posterURL,
-                         String trailerUrl, Double rating, String description) throws SQLException {
+                         String trailerUrl, Double rating, String description) {
         Long movieID = movieDAO.create(movieName, director, releaseDate, posterURL, trailerUrl, rating, description);
         if (movieID == null) {
             // TODO create exception

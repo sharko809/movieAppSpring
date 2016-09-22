@@ -36,7 +36,7 @@ public class PasswordManager implements PasswordEncoder {
      *
      * @param password password to encode
      * @return hashed password with salt
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException thrown when password is corrupted or has unsupported characters
      */
     @Override
     public String encode(CharSequence password) throws IllegalArgumentException {
@@ -44,13 +44,18 @@ public class PasswordManager implements PasswordEncoder {
         return Base64.encodeBase64String(salt) + "$" + hash(password, salt);
     }
 
+    /**
+     * Overridden method from Spring's <code>PasswordEncoder</code> interface. Performs match of encoded password
+     * with raw password, encoding last one and comparing them.
+     *
+     * @param rawPassword     raw user password to encode and to compare
+     * @param encodedPassword user encoded password
+     * @return <b>true</b> if encoded passwords match. Otherwise returns <b>false</b>
+     */
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         String encodedRaw = encode(rawPassword);
-        if (encodedRaw.equals(encodedPassword)) {
-            return true;
-        }
-        return false;
+        return encodedRaw.equals(encodedPassword);
     }
 
     /**
@@ -59,7 +64,7 @@ public class PasswordManager implements PasswordEncoder {
      * @param password password to hash
      * @param salt     password salt
      * @return string representing password in hashed form
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException thrown when password is corrupted or has unsupported characters
      */
     private String hash(CharSequence password, byte[] salt) throws IllegalArgumentException {
         SecretKeyFactory secretKeyFactory;

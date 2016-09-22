@@ -98,7 +98,8 @@ public class AdminController {
         if (errors.hasErrors()) {
             return new ModelAndView("addmovie");
         }
-        // TODO
+        movieService.addMovie(movie.getMovieName(), movie.getDirector(), movie.getReleaseDate(), movie.getPosterURL(),
+                movie.getTrailerURL(), 0D, movie.getDescription());
         return new ModelAndView("redirect:/admin/addmovie");
     }
 

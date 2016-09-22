@@ -39,10 +39,12 @@
         <constructor-arg ref="hibernateMovieDAO"/>
     </bean>
     <bean id="userService" class="movieappspring.service.UserService" scope="request">
-        <constructor-arg ref="userDao"/>
+        <!--<constructor-arg ref="userDao"/>-->
+        <constructor-arg ref="hibernateUserDAO"/>
     </bean>
     <bean id="reviewService" class="movieappspring.service.ReviewService">
-        <constructor-arg ref="reviewDao"/>
+        <!--<constructor-arg ref="reviewDao"/>-->
+        <constructor-arg ref="hibernateReviewDAO"/>
     </bean>
 
     <bean id="movieDao" class="movieappspring.dao.custom.MovieDAOImpl" scope="request"/>

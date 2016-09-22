@@ -1,18 +1,27 @@
 package movieappspring.entities;
 
 import movieappspring.validation.PostReviewValidation;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.*;
 import java.sql.Date;
 
 /**
  * Class representing <code>Review</code>entity.
  */
+@Entity
 public class Review {
 
     /**
      * Review id from database
      */
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private Long id;
 
     /**
@@ -39,6 +48,7 @@ public class Review {
     @Size(min = 3, max = 100, message = "{review.title.size}", groups = PostReviewValidation.class)
     @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{review.title.pattern}",
             groups = PostReviewValidation.class)
+    @Column(name = "reviewtitle")
     private String title;
 
     /**

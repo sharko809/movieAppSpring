@@ -1,7 +1,8 @@
 package movieappspring.entities;
 
 
-import javax.persistence.Column;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -18,7 +19,8 @@ public class Movie {
      * Movie id from database
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private Long id;
 
     /**
@@ -27,7 +29,6 @@ public class Movie {
     @NotNull
     @Size(min = 1, max = 30, message = "{movie.title.size}")
     @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{movie.title.pattern}")
-    @Column(name = "moviename")
     private String movieName;
 
     /**
@@ -46,20 +47,17 @@ public class Movie {
      * URL leading to poster for the movie
      */
     @Size(min = 7, max = 255, message = "{movie.poster.size}")
-    @Column(name = "posterurl")
     private String posterURL;
 
     /**
      * URL leading to embed trailer for the movie
      */
     @Size(min = 7, max = 255, message = "{movie.trailer.size}")
-    @Column(name = "trailerurl")
     private String trailerURL;
 
     /**
      * Movie rating calculated based on users reviews
      */
-    @NotNull
     @Min(value = 0)
     @Max(value = 10)
     private Double rating;

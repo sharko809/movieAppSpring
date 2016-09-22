@@ -1,5 +1,7 @@
 package movieappspring.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +19,8 @@ import java.util.LinkedList;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -33,6 +37,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ModelAndView methodArgumentMismatch(HttpServletRequest request, Exception exception) {
+        LOGGER.warn("Bad url or argument mismatch.", exception);
         System.out.println("bad url: " + request.getRequestURL() +
                 (request.getQueryString() == null ? "" : "?" + request.getQueryString()));
         if (request.getQueryString() == null) {
@@ -43,6 +48,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ModelAndView error(HttpServletRequest request, Exception exception) {
+        LOGGER.warn("Exception caught.", exception);
         ModelAndView modelAndView = new ModelAndView("error", "errorDetails", composeErrorDetails(request, exception));
         System.out.println("trying to catch: " + exception.getClass());
         System.out.println("exception message: " + exception.getLocalizedMessage());

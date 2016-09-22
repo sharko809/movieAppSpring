@@ -4,7 +4,12 @@ import movieappspring.validation.AccountValidation;
 import movieappspring.validation.AdminNewUserValidation;
 import movieappspring.validation.LoginValidation;
 import movieappspring.validation.RegistrationValidation;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -12,11 +17,15 @@ import javax.validation.constraints.Size;
 /**
  * Class representing <code>User</code> entity.
  */
+@Entity
 public class User {
 
     /**
      * User id from database
      */
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private Long id;
 
     /**
@@ -27,6 +36,7 @@ public class User {
             groups = {AccountValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
     @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{username.pattern}",
             groups = {AccountValidation.class, RegistrationValidation.class, AdminNewUserValidation.class})
+    @Column(name = "username")
     private String name;
 
     /**
@@ -53,6 +63,7 @@ public class User {
      * Field indicating if user has admin rights.
      * <b>true</b> - user has admin rights
      */
+    @Column(name = "isadmin")
     private Boolean admin;
 
     /**
@@ -60,6 +71,7 @@ public class User {
      * Banned users can't access service functions.
      * <b>true</b> - user is banned
      */
+    @Column(name = "isbanned")
     private Boolean banned;
 
     public User() {

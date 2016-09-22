@@ -12,7 +12,9 @@ import java.sql.Date;
 import java.util.List;
 
 /**
- * Created by dsharko on 9/20/2016.
+ * Class that accesses the database and performs any activity connected with database using hibernate.
+ * <p>
+ * This particular class deals with movie data in database.
  */
 @Repository
 @Transactional
@@ -37,14 +39,15 @@ public class HibernateMovieDAO implements MovieDAO {
         movie.setRating(rating);
         movie.setDescription(description);
         sessionFactory.getCurrentSession().save(movie);
-        System.out.println(movie.getId());
         return movie.getId();
     }
 
     @Override
     public Movie get(Long movieId) {
-        return ((Movie) sessionFactory.getCurrentSession().
-                createQuery("from Movie WHERE id = :id").setParameter("id", movieId).uniqueResult());
+        return (Movie) sessionFactory.getCurrentSession()
+                .createQuery("from Movie WHERE id = :id")
+                .setParameter("id", movieId)
+                .uniqueResult();
     }
 
     @Override
@@ -55,7 +58,6 @@ public class HibernateMovieDAO implements MovieDAO {
     @Override
     public boolean delete(Long movieID) {
         sessionFactory.getCurrentSession().delete(get(movieID));// TODO looks like shit
-//        return false;
         return true;
     }
 
@@ -67,43 +69,35 @@ public class HibernateMovieDAO implements MovieDAO {
     @Override
     public List<Movie> getAllLimit(Integer offset, Integer noOfRows) {
         Query query = sessionFactory.getCurrentSession()
-                .createQuery("from Movie")
+                .createQuery("from Movie", Movie.class)
                 .setFirstResult(offset)
                 .setMaxResults(noOfRows);
-        List<Movie> movies = query.list();
         this.numberOfRecords = Integer.valueOf(sessionFactory.getCurrentSession()
-                .createQuery("SELECT count(*) FROM Movie").uniqueResult().toString());// TODO looks like shit
+                .createQuery("SELECT count(*) FROM Movie").uniqueResult().toString());
         // TODO exceptions?
-        return movies;
+        return (List<Movie>) query.list();
     }
 
     @Override
     public List<Movie> getMoviesLike(String movieName, Integer offset, Integer noOfRows) {
         Query query = sessionFactory.getCurrentSession()
-                .createQuery("from Movie where movieName like :title")
-                .setParameter("title", movieName)
-                .setFirstResult(offset)
-                .setMaxResults(noOfRows);
-        List<Movie> movies = query.list();
-        movies.forEach(movie -> System.out.println(movie.getMovieName()));
+                .createQuery("SELECT m FROM Movie m WHERE m.movieName LIKE :title", Movie.class)
+                .setParameter("title", movieName + "%").setFirstResult(offset).setMaxResults(noOfRows);
         this.numberOfRecords = Integer.valueOf(sessionFactory.getCurrentSession()
-                .createQuery("SELECT count(*) FROM Movie").uniqueResult().toString());// TODO todo
-        return movies;
+                .createQuery("SELECT count(*) FROM Movie m WHERE m.movieName LIKE :title")
+                .setParameter("title", movieName + "%").uniqueResult().toString());// TODO running two queries is shit
+        return (List<Movie>) query.list();
     }
 
     @Override
     public List<Movie> getMoviesSorted(Integer offset, Integer noOfRows, String orderBy, Boolean isDesc) {
         Query query = sessionFactory.getCurrentSession()
-                .createQuery("from Movie ORDER BY rating " + (isDesc ? "DESC" : "ASC"))
+                .createQuery("FROM Movie ORDER BY " + orderBy + (isDesc ? " DESC" : " ASC"))
                 .setFirstResult(offset)
                 .setMaxResults(noOfRows);
-//                .setParameter("sort", orderBy);
-        System.out.println(query.getQueryString());
-        List<Movie> movies = query.list();
-        movies.forEach(o -> {
-            System.out.println(o.getRating());;
-        });
-        return movies;// TODO todo
+        this.numberOfRecords = Integer.valueOf(sessionFactory.getCurrentSession()
+                .createQuery("SELECT count(*) FROM Movie").uniqueResult().toString());// TODO toString() is shit. Or not
+        return (List<Movie>) query.list();
     }
 
     @Override

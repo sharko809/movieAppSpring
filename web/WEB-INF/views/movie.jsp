@@ -4,7 +4,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf" %>
 <html>
 <head>
-    <title>${movie.movieName}</title>
+    <title>${movieContainer.movie.movieName}</title>
     <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/pure-min.css"/>">
     <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/base-min.css"/>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,7 +29,7 @@
         <sec:authorize access="hasRole('ROLE_ADMIN')">
             <div class="pure-g">
                 <button type="button" class="pure-button" style="margin: 5px 0 0 5px;"
-                        onclick="window.location = 'admin/editmovie?movieID=${movieContainer.movie.id}'">Edit movie
+                        onclick="window.location.href = '/admin/managemovies/${movieContainer.movie.id}'">Edit movie
                 </button>
             </div>
         </sec:authorize>
