@@ -32,7 +32,7 @@ public class RegistrationController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView registrationView() {
-        return new ModelAndView("registration", "user", new User());
+        return new ModelAndView("registration", "user", new UserTransferObject());
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -45,7 +45,9 @@ public class RegistrationController {
 
         if (!userService.ifUserExists(user.getLogin())) {
             String encodedPassword = passwordManager.encode(user.getPassword());
-            userService.createUser(user.getName(), user.getLogin(), encodedPassword, false);
+            user.setPassword(encodedPassword);
+            user.setAdmin(false);
+            userService.createUser(new User(user));
         } else {
             ModelAndView modelAndView = new ModelAndView("registration");
             modelAndView.addObject("fail", "User with login <b>" + user.getLogin() + "</b> already exists.");

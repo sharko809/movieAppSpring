@@ -7,7 +7,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,36 +113,41 @@ public class UserDAOImpl implements UserDAO{
         return user;
     }
 
-    /**
-     * Creates a record for new user in database
-     *
-     * @param userName users nickname that will be displayed to other users
-     * @param login    user login used to log in the system. Not visible to other common users
-     * @param password user password in encoded form
-     * @param isAdmin  use <b>true</b> if you want to grant user admin rights
-     * @return ID of created user. If user to some reasons hasn't been created - returns 0.
-     */
-    public Long create(String userName, String login, String password, Boolean isAdmin) {
-        Long userID = 0L;
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_USER, Statement.RETURN_GENERATED_KEYS)) {
+//    /**
+//     * Creates a record for new user in database
+//     *
+//     * @param userName users nickname that will be displayed to other users
+//     * @param login    user login used to log in the system. Not visible to other common users
+//     * @param password user password in encoded form
+//     * @param isAdmin  use <b>true</b> if you want to grant user admin rights
+//     * @return ID of created user. If user to some reasons hasn't been created - returns 0.
+//     */
+//    public Long create(String userName, String login, String password, Boolean isAdmin) {
+//        Long userID = 0L;
+//        try (Connection connection = connectionManager.getConnection();
+//             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_USER, Statement.RETURN_GENERATED_KEYS)) {
+//
+//            statement.setString(1, userName);
+//            statement.setString(2, login);
+//            statement.setString(3, password);
+//            statement.setBoolean(4, isAdmin);
+//            statement.executeUpdate();
+//            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+//                if (resultSet.next()) {
+//                    userID = resultSet.getLong(1);
+//                }
+//            }
+//
+//        } catch (SQLException e) {
+//            LOGGER.error("Error creating new user record.", e);
+//            return null;
+//        }
+//        return userID;
+//    }
 
-            statement.setString(1, userName);
-            statement.setString(2, login);
-            statement.setString(3, password);
-            statement.setBoolean(4, isAdmin);
-            statement.executeUpdate();
-            try (ResultSet resultSet = statement.getGeneratedKeys()) {
-                if (resultSet.next()) {
-                    userID = resultSet.getLong(1);
-                }
-            }
-
-        } catch (SQLException e) {
-            LOGGER.error("Error creating new user record.", e);
-            return null;
-        }
-        return userID;
+    @Override
+    public Long create(User user) {
+        return null;
     }
 
     /**
@@ -218,27 +226,32 @@ public class UserDAOImpl implements UserDAO{
         }
     }
 
-    /**
-     * Deletes user record from database
-     *
-     * @param userID ID of user to be removed from database
-     * @return <b>true</b> if user has been successfully deleted. Otherwise returns <b>false</b>
-     */
-    public boolean delete(Long userID) {
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_USER)) {
+//    /**
+//     * Deletes user record from database
+//     *
+//     * @param userID ID of user to be removed from database
+//     * @return <b>true</b> if user has been successfully deleted. Otherwise returns <b>false</b>
+//     */
+//    public boolean delete(Long userID) {
+//        try (Connection connection = connectionManager.getConnection();
+//             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_USER)) {
+//
+//            statement.setLong(1, userID);
+//            int afterUpdate = statement.executeUpdate();
+//            if (afterUpdate >= 1) {
+//                return true;
+//            }
+//
+//        } catch (SQLException e) {
+//            LOGGER.error("Error removing user record from database.", e);
+//            return false;
+//        }
+//        return false;
+//    }
 
-            statement.setLong(1, userID);
-            int afterUpdate = statement.executeUpdate();
-            if (afterUpdate >= 1) {
-                return true;
-            }
+    @Override
+    public void delete(User user) {
 
-        } catch (SQLException e) {
-            LOGGER.error("Error removing user record from database.", e);
-            return false;
-        }
-        return false;
     }
 
     /**

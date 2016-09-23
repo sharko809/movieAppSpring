@@ -1,5 +1,6 @@
 package movieappspring.entities;
 
+import movieappspring.entities.dto.ReviewTransferObject;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -38,7 +39,7 @@ public class Review {
      */
     @NotNull
     @Size(min = 3, max = 100, message = "{review.title.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{review.title.pattern}")
+    @Pattern(regexp = "[a-zA-zа-яА-яё0-9]+([ '-][a-zA-Zа-яА-Яё0-9]+)*", message = "{review.title.pattern}")
     @Column(name = "reviewtitle")
     private String title;
 
@@ -54,7 +55,7 @@ public class Review {
      */
     @NotNull
     @Size(min = 5, max = 2000, message = "{review.reviewText.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9@()!.,+&=?:\\\\-\\\\\"']+([ '-][a-zA-Zа-яА-Я0-9@()!.,+&=?:\\\\\"'\\\\-]+)*",
+    @Pattern(regexp = "[a-zA-zа-яА-я0-9ё@()!.,+&=?:\\\\-\\\\\"']+([ '-][a-zA-Zа-яА-Я0-9ё@()!.,+&=?:\\\\\"'\\\\-]+)*",
             message = "{review.reviewText.pattern}")
     private String reviewText;
 
@@ -67,6 +68,13 @@ public class Review {
     private Integer rating;
 
     public Review() {
+    }
+
+    public Review(ReviewTransferObject reviewTransferObject) {
+        this.title=reviewTransferObject.getTitle();
+        this.reviewText=reviewTransferObject.getText();
+        this.rating=reviewTransferObject.getRating();
+        this.postDate=reviewTransferObject.getPostDate();
     }
 
     public Long getMovieId() {

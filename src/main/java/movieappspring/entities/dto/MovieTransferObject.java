@@ -1,8 +1,8 @@
 package movieappspring.entities.dto;
 
+import movieappspring.entities.Movie;
 import movieappspring.validation.annotation.ValidMovieTransferObjectURL;
 
-import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.sql.Date;
 
@@ -11,16 +11,17 @@ import java.sql.Date;
  */
 public class MovieTransferObject {
 
+    private Long id;
+
     @NotNull
     @Size(min = 1, max = 30, message = "{movie.title.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{movie.title.pattern}")
+    @Pattern(regexp = "[a-zA-zа-яА-яё0-9(){},]+([ '-][a-zA-Zа-яА-Яё0-9(){},]+)*", message = "{movie.title.pattern}")
     private String movieName;
 
     @Size(min = 1, max = 30, message = "{movie.director.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-я]+([ '-][a-zA-Zа-яА-Я]+)*", message = "{movie.director.pattern}")
+    @Pattern(regexp = "[a-zA-zа-яА-яё(){},]+([ '-][a-zA-Zа-яА-Яё(){},]+)*", message = "{movie.director.pattern}")
     private String director;
 
-    @NotNull
     private Date releaseDate;
 
     @ValidMovieTransferObjectURL(min = 7, max = 255)
@@ -35,11 +36,29 @@ public class MovieTransferObject {
 
     @NotNull
     @Size(min = 5, max = 2000, message = "{movie.description.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9@()!.,+&=?:\\\\-\\\\\"']+([ '-][a-zA-Zа-яА-Я0-9@()!.,+&=?:\\\\\"'\\\\-]+)*")
+    @Pattern(regexp = "[a-zA-zа-яА-яё0-9@()!.,+&=?:\\\\-\\\\\"']+([ '-][a-zA-Zа-яА-Яё0-9@()!.,+&=?:\\\\\"'\\\\-]+)*")
     private String description;
 
     public MovieTransferObject() {
+    }
 
+    public MovieTransferObject(Movie movie) {
+        this.id = movie.getId();
+        this.movieName = movie.getMovieName();
+        this.director = movie.getDirector();
+        this.releaseDate = movie.getReleaseDate();
+        this.posterURL = movie.getPosterURL();
+        this.trailerURL = movie.getTrailerURL();
+        this.rating = movie.getRating();
+        this.description = movie.getDescription();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getMovieName() {

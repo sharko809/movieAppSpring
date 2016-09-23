@@ -1,5 +1,6 @@
 package movieappspring.controller;
 
+import movieappspring.PrincipalUtil;
 import movieappspring.entities.User;
 import movieappspring.entities.dto.UserTransferObject;
 import movieappspring.security.PasswordManager;
@@ -39,14 +40,16 @@ public class AccountController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView account(@RequestParam(value = "id", defaultValue = "0") Long userId) {
-        Long currentUserId =
-                ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        Long currentUserId = PrincipalUtil.getCurrentPrincipal().getId();
         if (userId < 1 || !currentUserId.equals(userId)) {
             return new ModelAndView("redirect:/account?id=" + currentUserId);
         }
 
         User user = userService.getUserById(userId);
-        return new ModelAndView("account", "thisUser", user);
+        UserTransferObject userTransferObject = new UserTransferObject();
+        userTransferObject.setName(user.getName());
+        userTransferObject.setLogin(user.getLogin());
+        return new ModelAndView("account", "thisUser", userTransferObject);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -57,8 +60,7 @@ public class AccountController {
             return new ModelAndView("account");
         }
 
-        Long currentUserId =
-                ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        Long currentUserId = PrincipalUtil.getCurrentPrincipal().getId();
 
         if (userService.ifUserExists(user.getLogin())) {
             if (!userService.getUserByLogin(user.getLogin()).getId().equals(currentUserId)) {

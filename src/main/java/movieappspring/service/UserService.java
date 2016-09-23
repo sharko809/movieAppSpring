@@ -23,14 +23,11 @@ public class UserService {
     /**
      * Creates new user with given details.
      *
-     * @param userName users nickname that will be displayed to other users
-     * @param login    user login used to log in the system. Not visible to other common users
-     * @param password user password (should be in encoded form)
-     * @param isAdmin  use <b>true</b> if you want to grant user admin rights
+     * @param user user to be added to database
      * @return ID of created user.
      */
-    public Long createUser(String userName, String login, String password, Boolean isAdmin) {
-        Long userId = userDAO.create(userName, login, password, isAdmin);
+    public Long createUser(User user) {
+        Long userId = userDAO.create(user);
 
         if (userId == null || userId == 0) {
             LOGGER.error("Unable to create user. DAO method returned " + userId);
@@ -84,11 +81,10 @@ public class UserService {
     /**
      * Deletes user
      *
-     * @param userId ID of user to be removed from database
-     * @return <b>true</b> if user has been successfully deleted. Otherwise returns <b>false</b>
+     * @param user user to be removed from database
      */
-    public boolean deleteUser(Long userId) {
-        return userDAO.delete(userId);
+    public void deleteUser(User user) {
+        userDAO.delete(user);
     }
 
     /**

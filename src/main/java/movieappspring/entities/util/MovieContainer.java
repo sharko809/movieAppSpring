@@ -1,7 +1,7 @@
 package movieappspring.entities.util;
 
-import movieappspring.entities.Movie;
 import movieappspring.entities.Review;
+import movieappspring.entities.dto.MovieTransferObject;
 
 import java.util.List;
 import java.util.Map;
@@ -11,16 +11,16 @@ import java.util.Map;
  */
 public class MovieContainer {
 
-    private Movie movie;
+    private MovieTransferObject movieTransferObject;
     private List<Review> reviews;
     private Map<Long, Object> users;
 
-    public Movie getMovie() {
-        return movie;
+    public MovieTransferObject getMovieTransferObject() {
+        return movieTransferObject;
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
+    public void setMovieTransferObject(MovieTransferObject movieTransferObject) {
+        this.movieTransferObject = movieTransferObject;
     }
 
     public List<Review> getReviews() {

@@ -28,13 +28,7 @@ public class HibernateUserDAO implements UserDAO {
     }
 
     @Override
-    public Long create(String userName, String login, String password, Boolean isAdmin) {
-        User user = new User();
-        user.setName(userName);
-        user.setLogin(login);
-        user.setPassword(password);
-        user.setAdmin(isAdmin);
-        user.setBanned(false);
+    public Long create(User user) {
         sessionFactory.getCurrentSession().save(user);
         return user.getId();
     }
@@ -61,11 +55,8 @@ public class HibernateUserDAO implements UserDAO {
     }
 
     @Override
-    public boolean delete(Long userID) {
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("DELETE User WHERE id = :id")
-                .setParameter("id", userID);
-        return query.executeUpdate() > 0;
+    public void delete(User user) {
+        sessionFactory.getCurrentSession().delete(user);
     }
 
     @Override

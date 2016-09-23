@@ -1,5 +1,6 @@
 package movieappspring.controller;
 
+import movieappspring.PrincipalUtil;
 import movieappspring.entities.Movie;
 import movieappspring.entities.Review;
 import movieappspring.entities.User;
@@ -8,7 +9,6 @@ import movieappspring.entities.dto.UserTransferObject;
 import movieappspring.entities.util.MovieContainer;
 import movieappspring.entities.util.PagedEntity;
 import movieappspring.security.PasswordManager;
-import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.MovieService;
 import movieappspring.service.ReviewService;
 import movieappspring.service.UserService;
@@ -16,7 +16,6 @@ import movieappspring.validation.marker.CreateUserValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -27,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.groups.Default;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -95,16 +95,19 @@ public class AdminController {
 
     @RequestMapping(value = "/addmovie", method = RequestMethod.GET)
     public ModelAndView addMovieView() {
-        return new ModelAndView("addmovie", "movie", new Movie());
+        return new ModelAndView("addmovie", "movie", new MovieTransferObject());
     }
 
     @RequestMapping(value = "/addmovie", method = RequestMethod.POST)
     public ModelAndView addMovie(@Validated @ModelAttribute(name = "movie") MovieTransferObject movie, Errors errors) {
+
         if (errors.hasErrors()) {
             return new ModelAndView("addmovie");
         }
-        movieService.addMovie(movie.getMovieName(), movie.getDirector(), movie.getReleaseDate(), movie.getPosterURL(),
-                movie.getTrailerURL(), 0D, movie.getDescription());
+
+        Movie movieToAdd = new Movie(movie);
+        movieService.addMovie(movieToAdd);
+
         return new ModelAndView("redirect:/admin/addmovie");
     }
 
@@ -117,10 +120,13 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("adminmovies");
         PagedEntity pagedMovies = movieService.getAllMoviesLimit((page - 1) * M_RECORDS_PER_PAGE, M_RECORDS_PER_PAGE);
         List<Movie> movies = (List<Movie>) pagedMovies.getEntity();
+        List<MovieTransferObject> movieTransferObjects = movies.stream()
+                .map(MovieTransferObject::new)
+                .collect(Collectors.toList());
         int numberOfRecords = pagedMovies.getNumberOfRecords();
         int numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / M_RECORDS_PER_PAGE);
 
-        modelAndView.addObject("movies", movies);
+        modelAndView.addObject("movies", movieTransferObjects);
         modelAndView.addObject("numberOfPages", numberOfPages);
         modelAndView.addObject("currentPage", page);
         return modelAndView;
@@ -155,7 +161,7 @@ public class AdminController {
 
             MovieContainer movieContainer = completeMovie(movieId);
 
-            modelAndView.addObject("movie", movieContainer.getMovie());
+            modelAndView.addObject("movie", movieContainer.getMovieTransferObject());
             modelAndView.addObject("reviews", movieContainer.getReviews());
             modelAndView.addObject("users", movieContainer.getUsers());
             return modelAndView;
@@ -190,10 +196,7 @@ public class AdminController {
     public ModelAndView deleteReview(@RequestParam Long reviewId,
                                      @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect) {
         if (reviewId > 0) {
-            if (!reviewService.deleteReview(reviewId)) {
-                LOGGER.warn("Unable to delete review. Review id: " + reviewId);
-                // TODO some error here?
-            }
+            reviewService.deleteReview(reviewService.getReview(reviewId));// TODO shitty
         }
 
         return new ModelAndView("redirect:" + redirect);
@@ -228,8 +231,7 @@ public class AdminController {
     public ModelAndView adminize(@RequestParam Long userId,
                                  @RequestParam(defaultValue = DEFAULT_USERS_REDIRECT) String redirect) {
         if (userId > 0) {
-            Long currentUserId =
-                    ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            Long currentUserId = PrincipalUtil.getCurrentPrincipal().getId();
             User userToUpdate = userService.getUserById(userId);
 
             if (!currentUserId.equals(userToUpdate.getId())) {
@@ -247,8 +249,7 @@ public class AdminController {
     public ModelAndView ban(@RequestParam Long userId,
                             @RequestParam(defaultValue = DEFAULT_USERS_REDIRECT) String redirect) {
         if (userId > 0) {
-            Long currentUserId =
-                    ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            Long currentUserId = PrincipalUtil.getCurrentPrincipal().getId();
             User userToUpdate = userService.getUserById(userId);
 
             if (!currentUserId.equals(userToUpdate.getId())) {
@@ -264,7 +265,7 @@ public class AdminController {
 
     @RequestMapping(value = "/newuser", method = RequestMethod.GET)
     public ModelAndView newUser() {
-        return new ModelAndView("adminnewuser", "user", new User());
+        return new ModelAndView("adminnewuser", "user", new UserTransferObject());
     }
 
     @RequestMapping(value = "/newuser", method = RequestMethod.POST)
@@ -277,7 +278,8 @@ public class AdminController {
 
         if (!userService.ifUserExists(user.getLogin())) {
             String encodedPassword = passwordManager.encode(user.getPassword());
-            userService.createUser(user.getName(), user.getLogin(), encodedPassword, user.getAdmin());
+            user.setPassword(encodedPassword);
+            userService.createUser(new User(user));
         } else {
             ModelAndView modelAndView = new ModelAndView("adminnewuser");
             modelAndView.addObject("fail", "User with login <b>" + user.getLogin() + "</b> already exists.");
@@ -321,6 +323,7 @@ public class AdminController {
     private MovieContainer completeMovie(Long movieId) {
         MovieContainer movieContainer = new MovieContainer();
         Movie movie = movieService.getMovieByID(movieId);
+        MovieTransferObject movieTransferObject = new MovieTransferObject(movie);
         List<Review> reviews = reviewService.getReviewsByMovieId(movieId);
         reviews.sort((r1, r2) -> r2.getPostDate().compareTo(r1.getPostDate()));
         Map<Long, Object> users = new HashMap<>();
@@ -335,7 +338,7 @@ public class AdminController {
                         }
             }
         }
-        movieContainer.setMovie(movie);
+        movieContainer.setMovieTransferObject(movieTransferObject);
         movieContainer.setReviews(reviews);
         movieContainer.setUsers(users);
         return movieContainer;

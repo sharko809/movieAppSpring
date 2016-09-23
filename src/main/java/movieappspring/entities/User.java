@@ -1,5 +1,6 @@
 package movieappspring.entities;
 
+import movieappspring.entities.dto.UserTransferObject;
 import movieappspring.validation.marker.AccountValidation;
 import movieappspring.validation.marker.CreateUserValidation;
 import movieappspring.validation.marker.LoginValidation;
@@ -34,7 +35,7 @@ public class User {
     @NotNull(groups = {AccountValidation.class, RegistrationValidation.class, CreateUserValidation.class})
     @Size(min = 3, max = 20, message = "{username.size}",
             groups = {AccountValidation.class, RegistrationValidation.class, CreateUserValidation.class})
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{username.pattern}",
+    @Pattern(regexp = "[a-zA-zа-яА-яё0-9]+([ '-][a-zA-Zа-яА-Яё0-9]+)*", message = "{username.pattern}",
             groups = {AccountValidation.class, RegistrationValidation.class, CreateUserValidation.class})
     @Column(name = "username")
     private String name;
@@ -75,6 +76,14 @@ public class User {
     private Boolean banned;
 
     public User() {
+    }
+
+    public User(UserTransferObject userTransferObject) {
+        this.name=userTransferObject.getName();
+        this.login=userTransferObject.getLogin();
+        this.password=userTransferObject.getPassword();
+        this.admin=userTransferObject.getAdmin();
+        this.banned=false;
     }
 
     public Boolean isBanned() {

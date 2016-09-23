@@ -10,7 +10,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is to be placed onto <code>UserTransferObject</code> password field.
+ * This annotation is to be placed onto <code>UserTransferObject</code> password field. Validates password if it is
+ * not empty.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

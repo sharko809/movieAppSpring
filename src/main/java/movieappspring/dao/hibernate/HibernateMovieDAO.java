@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -28,16 +27,7 @@ public class HibernateMovieDAO implements MovieDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    @Override
-    public Long create(String movieName, String director, Date releaseDate, String posterURL, String trailerUrl, Double rating, String description) {
-        Movie movie = new Movie();
-        movie.setMovieName(movieName);
-        movie.setDirector(director);
-        movie.setReleaseDate(releaseDate);
-        movie.setPosterURL(posterURL);
-        movie.setTrailerURL(trailerUrl);
-        movie.setRating(rating);
-        movie.setDescription(description);
+    public Long create(Movie movie) {
         sessionFactory.getCurrentSession().save(movie);
         return movie.getId();
     }
@@ -56,14 +46,13 @@ public class HibernateMovieDAO implements MovieDAO {
     }
 
     @Override
-    public boolean delete(Long movieID) {
-        sessionFactory.getCurrentSession().delete(get(movieID));// TODO looks like shit
-        return true;
+    public void delete(Movie movie) {
+        sessionFactory.getCurrentSession().delete(movie);
     }
 
     @Override
     public List<Movie> getAll() {
-        return sessionFactory.getCurrentSession().createQuery("from Movie").list();
+        return sessionFactory.getCurrentSession().createQuery("from Movie", Movie.class).list();
     }
 
     @Override
@@ -74,7 +63,6 @@ public class HibernateMovieDAO implements MovieDAO {
                 .setMaxResults(noOfRows);
         this.numberOfRecords = Integer.valueOf(sessionFactory.getCurrentSession()
                 .createQuery("SELECT count(*) FROM Movie").uniqueResult().toString());
-        // TODO exceptions?
         return (List<Movie>) query.list();
     }
 

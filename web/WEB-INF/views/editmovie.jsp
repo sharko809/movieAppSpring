@@ -102,6 +102,7 @@
             <span style="margin: 9px;">Rating: ${movie.rating}</span>
             <form method="post" action="<c:url value="/admin/managemovies"/>">
                 <input type="hidden" name="redirect" value=""/>
+                <input type="hidden" name="movieId" value="${pageContext.findAttribute('movieId')}"/>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <button type="submit" class="pure-button" title="Recalculates movie rating"
                         style="width: 100%; overflow: hidden;">Rating
@@ -160,6 +161,11 @@
                 </div>
             </div>
         </c:forEach>
+        <c:if test="${reviews.size() eq 0}">
+            <div class="pure-u-1 center-text">
+                No reviews for this movie yet
+            </div>
+        </c:if>
     </div>
 </div>
 <script src="<c:url value="/resources/js/editmovie-enable-inputs.js"/>" type="text/javascript"></script>

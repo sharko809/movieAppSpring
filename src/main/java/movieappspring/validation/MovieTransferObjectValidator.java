@@ -12,7 +12,8 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class MovieTransferObjectValidator implements ConstraintValidator<ValidMovieTransferObjectURL, String> {
 
-    public void initialize(ValidMovieTransferObjectURL validMovieTransferObjectURL) {}
+    public void initialize(ValidMovieTransferObjectURL validMovieTransferObjectURL) {
+    }
 
     public boolean isValid(String url, ConstraintValidatorContext constraintValidatorContext) {
 
@@ -26,7 +27,6 @@ public class MovieTransferObjectValidator implements ConstraintValidator<ValidMo
                 if (url.length() < 3 || url.length() > 255) {
                     response.append("{movie.url.size}\n");
                 } else if (!urlValidator.isValid(url)) {
-                    System.out.println("invalid: " + url);
                     response.append("{movie.url}\n");
                 }
             }

@@ -13,7 +13,8 @@ import javax.validation.ConstraintValidatorContext;
 public class UserTransferObjectValidator implements ConstraintValidator<ValidUserTransferObjectPassword, String> {
 
     @Override
-    public void initialize(ValidUserTransferObjectPassword validUserTransferObjectPassword) {}
+    public void initialize(ValidUserTransferObjectPassword validUserTransferObjectPassword) {
+    }
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {

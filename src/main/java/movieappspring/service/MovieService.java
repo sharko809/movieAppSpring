@@ -6,7 +6,6 @@ import movieappspring.entities.util.PagedEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -24,18 +23,11 @@ public class MovieService {
     /**
      * Calls for DAO method to create a new movie record
      *
-     * @param movieName   desired movie title
-     * @param director    movie director
-     * @param releaseDate movie release date in  "yyyy-MM-dd" format
-     * @param posterURL   URL leading to movie poster
-     * @param trailerUrl  URL leading to embed video
-     * @param rating      movie rating. Set to 0 by default
-     * @param description some description for the movie
+     * @param movie movie to be added to database
      * @return ID of created movie record in database. If record hasn't been created returns 0.
      */
-    public Long addMovie(String movieName, String director, Date releaseDate, String posterURL,
-                         String trailerUrl, Double rating, String description) {
-        Long movieID = movieDAO.create(movieName, director, releaseDate, posterURL, trailerUrl, rating, description);
+    public Long addMovie(Movie movie) {
+        Long movieID = movieDAO.create(movie);
         if (movieID == null) {
             // TODO create exception
         }
@@ -69,11 +61,10 @@ public class MovieService {
     /**
      * Deletes movie record from database
      *
-     * @param movieID ID of movie to be removed from database
-     * @return <b>true</b> if movie has been successfully deleted. Otherwise returns <b>false</b>
+     * @param movie movie to be removed from database
      */
-    public boolean deleteMovie(Long movieID) {
-        return movieDAO.delete(movieID);
+    public void deleteMovie(Movie movie) {
+        movieDAO.delete(movie);
     }
 
     /**

@@ -2,7 +2,6 @@ package movieappspring.dao;
 
 import movieappspring.entities.Review;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -10,7 +9,7 @@ import java.util.List;
  */
 public interface ReviewDAO {
 
-    Long create(Long userID, Long movieID, Date postDate, String reviewTitle, Integer rating, String reviewText);
+    Long create(Review review);
 
     Review get(Long reviewID);
 
@@ -18,6 +17,6 @@ public interface ReviewDAO {
 
     List<Review> getReviewsByMovieId(Long movieID);
 
-    boolean delete(Long reviewID);
+    void delete(Review review);
 
 }

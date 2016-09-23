@@ -58,8 +58,12 @@
                                             <span>${movie.description}</span>
                                         </div>
                                     </div>
+                                    <%--<img src="<c:url value="/resources/images/no-trailer.jpg"/>">--%>
                                     <div class="pure-u-lg-1-2 pure-u-sm-1 movie-trailer">
-                                        <iframe width="100%" height="315" src="${movie.trailerURL ne null ? movie.trailerURL : "/resources/images/no-trailer.jpg"}" frameborder="0"
+                                            <%--${movie.trailerURL ne null ?--%>
+                                                    <%--'<iframe width="100%" height="315" src="${movie.trailerURL}" frameborder="0" allowfullscreen></iframe>' :--%>
+                                                    <%--'<img src="/resources/images/no-trailer.jpg">'}--%>
+                                        <iframe width="100%" height="315" src="${movie.trailerURL ne null ? movie.trailerURL : '/resources/images/no-trailer.jpg'}" frameborder="0"
                                                 allowfullscreen></iframe>
                                     </div>
                                 </div>

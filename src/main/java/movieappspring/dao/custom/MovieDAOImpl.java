@@ -7,7 +7,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,43 +114,48 @@ public class MovieDAOImpl implements MovieDAO {
         return movie;
     }
 
-    /**
-     * Creates a record for new movie in database
-     *
-     * @param movieName   desired movie title
-     * @param director    movie director
-     * @param releaseDate movie release date in  "yyyy-MM-dd" format
-     * @param posterURL   URL leading to movie poster
-     * @param trailerUrl  URL leading to embed video
-     * @param rating      movie rating. Set to 0 by default
-     * @param description some description for the movie
-     * @return ID of created movie record in database. If record hasn't been created returns 0.
-     */
-    public Long create(String movieName, String director, Date releaseDate,
-                       String posterURL, String trailerUrl, Double rating, String description) {
-        Long movieID = 0L;
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_ADD_MOVIE, Statement.RETURN_GENERATED_KEYS)) {
+//    /**
+//     * Creates a record for new movie in database
+//     *
+//     * @param movieName   desired movie title
+//     * @param director    movie director
+//     * @param releaseDate movie release date in  "yyyy-MM-dd" format
+//     * @param posterURL   URL leading to movie poster
+//     * @param trailerUrl  URL leading to embed video
+//     * @param rating      movie rating. Set to 0 by default
+//     * @param description some description for the movie
+//     * @return ID of created movie record in database. If record hasn't been created returns 0.
+//     */
+//    public Long create(String movieName, String director, Date releaseDate,
+//                       String posterURL, String trailerUrl, Double rating, String description) {
+//        Long movieID = 0L;
+//        try (Connection connection = connectionManager.getConnection();
+//             PreparedStatement statement = connection.prepareStatement(SQL_ADD_MOVIE, Statement.RETURN_GENERATED_KEYS)) {
+//
+//            statement.setString(1, movieName);
+//            statement.setString(2, director);
+//            statement.setDate(3, releaseDate);
+//            statement.setString(4, posterURL);
+//            statement.setString(5, trailerUrl);
+//            statement.setDouble(6, rating);
+//            statement.setString(7, description);
+//            statement.executeUpdate();
+//            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+//                if (resultSet.next()) {
+//                    movieID = resultSet.getLong(1);
+//                }
+//            }
+//
+//        } catch (SQLException e) {
+//            LOGGER.error("Error creating new movie record. ", e);
+//            return null;
+//        }
+//        return movieID;
+//    }
 
-            statement.setString(1, movieName);
-            statement.setString(2, director);
-            statement.setDate(3, releaseDate);
-            statement.setString(4, posterURL);
-            statement.setString(5, trailerUrl);
-            statement.setDouble(6, rating);
-            statement.setString(7, description);
-            statement.executeUpdate();
-            try (ResultSet resultSet = statement.getGeneratedKeys()) {
-                if (resultSet.next()) {
-                    movieID = resultSet.getLong(1);
-                }
-            }
-
-        } catch (SQLException e) {
-            LOGGER.error("Error creating new movie record. ", e);
-            return null;
-        }
-        return movieID;
+    @Override
+    public Long create(Movie movie) {
+        return null;
     }
 
     /**
@@ -199,27 +207,32 @@ public class MovieDAOImpl implements MovieDAO {
         }
     }
 
-    /**
-     * Deletes movie record from database
-     *
-     * @param movieID ID of movie to be removed from database
-     * @return <b>true</b> if movie has been successfully deleted. Otherwise returns <b>false</b>
-     */
-    public boolean delete(Long movieID) {
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_MOVIE)) {
+//    /**
+//     * Deletes movie record from database
+//     *
+//     * @param movieID ID of movie to be removed from database
+//     * @return <b>true</b> if movie has been successfully deleted. Otherwise returns <b>false</b>
+//     */
+//    public boolean delete(Long movieID) {
+//        try (Connection connection = connectionManager.getConnection();
+//             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_MOVIE)) {
+//
+//            statement.setLong(1, movieID);
+//            int afterUpdate = statement.executeUpdate();
+//            if (afterUpdate >= 1) {
+//                return true;
+//            }
+//
+//        } catch (SQLException e) {
+//            LOGGER.error("Error deleting movie record from database. ", e);
+//            return false;
+//        }
+//        return false;
+//    }
 
-            statement.setLong(1, movieID);
-            int afterUpdate = statement.executeUpdate();
-            if (afterUpdate >= 1) {
-                return true;
-            }
+    @Override
+    public void delete(Movie movie) {
 
-        } catch (SQLException e) {
-            LOGGER.error("Error deleting movie record from database. ", e);
-            return false;
-        }
-        return false;
     }
 
     /**
@@ -275,6 +288,7 @@ public class MovieDAOImpl implements MovieDAO {
                     this.numberOfRecords = resultSet.getInt(1);
                 }
             } catch (SQLException e) {
+                LOGGER.error("Error during working with result.", e);
                 throw new SQLException(e);
             } finally {
                 if (resultSet != null) {
@@ -324,6 +338,7 @@ public class MovieDAOImpl implements MovieDAO {
                     this.numberOfRecords = resultSet.getInt(1);
                 }
             } catch (SQLException e) {
+                LOGGER.error("Error during working with result.", e);
                 throw new SQLException(e);
             } finally {
                 if (resultSet != null) {
@@ -371,7 +386,8 @@ public class MovieDAOImpl implements MovieDAO {
                     this.numberOfRecords = resultSet.getInt(1);
                 }
             } catch (SQLException e) {
-                // TODO handle
+                LOGGER.error("Error during working with result.", e);
+                throw new SQLException(e);
             } finally {
                 if (resultSet != null) {
                     resultSet.close();

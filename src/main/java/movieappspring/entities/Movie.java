@@ -1,6 +1,8 @@
 package movieappspring.entities;
 
 
+import movieappspring.entities.dto.MovieTransferObject;
+import movieappspring.validation.annotation.ValidMovieTransferObjectURL;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
@@ -28,14 +30,14 @@ public class Movie {
      */
     @NotNull
     @Size(min = 1, max = 30, message = "{movie.title.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9]+([ '-][a-zA-Zа-яА-Я0-9]+)*", message = "{movie.title.pattern}")
+    @Pattern(regexp = "[a-zA-zа-яА-яё0-9(){},]+([ '-][a-zA-Zа-яА-Яё0-9(){},]+)*", message = "{movie.title.pattern}")
     private String movieName;
 
     /**
      * Name of movie's director
      */
     @Size(min = 1, max = 30, message = "{movie.director.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-я]+([ '-][a-zA-Zа-яА-Я]+)*", message = "{movie.director.pattern}")
+    @Pattern(regexp = "[a-zA-zа-яА-яё(){},]+([ '-][a-zA-Zа-яА-Яё(){},]+)*", message = "{movie.director.pattern}")
     private String director;
 
     /**
@@ -46,13 +48,13 @@ public class Movie {
     /**
      * URL leading to poster for the movie
      */
-    @Size(min = 7, max = 255, message = "{movie.poster.size}")
+    @ValidMovieTransferObjectURL(min = 7, max = 255)
     private String posterURL;
 
     /**
      * URL leading to embed trailer for the movie
      */
-    @Size(min = 7, max = 255, message = "{movie.trailer.size}")
+    @ValidMovieTransferObjectURL(min = 7, max = 255)
     private String trailerURL;
 
     /**
@@ -67,10 +69,20 @@ public class Movie {
      */
     @NotNull
     @Size(min = 5, max = 2000, message = "{movie.description.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-я0-9@()!.,+&=?:\\\\-\\\\\"']+([ '-][a-zA-Zа-яА-Я0-9@()!.,+&=?:\\\\\"'\\\\-]+)*")
+    @Pattern(regexp = "[a-zA-zа-яА-яё0-9@()!.,+&=?:\\\\-\\\\\"']+([ '-][a-zA-Zа-яА-Яё0-9@()!.,+&=?:\\\\\"'\\\\-]+)*")
     private String description;
 
     public Movie() {
+    }
+
+    public Movie(MovieTransferObject movieTransferObject) {
+        this.movieName = movieTransferObject.getMovieName();
+        this.director = movieTransferObject.getDirector();
+        this.releaseDate = movieTransferObject.getReleaseDate();
+        this.posterURL = movieTransferObject.getPosterURL();
+        this.trailerURL = movieTransferObject.getTrailerURL();
+        this.rating = movieTransferObject.getRating();
+        this.description = movieTransferObject.getDescription();
     }
 
     public String getPosterURL() {

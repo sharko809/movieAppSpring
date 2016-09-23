@@ -1,19 +1,19 @@
 package movieappspring.controller;
 
+import movieappspring.PrincipalUtil;
 import movieappspring.entities.Movie;
 import movieappspring.entities.Review;
 import movieappspring.entities.User;
+import movieappspring.entities.dto.MovieTransferObject;
 import movieappspring.entities.dto.ReviewTransferObject;
 import movieappspring.entities.util.MovieContainer;
 import movieappspring.entities.util.PagedEntity;
-import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.MovieService;
 import movieappspring.service.ReviewService;
 import movieappspring.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/movies")
@@ -52,10 +53,13 @@ public class MovieController {
         ModelAndView modelAndView = new ModelAndView("home");
         PagedEntity pagedMovies = movieService.getAllMoviesLimit((page - 1) * RECORDS_PER_PAGE, RECORDS_PER_PAGE);
         List<Movie> movies = (List<Movie>) pagedMovies.getEntity();
+        List<MovieTransferObject> movieTransferObjects = movies.stream()
+                .map(MovieTransferObject::new)
+                .collect(Collectors.toList());
         int numberOfRecords = pagedMovies.getNumberOfRecords();
         int numberOfPages = (int) Math.ceil(numberOfRecords * 1.0 / RECORDS_PER_PAGE);
 
-        modelAndView.addObject("movies", movies);
+        modelAndView.addObject("movies", movieTransferObjects);
         modelAndView.addObject("numberOfPages", numberOfPages);
         modelAndView.addObject("currentPage", page);
         return modelAndView;
@@ -89,12 +93,14 @@ public class MovieController {
             return modelAndView;
         }
 
-        Long currentUserId = ((UserDetailsImpl)
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        Long currentUserId = PrincipalUtil.getCurrentPrincipal().getId();
         Date postDate = new Date(new java.util.Date().getTime());
 
-        reviewService.createReview(currentUserId, movieId, postDate, reviewTransferObject.getTitle(),
-                reviewTransferObject.getRating(), reviewTransferObject.getText());
+        Review review = new Review(reviewTransferObject);
+        review.setMovieId(movieId);
+        review.setUserId(currentUserId);
+        review.setPostDate(postDate);
+        reviewService.createReview(review);
         updateMovieRating(movieId, reviewTransferObject.getRating());
 
         return new ModelAndView("redirect:/movies/" + movieId);
@@ -111,17 +117,22 @@ public class MovieController {
     private MovieContainer completeMovie(Long movieId) {
         MovieContainer movieContainer = new MovieContainer();
         Movie movie = movieService.getMovieByID(movieId);
+        MovieTransferObject movieTransferObject = new MovieTransferObject(movie);
         List<Review> reviews = reviewService.getReviewsByMovieId(movieId);
         reviews.sort((r1, r2) -> r2.getPostDate().compareTo(r1.getPostDate()));
         Map<Long, Object> users = new HashMap<>();
         if (reviews.size() > 0) {
             for (Review review : reviews) {
                 // TODO check this spot. Tricky place
-                User user = userService.getUserById(review.getUserId());
-                users.put(review.getUserId(), user.getName());
+                if (review != null)
+                    if (review.getUserId() != null)
+                        if (review.getUserId() > 0) {
+                            User user = userService.getUserById(review.getUserId());
+                            users.put(review.getUserId(), user);
+                        }
             }
         }
-        movieContainer.setMovie(movie);
+        movieContainer.setMovieTransferObject(movieTransferObject);
         movieContainer.setReviews(reviews);
         movieContainer.setUsers(users);
         return movieContainer;

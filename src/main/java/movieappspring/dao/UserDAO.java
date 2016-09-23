@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface UserDAO {
 
-    Long create(String userName, String login, String password, Boolean isAdmin);
+    Long create(User user);
 
     User getByLogin(String login);
 
@@ -17,7 +17,7 @@ public interface UserDAO {
 
     void update(User user);
 
-    boolean delete(Long userID);
+    void delete(User user);
 
     List<User> getAll();
 

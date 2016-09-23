@@ -4,7 +4,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf" %>
 <html>
 <head>
-    <title>${movieContainer.movie.movieName}</title>
+    <title>${movieContainer.movieTransferObject.movieName}</title>
     <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/pure-min.css"/>">
     <link rel="stylesheet" href="<c:url value="/resources/css/vendor/pure/base-min.css"/>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,15 +29,16 @@
         <sec:authorize access="hasRole('ROLE_ADMIN')">
             <div class="pure-g">
                 <button type="button" class="pure-button" style="margin: 5px 0 0 5px;"
-                        onclick="window.location.href = '/admin/managemovies/${movieContainer.movie.id}'">Edit movie
+                        onclick="window.location.href = '/admin/managemovies/${movieContainer.movieTransferObject.id}'">
+                    Edit movie
                 </button>
             </div>
         </sec:authorize>
         <div id="movie-content" class="pure-u-1 inline-flex" style="margin-top: 15px; margin-bottom: 10px;">
             <div class="pure-u-md-1-3 pure-u-sm-1" style="margin: 5px;">
                 <c:choose>
-                    <c:when test="${movieContainer.movie.posterURL ne null && !movieContainer.movie.posterURL.isEmpty()}">
-                        <img class="pure-img" src="${movieContainer.movie.posterURL}"/>
+                    <c:when test="${movieContainer.movieTransferObject.posterURL ne null && !movieContainer.movieTransferObject.posterURL.isEmpty()}">
+                        <img class="pure-img" src="${movieContainer.movieTransferObject.posterURL}"/>
                     </c:when>
                     <c:otherwise>
                         <img class="pure-img" src="<c:url value="/resources/images/no-poster-available.png"/>"/>
@@ -48,27 +49,28 @@
                 <div class="pure-u-1">
                     <div>
                         <h4 class="inline">Title: </h4>
-                        <span class="remove-link-style">${movieContainer.movie.movieName}</span>
+                        <span class="remove-link-style">${movieContainer.movieTransferObject.movieName}</span>
                     </div>
                     <div>
                         <h4 class="inline">Director: </h4>
-                        <span>${movieContainer.movie.director}</span>
+                        <span>${movieContainer.movieTransferObject.director}</span>
                     </div>
                     <div>
                         <h4 class="inline">Release Date: </h4>
-                        <span>${movieContainer.movie.releaseDate}</span>
+                        <span>${movieContainer.movieTransferObject.releaseDate}</span>
                     </div>
                     <div>
                         <h4 class="inline">Rating: </h4>
-                        <span>${movieContainer.movie.rating}</span>
+                        <span>${movieContainer.movieTransferObject.rating}</span>
                     </div>
                     <div>
                         <h4 class="inline">Description:</h4>
-                        <span>${movieContainer.movie.description}</span>
+                        <span>${movieContainer.movieTransferObject.description}</span>
                     </div>
                 </div>
                 <div class="pure-u-1 videoWrapper">
-                    <iframe src="${movieContainer.movie.trailerURL ne null ? movieContainer.movie.trailerURL : "/resources/images/no-trailer.jpg"}"
+                    <iframe src="${movieContainer.movieTransferObject.trailerURL ne null ?
+                    movieContainer.movieTransferObject.trailerURL : "/resources/images/no-trailer.jpg"}"
                             frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
@@ -132,7 +134,7 @@
                     <div class="review pure-u-md-1 max-width" style="margin-bottom: 5px;">
                         <div class="pure-u-md-1 inline-flex max-width" style="margin: 5px;">
                             <div class="pure-u-md-6-8 pure-u-sm-6-12 max-width">
-                                <strong>${review.title}</strong> by ${movieContainer.users.get(review.userId)}
+                                <strong>${review.title}</strong> by ${movieContainer.users.get(review.userId).name}
                             </div>
                             <div class="pure-u-md-1-8 pure-u-sm-4-12" style="text-align: right; width: 40%;">
                                 Posted: ${review.postDate}
@@ -149,6 +151,11 @@
                         </div>
                     </div>
                 </c:forEach>
+                <c:if test="${movieContainer.reviews.size() eq 0}">
+                    <div class="pure-u-1 center-text">
+                        No reviews for this movie yet
+                    </div>
+                </c:if>
             </div>
         </div>
     </div>

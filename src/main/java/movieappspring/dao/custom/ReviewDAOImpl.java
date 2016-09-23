@@ -7,7 +7,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,48 +85,53 @@ public class ReviewDAOImpl implements ReviewDAO{
         return review;
     }
 
-    /**
-     * Creates a record for new user in database
-     *
-     * @param userID      ID of user who submitted review
-     * @param movieID     ID of movie to which this review is submitted
-     * @param postDate    date when user submitted review
-     * @param reviewTitle title of users review
-     * @param rating      rating given by user to the movie
-     * @param reviewText  text of submitted review
-     * @return ID of created review. If review to some reasons hasn't been created - returns 0.
-     */
-    public Long create(Long userID, Long movieID, Date postDate, String reviewTitle, Integer rating, String reviewText) {
-        Long reviewID = 0L;
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_REVIEW, Statement.RETURN_GENERATED_KEYS)) {
+//    /**
+//     * Creates a record for new user in database
+//     *
+//     * @param userID      ID of user who submitted review
+//     * @param movieID     ID of movie to which this review is submitted
+//     * @param postDate    date when user submitted review
+//     * @param reviewTitle title of users review
+//     * @param rating      rating given by user to the movie
+//     * @param reviewText  text of submitted review
+//     * @return ID of created review. If review to some reasons hasn't been created - returns 0.
+//     */
+//    public Long create(Long userID, Long movieID, Date postDate, String reviewTitle, Integer rating, String reviewText) {
+//        Long reviewID = 0L;
+//        try (Connection connection = connectionManager.getConnection();
+//             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_REVIEW, Statement.RETURN_GENERATED_KEYS)) {
+//
+//            statement.setLong(1, userID);
+//            statement.setLong(2, movieID);
+//            statement.setDate(3, postDate);
+//            statement.setString(4, reviewTitle);
+//            statement.setInt(5, rating);
+//            statement.setString(6, reviewText);
+//            statement.executeUpdate();
+//            ResultSet resultSet = null;
+//            try {
+//                resultSet = statement.getGeneratedKeys();
+//                if (resultSet.next()) {
+//                    reviewID = resultSet.getLong(1);
+//                }
+//            } catch (SQLException e) {
+//                throw new SQLException(e);
+//            } finally {
+//                if (resultSet != null) {
+//                    resultSet.close();
+//                }
+//            }
+//
+//        } catch (SQLException e) {
+//            LOGGER.error("Error creating review record in database.", e);
+//            return null;
+//        }
+//        return reviewID;
+//    }
 
-            statement.setLong(1, userID);
-            statement.setLong(2, movieID);
-            statement.setDate(3, postDate);
-            statement.setString(4, reviewTitle);
-            statement.setInt(5, rating);
-            statement.setString(6, reviewText);
-            statement.executeUpdate();
-            ResultSet resultSet = null;
-            try {
-                resultSet = statement.getGeneratedKeys();
-                if (resultSet.next()) {
-                    reviewID = resultSet.getLong(1);
-                }
-            } catch (SQLException e) {
-                throw new SQLException(e);
-            } finally {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-            }
-
-        } catch (SQLException e) {
-            LOGGER.error("Error creating review record in database.", e);
-            return null;
-        }
-        return reviewID;
+    @Override
+    public Long create(Review review) {
+        return null;
     }
 
     /**
@@ -209,27 +217,32 @@ public class ReviewDAOImpl implements ReviewDAO{
         return reviews;
     }
 
-    /**
-     * Deletes review record from database
-     *
-     * @param reviewID ID of review to be removed from database
-     * @return <b>true</b> if review has been successfully deleted. Otherwise returns <b>false</b>
-     */
-    public boolean delete(Long reviewID) {
-        try (Connection connection = connectionManager.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_REVIEW)) {
+//    /**
+//     * Deletes review record from database
+//     *
+//     * @param reviewID ID of review to be removed from database
+//     * @return <b>true</b> if review has been successfully deleted. Otherwise returns <b>false</b>
+//     */
+//    public boolean delete(Long reviewID) {
+//        try (Connection connection = connectionManager.getConnection();
+//             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_REVIEW)) {
+//
+//            statement.setLong(1, reviewID);
+//            int afterUpdate = statement.executeUpdate();
+//            if (afterUpdate >= 1) {
+//                return true;
+//            }
+//
+//        } catch (SQLException e) {
+//            LOGGER.error("Error deleting review record from database.", e);
+//            return false;
+//        }
+//        return false;
+//    }
 
-            statement.setLong(1, reviewID);
-            int afterUpdate = statement.executeUpdate();
-            if (afterUpdate >= 1) {
-                return true;
-            }
+    @Override
+    public void delete(Review review) {
 
-        } catch (SQLException e) {
-            LOGGER.error("Error deleting review record from database.", e);
-            return false;
-        }
-        return false;
     }
 
 }

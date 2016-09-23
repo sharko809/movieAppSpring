@@ -43,7 +43,7 @@
                     <sf:input path="trailerURL" type="url" class="pure-input-1-2" minlength="7" cssErrorClass="error-input"
                            maxlength="255" placeholder="Trailer URL" style="width: 100%;"/>
                     <sf:textarea path="description" class="pure-input-1-2" minlength="5" maxlength="2000" cssErrorClass="error-input"
-                              placeholder="Description" required="true" style="width: 100%;"></sf:textarea>
+                              placeholder="Description" required="true" style="width: 100%;"/>
                 </fieldset>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 <button type="submit" class="pure-button pure-input-1-2 pure-button-primary" style="width: 100%;">

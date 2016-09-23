@@ -3,12 +3,10 @@ package movieappspring.dao.hibernate;
 import movieappspring.dao.ReviewDAO;
 import movieappspring.entities.Review;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -27,28 +25,25 @@ public class HibernateReviewDAO implements ReviewDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    public Long create(Long userID, Long movieID, Date postDate, String reviewTitle, Integer rating, String reviewText) {
-        Review review = new Review();
-        review.setUserId(userID);
-        review.setMovieId(movieID);
-        review.setPostDate(postDate);
-        review.setTitle(reviewTitle);
-        review.setRating(rating);
-        review.setReviewText(reviewText);
+    @Override
+    public Long create(Review review) {
         sessionFactory.getCurrentSession().save(review);
         return review.getId();
     }
 
+    @Override
     public Review get(Long reviewID) {
         return (Review) sessionFactory.getCurrentSession().createQuery("FROM Review WHERE id = :id")
                 .setParameter("id", reviewID)
                 .uniqueResult();
     }
 
+    @Override
     public void update(Review review) {
         sessionFactory.getCurrentSession().update(review);
     }
 
+    @Override
     public List<Review> getReviewsByMovieId(Long movieID) {
         return sessionFactory.getCurrentSession()
                 .createQuery("SELECT r FROM Review r WHERE r.movieId = :id", Review.class)
@@ -56,11 +51,9 @@ public class HibernateReviewDAO implements ReviewDAO {
                 .list();
     }
 
-    public boolean delete(Long reviewID) {
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("DELETE Review WHERE id = :id")
-                .setParameter("id", reviewID);
-        return query.executeUpdate() > 0;
+    @Override
+    public void delete(Review review) {
+        sessionFactory.getCurrentSession().delete(review);
     }
 
 }

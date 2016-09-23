@@ -1,6 +1,6 @@
 package movieappspring.controller;
 
-import movieappspring.entities.User;
+import movieappspring.entities.dto.UserTransferObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,7 +12,7 @@ public class StartPageController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView start() {
-        return new ModelAndView("index", "user", new User());
+        return new ModelAndView("index", "user", new UserTransferObject());
     }
 
 }

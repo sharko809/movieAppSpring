@@ -2,7 +2,6 @@ package movieappspring.dao;
 
 import movieappspring.entities.Movie;
 
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -10,14 +9,13 @@ import java.util.List;
  */
 public interface MovieDAO {
 
-    Long create(String movieName, String director, Date releaseDate, String posterURL, String trailerUrl,
-                Double rating, String description);
+    Long create(Movie movie);
 
     Movie get(Long movieId);
 
     void update(Movie movie);
 
-    boolean delete(Long movieID);
+    void delete(Movie movie);
 
     List<Movie> getAll();
 
