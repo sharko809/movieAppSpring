@@ -34,8 +34,7 @@ public class HibernateReviewDAO implements ReviewDAO {
      */
     @Override
     public Long create(Review review) {
-        sessionFactory.getCurrentSession().save(review);
-        return review.getId();
+        return (Long) sessionFactory.getCurrentSession().save(review);
     }
 
     /**
