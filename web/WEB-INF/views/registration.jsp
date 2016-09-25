@@ -45,6 +45,7 @@
                 </div>
                 <sf:errors path="*" element="p" cssClass="error-info"/>
             </fieldset>
+            <a id="login-redirect" class="text-center" href="<c:url value="/"/>">Back to login page</a>
         </sf:form>
         <div class="pure-u-1">
             <c:if test="${fail ne null}">

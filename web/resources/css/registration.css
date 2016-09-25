@@ -44,3 +44,23 @@
 .text-center {
     text-align: center;
 }
+
+#login-redirect:link {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+#login-redirect:visited {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+#login-redirect:hover {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+#login-redirect:active {
+    text-decoration: underline;
+    color: #0000EE;
+}
