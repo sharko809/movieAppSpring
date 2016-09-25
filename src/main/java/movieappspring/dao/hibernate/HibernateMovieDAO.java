@@ -3,11 +3,11 @@ package movieappspring.dao.hibernate;
 import movieappspring.dao.MovieDAO;
 import movieappspring.entities.Movie;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -27,11 +27,23 @@ public class HibernateMovieDAO implements MovieDAO {
         this.sessionFactory = sessionFactory;
     }
 
+    /**
+     * Creates a record for new movie in database
+     *
+     * @param movie <code>Movie</code> object to be added to database
+     * @return ID (specified by mapping in <code>Movie</code> class) of created movie record in database.
+     */
+    @Override
     public Long create(Movie movie) {
-        sessionFactory.getCurrentSession().save(movie);
-        return movie.getId();
+        return (Long) sessionFactory.getCurrentSession().save(movie);
     }
 
+    /**
+     * Searches for movie with specified ID in database
+     *
+     * @param movieId ID of movie to be found
+     * @return Movie entity object if movie with given ID is found in database. Otherwise returns null.
+     */
     @Override
     public Movie get(Long movieId) {
         return (Movie) sessionFactory.getCurrentSession()
@@ -40,59 +52,112 @@ public class HibernateMovieDAO implements MovieDAO {
                 .uniqueResult();
     }
 
+    /**
+     * Updates movie data in database
+     *
+     * @param movie movie entity to update
+     */
     @Override
     public void update(Movie movie) {
         sessionFactory.getCurrentSession().update(movie);
     }
 
+    /**
+     * Deletes movie record from database
+     *
+     * @param movie movie to be removed from database
+     */
     @Override
     public void delete(Movie movie) {
         sessionFactory.getCurrentSession().delete(movie);
     }
 
+    /**
+     * Returns records for all movies in database
+     *
+     * @return List of Movie objects if any found. Otherwise returns an empty list
+     */
     @Override
     public List<Movie> getAll() {
         return sessionFactory.getCurrentSession().createQuery("from Movie", Movie.class).list();
     }
 
+    /**
+     * Returns some part of movies from database.
+     *
+     * @param offset   starting position of select query
+     * @param noOfRows desired number of records per page
+     * @return List of Movie objects in given range if any movies found. Otherwise returns empty list
+     */
     @Override
     public List<Movie> getAllLimit(Integer offset, Integer noOfRows) {
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("from Movie", Movie.class)
+        List<Movie> movies = sessionFactory.getCurrentSession()
+                .createNativeQuery("SELECT SQL_CALC_FOUND_ROWS * FROM movie", Movie.class)
                 .setFirstResult(offset)
-                .setMaxResults(noOfRows);
-        this.numberOfRecords = Integer.valueOf(sessionFactory.getCurrentSession()
-                .createQuery("SELECT count(*) FROM Movie").uniqueResult().toString());
-        return (List<Movie>) query.list();
+                .setMaxResults(noOfRows).list();
+        this.numberOfRecords = ((BigInteger) sessionFactory.getCurrentSession()
+                .createNativeQuery("SELECT FOUND_ROWS()")
+                .uniqueResult()).intValue();
+        return movies;
     }
 
+    /**
+     * Gets all movies (or some part of them) with matching name from database.
+     *
+     * @param movieName movie name to look for
+     * @param offset    starting position of select query
+     * @param noOfRows  desired number of records per page
+     * @return List of Movie objects in given range if any movies found. Otherwise empty list
+     */
     @Override
     public List<Movie> getMoviesLike(String movieName, Integer offset, Integer noOfRows) {
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("SELECT m FROM Movie m WHERE m.movieName LIKE :title", Movie.class)
-                .setParameter("title", movieName + "%").setFirstResult(offset).setMaxResults(noOfRows);
-        this.numberOfRecords = Integer.valueOf(sessionFactory.getCurrentSession()
-                .createQuery("SELECT count(*) FROM Movie m WHERE m.movieName LIKE :title")
-                .setParameter("title", movieName + "%").uniqueResult().toString());// TODO running two queries is shit
-        return (List<Movie>) query.list();
+        List<Movie> movies = sessionFactory.getCurrentSession()
+                .createNativeQuery("SELECT SQL_CALC_FOUND_ROWS * FROM movie WHERE moviename LIKE ?", Movie.class)
+                .setParameter(1, movieName + "%")
+                .setFirstResult(offset)
+                .setMaxResults(noOfRows).list();
+        this.numberOfRecords = ((BigInteger) sessionFactory.getCurrentSession()
+                .createNativeQuery("SELECT FOUND_ROWS()")
+                .uniqueResult()).intValue();
+        return movies;
     }
 
+    /**
+     * Returns some part of movies sorted in particular way from database.
+     *
+     * @param offset   starting position of select query
+     * @param noOfRows desired number of records per page
+     * @param orderBy  column by which soring is performed
+     * @param isDesc   <b>true</b> if you want descending sorting
+     * @return List of <code>Movie</code> objects in given range if any users found. Otherwise returns empty list
+     */
     @Override
     public List<Movie> getMoviesSorted(Integer offset, Integer noOfRows, String orderBy, Boolean isDesc) {
-        Query query = sessionFactory.getCurrentSession()
-                .createQuery("FROM Movie ORDER BY " + orderBy + (isDesc ? " DESC" : " ASC"))
+        List<Movie> movies = sessionFactory.getCurrentSession()
+                .createNativeQuery("SELECT SQL_CALC_FOUND_ROWS * FROM movie ORDER BY " + orderBy + (isDesc ? " DESC" : " ASC"), Movie.class)
                 .setFirstResult(offset)
-                .setMaxResults(noOfRows);
-        this.numberOfRecords = Integer.valueOf(sessionFactory.getCurrentSession()
-                .createQuery("SELECT count(*) FROM Movie").uniqueResult().toString());// TODO toString() is shit. Or not
-        return (List<Movie>) query.list();
+                .setMaxResults(noOfRows).list();
+        this.numberOfRecords = ((BigInteger) sessionFactory.getCurrentSession()
+                .createNativeQuery("SELECT FOUND_ROWS()")
+                .uniqueResult()).intValue();
+        return movies;
     }
 
+    /**
+     * Method used in pagination. Retrieves number of records for current query
+     *
+     * @return number of records retrieved during last query
+     */
     @Override
     public Integer getNumberOfRecords() {
         return this.numberOfRecords;
     }
 
+    /**
+     * Searches for maximum movie id stored in database
+     *
+     * @return <code>Long</code> value representing largest movie id in database if any movies found. Else returns null.
+     */
     @Override
     public Long maxMovieId() {
         return (Long) sessionFactory.getCurrentSession()
@@ -101,6 +166,12 @@ public class HibernateMovieDAO implements MovieDAO {
                 .uniqueResult();
     }
 
+    /**
+     * Checks whether movie with such id exists in database
+     *
+     * @param movieId id of movie to look for
+     * @return <b>true</b> is movie with such id exists in database. Otherwise returns <b>false</b>
+     */
     @Override
     public boolean ifMovieExists(Long movieId) {
         Long id = (Long) sessionFactory.getCurrentSession()
