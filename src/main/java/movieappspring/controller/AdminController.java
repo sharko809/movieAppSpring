@@ -105,6 +105,7 @@ public class AdminController {
             return new ModelAndView("addmovie");
         }
 
+        movie.setRating(0D);
         Movie movieToAdd = new Movie(movie);
         movieService.addMovie(movieToAdd);
 

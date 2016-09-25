@@ -7,10 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +16,7 @@ import java.util.List;
  * <p>
  * This particular class deals with review data in database.
  */
-public class ReviewDAOImpl implements ReviewDAO{
+public class ReviewDAOImpl implements ReviewDAO {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -85,53 +82,37 @@ public class ReviewDAOImpl implements ReviewDAO{
         return review;
     }
 
-//    /**
-//     * Creates a record for new user in database
-//     *
-//     * @param userID      ID of user who submitted review
-//     * @param movieID     ID of movie to which this review is submitted
-//     * @param postDate    date when user submitted review
-//     * @param reviewTitle title of users review
-//     * @param rating      rating given by user to the movie
-//     * @param reviewText  text of submitted review
-//     * @return ID of created review. If review to some reasons hasn't been created - returns 0.
-//     */
-//    public Long create(Long userID, Long movieID, Date postDate, String reviewTitle, Integer rating, String reviewText) {
-//        Long reviewID = 0L;
-//        try (Connection connection = connectionManager.getConnection();
-//             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_REVIEW, Statement.RETURN_GENERATED_KEYS)) {
-//
-//            statement.setLong(1, userID);
-//            statement.setLong(2, movieID);
-//            statement.setDate(3, postDate);
-//            statement.setString(4, reviewTitle);
-//            statement.setInt(5, rating);
-//            statement.setString(6, reviewText);
-//            statement.executeUpdate();
-//            ResultSet resultSet = null;
-//            try {
-//                resultSet = statement.getGeneratedKeys();
-//                if (resultSet.next()) {
-//                    reviewID = resultSet.getLong(1);
-//                }
-//            } catch (SQLException e) {
-//                throw new SQLException(e);
-//            } finally {
-//                if (resultSet != null) {
-//                    resultSet.close();
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            LOGGER.error("Error creating review record in database.", e);
-//            return null;
-//        }
-//        return reviewID;
-//    }
-
+    /**
+     * Creates a record for new review in database
+     *
+     * @param review review to be added to database
+     * @return ID of created review. If review to some reasons hasn't been created - returns null.
+     */
     @Override
     public Long create(Review review) {
-        return null;
+        Long reviewID = null;
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CREATE_REVIEW, Statement.RETURN_GENERATED_KEYS)) {
+
+            statement.setLong(1, review.getUserId());
+            statement.setLong(2, review.getMovieId());
+            statement.setDate(3, review.getPostDate());
+            statement.setString(4, review.getTitle());
+            statement.setInt(5, review.getRating());
+            statement.setString(6, review.getReviewText());
+            statement.executeUpdate();
+
+            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    reviewID = resultSet.getLong(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Error creating review record in database.", e);
+            return null;
+        }
+        return reviewID;
     }
 
     /**
@@ -146,17 +127,9 @@ public class ReviewDAOImpl implements ReviewDAO{
              PreparedStatement statement = connection.prepareStatement(SQL_GET_REVIEW)) {
 
             statement.setLong(1, reviewID);
-            ResultSet resultSet = null;
-            try {
-                resultSet = statement.executeQuery();
+            try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     review = parseReviewResultSet(resultSet);
-                }
-            } catch (SQLException e) {
-                throw new SQLException(e);
-            } finally {
-                if (resultSet != null) {
-                    resultSet.close();
                 }
             }
 
@@ -191,10 +164,10 @@ public class ReviewDAOImpl implements ReviewDAO{
     }
 
     /**
-     * Searches for review with specified movieID in database
+     * Searches for reviews for movie with provided id.
      *
      * @param movieID ID of movie which this review refers to
-     * @return List of <code>Review</code>objects if found any. Otherwise returns empty List.
+     * @return List of <code>Review</code> objects if found any. Otherwise returns empty List.
      */
     public List<Review> getReviewsByMovieId(Long movieID) {
         List<Review> reviews = new ArrayList<>();
@@ -217,32 +190,25 @@ public class ReviewDAOImpl implements ReviewDAO{
         return reviews;
     }
 
-//    /**
-//     * Deletes review record from database
-//     *
-//     * @param reviewID ID of review to be removed from database
-//     * @return <b>true</b> if review has been successfully deleted. Otherwise returns <b>false</b>
-//     */
-//    public boolean delete(Long reviewID) {
-//        try (Connection connection = connectionManager.getConnection();
-//             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_REVIEW)) {
-//
-//            statement.setLong(1, reviewID);
-//            int afterUpdate = statement.executeUpdate();
-//            if (afterUpdate >= 1) {
-//                return true;
-//            }
-//
-//        } catch (SQLException e) {
-//            LOGGER.error("Error deleting review record from database.", e);
-//            return false;
-//        }
-//        return false;
-//    }
-
+    /**
+     * Deletes review record from database
+     *
+     * @param review review to be removed from database
+     */
     @Override
     public void delete(Review review) {
+        try (Connection connection = connectionManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_DELETE_REVIEW)) {
 
+            statement.setLong(1, review.getId());
+            int afterUpdate = statement.executeUpdate();
+            if (afterUpdate < 1) {
+                LOGGER.error("No review deleted.");
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Error deleting review record from database.", e);
+        }
     }
 
 }
