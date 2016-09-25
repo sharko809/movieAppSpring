@@ -393,10 +393,10 @@ public class MovieDAOImpl implements MovieDAO {
     /**
      * Searches for maximum movie id stored in database
      *
-     * @return <code>Long</code> value representing largest movie id in database if any movies found. Else returns 0.
+     * @return <code>Long</code> value representing largest movie id in database if any movies found. Else returns null.
      */
     public Long maxMovieId() {
-        Long userId = 0L;
+        Long userId = null;
         try (Connection connection = connectionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_GET_MAX_ID)) {
 

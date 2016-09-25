@@ -98,6 +98,7 @@ public class HibernateUserDAO implements UserDAO {
      * @return List of <code>User</code> objects if any found. Otherwise returns an empty list
      */
     @Override
+    @Deprecated
     public List<User> getAll() {
         return sessionFactory.getCurrentSession().createQuery("FROM User", User.class).list();
     }
@@ -110,6 +111,7 @@ public class HibernateUserDAO implements UserDAO {
      * @return List of <code>User</code>objects in given range if any users found. Otherwise returns empty list
      */
     @Override
+    @Deprecated
     public List<User> getAllLimit(Integer offset, Integer noOfRows) {
         List<User> users = sessionFactory.getCurrentSession()
                 .createNativeQuery(SQL_SELECT_ALL, User.class)

@@ -1,6 +1,7 @@
 package movieappspring.security;
 
 import movieappspring.entities.User;
+import movieappspring.exception.OnGetNullException;
 import movieappspring.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +38,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         System.out.println("LOGIN: " + login);
-        User user = userService.getUserByLogin(login);
+        User user = null;
+        try {
+            user = userService.getUserByLogin(login);
+        } catch (OnGetNullException e) {
+            LOGGER.error("Error during authorizing user", e);
+            throw new RuntimeException("Error during authorizing user");
+        }
 
         if (user == null) {
             LOGGER.warn("User with login " + login + " not found.");

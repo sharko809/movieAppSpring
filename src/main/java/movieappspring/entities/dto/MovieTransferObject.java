@@ -19,7 +19,7 @@ public class MovieTransferObject {
     private String movieName;
 
     @Size(min = 1, max = 30, message = "{movie.director.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-яё(){},]+([ '-][a-zA-Zа-яА-Яё(){},]+)*", message = "{movie.director.pattern}")
+    @Pattern(regexp = "[a-zA-zа-яА-яёöá(){},.]+([ '-][a-zA-Zа-яА-Яёöá(){},.]+)*", message = "{movie.director.pattern}")
     private String director;
 
     private Date releaseDate;

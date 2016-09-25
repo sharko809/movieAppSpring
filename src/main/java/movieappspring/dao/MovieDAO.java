@@ -19,7 +19,7 @@ public interface MovieDAO {
 
     List<Movie> getAll();
 
-    List getAllLimit(Integer offset, Integer noOfRows);
+    List<Movie> getAllLimit(Integer offset, Integer noOfRows);
 
     List<Movie> getMoviesLike(String movieName, Integer offset, Integer noOfRows);
 

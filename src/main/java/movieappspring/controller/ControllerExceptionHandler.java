@@ -1,5 +1,9 @@
 package movieappspring.controller;
 
+import movieappspring.exception.OnGetNullException;
+import movieappspring.exception.OnMovieCreateNullException;
+import movieappspring.exception.OnReviewCreateNullException;
+import movieappspring.exception.OnUserCreateNullException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -14,7 +18,9 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -28,6 +34,37 @@ public class ControllerExceptionHandler {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
     }
 
+    @ExceptionHandler(OnReviewCreateNullException.class)
+    public ModelAndView createReviewException(OnReviewCreateNullException exception) {
+        LOGGER.error("Exception on posting review. " + exception.reviewDetails(), exception);
+        List<String> errorDetails = new LinkedList<>(Arrays.asList("Error posting review. \nSome technical issue " +
+                "must had happened. \nPlease, try again later.", "Review is not posted"));
+        return new ModelAndView("error", "errorDetails", errorDetails);
+    }
+
+    @ExceptionHandler(OnGetNullException.class)
+    public ModelAndView onGetException(HttpServletRequest request, Exception exception) {
+        LOGGER.error("Exception on querying the database.", exception);
+        List<String> errorDetails = composeErrorDetails(request, exception);
+        return new ModelAndView("error", "errorDetails", errorDetails);
+    }
+
+    @ExceptionHandler(OnMovieCreateNullException.class)
+    public ModelAndView createMovieException(OnMovieCreateNullException exception) {
+        LOGGER.error("Exception on adding movie. " + exception.movieDetails(), exception);
+        List<String> errorDetails = new LinkedList<>(Arrays.asList("Error adding movie. \nSome technical issue " +
+                "must had happened.", "Movie not created"));
+        return new ModelAndView("error", "errorDetails", errorDetails);
+    }
+
+    @ExceptionHandler(OnUserCreateNullException.class)
+    public ModelAndView createMovieException(OnUserCreateNullException exception) {
+        LOGGER.error("Exception on creating user. " + exception.userDetails(), exception);
+        List<String> errorDetails = new LinkedList<>(Arrays.asList("Error creating user. \nSome technical issue " +
+                "must had happened.", "User not created"));
+        return new ModelAndView("error", "errorDetails", errorDetails);
+    }
+
     @ExceptionHandler(NoHandlerFoundException.class)
     public ModelAndView notFound404(HttpServletRequest request) {
         String message = "No such url found on this server \n <b>Requested URL:</b> " +
@@ -37,9 +74,8 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ModelAndView methodArgumentMismatch(HttpServletRequest request, Exception exception) {
-        LOGGER.warn("Bad url or argument mismatch.", exception);
-        System.out.println("bad url: " + request.getRequestURL() +
-                (request.getQueryString() == null ? "" : "?" + request.getQueryString()));
+        LOGGER.warn("Bad url or argument mismatch: " + request.getRequestURL() +
+                (request.getQueryString() == null ? "" : "?" + request.getQueryString()), exception);
         if (request.getQueryString() == null) {
             return new ModelAndView("error", "errorDetails", composeErrorDetails(request, exception));
         }

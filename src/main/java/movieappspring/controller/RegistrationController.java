@@ -2,6 +2,7 @@ package movieappspring.controller;
 
 import movieappspring.entities.User;
 import movieappspring.entities.dto.UserTransferObject;
+import movieappspring.exception.OnUserCreateNullException;
 import movieappspring.security.PasswordManager;
 import movieappspring.service.UserService;
 import movieappspring.validation.marker.RegistrationValidation;
@@ -38,7 +39,7 @@ public class RegistrationController {
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView register(@Validated({Default.class, RegistrationValidation.class})
                                  @ModelAttribute(value = "user") UserTransferObject user,
-                                 Errors errors, RedirectAttributes redirectAttributes) {
+                                 Errors errors, RedirectAttributes redirectAttributes) throws OnUserCreateNullException {
         if (errors.hasErrors()) {
             return new ModelAndView("registration");
         }

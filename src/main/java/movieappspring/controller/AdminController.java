@@ -8,6 +8,10 @@ import movieappspring.entities.dto.MovieTransferObject;
 import movieappspring.entities.dto.UserTransferObject;
 import movieappspring.entities.util.MovieContainer;
 import movieappspring.entities.util.PagedEntity;
+import movieappspring.entities.util.SortType;
+import movieappspring.exception.OnGetNullException;
+import movieappspring.exception.OnMovieCreateNullException;
+import movieappspring.exception.OnUserCreateNullException;
 import movieappspring.security.PasswordManager;
 import movieappspring.service.MovieService;
 import movieappspring.service.ReviewService;
@@ -25,7 +29,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.groups.Default;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -99,7 +105,8 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/addmovie", method = RequestMethod.POST)
-    public ModelAndView addMovie(@Validated @ModelAttribute(name = "movie") MovieTransferObject movie, Errors errors) {
+    public ModelAndView addMovie(@Validated @ModelAttribute(name = "movie") MovieTransferObject movie, Errors errors,
+                                 RedirectAttributes redirectAttributes) throws OnMovieCreateNullException {
 
         if (errors.hasErrors()) {
             return new ModelAndView("addmovie");
@@ -109,11 +116,14 @@ public class AdminController {
         Movie movieToAdd = new Movie(movie);
         movieService.addMovie(movieToAdd);
 
+        redirectAttributes.addFlashAttribute("success", "Movie " + movie.getMovieName() + " added successfully");
         return new ModelAndView("redirect:/admin/addmovie");
     }
 
     @RequestMapping(value = "/managemovies", method = RequestMethod.GET)
-    public ModelAndView manageMovies(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page) {
+    public ModelAndView manageMovies(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page)
+            throws OnGetNullException {
+        
         if (page < 1) {
             return new ModelAndView("redirect:" + DEFAULT_MOVIES_REDIRECT);
         }
@@ -135,7 +145,8 @@ public class AdminController {
 
     @RequestMapping(value = "/managemovies", method = RequestMethod.POST)
     public ModelAndView rating(@RequestParam Long movieId,
-                               @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect) {
+                               @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect)
+            throws OnGetNullException {
         if (movieId > 0 && movieId <= movieService.getMaxMovieId() && movieService.ifMovieExists(movieId)) {
             Movie movieToUpdate = movieService.getMovieByID(movieId);
             List<Review> reviews = reviewService.getReviewsByMovieId(movieId);
@@ -155,7 +166,7 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/managemovies/{movieId}", method = RequestMethod.GET)
-    public ModelAndView editMovieView(@PathVariable Long movieId) {
+    public ModelAndView editMovieView(@PathVariable Long movieId) throws OnGetNullException {
 
         if (movieId > 0 && movieId <= movieService.getMaxMovieId() && movieService.ifMovieExists(movieId)) {
             ModelAndView modelAndView = new ModelAndView("editmovie");
@@ -175,7 +186,7 @@ public class AdminController {
     public ModelAndView editMovie(@PathVariable Long movieId,
                                   @Validated @ModelAttribute(value = "movie") MovieTransferObject movie, Errors errors,
                                   @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect,
-                                  RedirectAttributes redirectAttributes) {
+                                  RedirectAttributes redirectAttributes) throws OnGetNullException {
         if (movieId < 1 && movieId > movieService.getMaxMovieId() && !movieService.ifMovieExists(movieId)) {
             return new ModelAndView("redirect:" + DEFAULT_MOVIES_REDIRECT);
         }
@@ -195,7 +206,8 @@ public class AdminController {
 
     @RequestMapping(value = "/delreview", method = RequestMethod.POST)
     public ModelAndView deleteReview(@RequestParam Long reviewId,
-                                     @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect) {
+                                     @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect)
+            throws OnGetNullException {
         if (reviewId > 0) {
             Review review = reviewService.getReview(reviewId);
             if (review != null) {
@@ -209,10 +221,10 @@ public class AdminController {
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ModelAndView users(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page,
                               @RequestParam(value = "sortBy", defaultValue = DEFAULT_SORT_TYPE) String sortBy,
-                              @RequestParam(value = "isDesc", defaultValue = DEFAULT_SORT_DESCENDING) Integer isDesc) {
-        // TODO make it adequate
-        List<String> types = new ArrayList<>(Arrays.asList("id", "login", "username", "isadmin", "isbanned"));
-        if (page < 1 || isDesc < 0 || isDesc > 1 || !(types.stream().anyMatch(sortBy::equals))) {
+                              @RequestParam(value = "isDesc", defaultValue = DEFAULT_SORT_DESCENDING) Integer isDesc)
+            throws OnGetNullException {
+
+        if (page < 1 || isDesc < 0 || isDesc > 1 || !(SortType.SORT_TYPES.stream().anyMatch(sortBy::equals))) {
             return new ModelAndView("redirect:" + DEFAULT_USERS_REDIRECT);
         }
 
@@ -233,7 +245,9 @@ public class AdminController {
 
     @RequestMapping(value = "/adminize", method = RequestMethod.POST)
     public ModelAndView adminize(@RequestParam Long userId,
-                                 @RequestParam(defaultValue = DEFAULT_USERS_REDIRECT) String redirect) {
+                                 @RequestParam(defaultValue = DEFAULT_USERS_REDIRECT) String redirect)
+            throws OnGetNullException {
+
         if (userId > 0) {
             Long currentUserId = PrincipalUtil.getCurrentPrincipal().getId();
             User userToUpdate = userService.getUserById(userId);
@@ -251,7 +265,9 @@ public class AdminController {
 
     @RequestMapping(value = "/ban", method = RequestMethod.POST)
     public ModelAndView ban(@RequestParam Long userId,
-                            @RequestParam(defaultValue = DEFAULT_USERS_REDIRECT) String redirect) {
+                            @RequestParam(defaultValue = DEFAULT_USERS_REDIRECT) String redirect)
+            throws OnGetNullException {
+
         if (userId > 0) {
             Long currentUserId = PrincipalUtil.getCurrentPrincipal().getId();
             User userToUpdate = userService.getUserById(userId);
@@ -275,7 +291,7 @@ public class AdminController {
     @RequestMapping(value = "/newuser", method = RequestMethod.POST)
     public ModelAndView addNewUser(@Validated({Default.class, CreateUserValidation.class})
                                    @ModelAttribute(value = "user") UserTransferObject user,
-                                   Errors errors, RedirectAttributes redirectAttributes) {
+                                   Errors errors, RedirectAttributes redirectAttributes) throws OnUserCreateNullException {
         if (errors.hasErrors()) {
             return new ModelAndView("adminnewuser");
         }
@@ -324,7 +340,7 @@ public class AdminController {
      * @return <code>MovieContainer</code> object with all movie-related data
      * @see MovieContainer
      */
-    private MovieContainer completeMovie(Long movieId) {
+    private MovieContainer completeMovie(Long movieId) throws OnGetNullException {
         MovieContainer movieContainer = new MovieContainer();
         Movie movie = movieService.getMovieByID(movieId);
         MovieTransferObject movieTransferObject = new MovieTransferObject(movie);
@@ -356,7 +372,7 @@ public class AdminController {
      * @see MovieTransferObject
      * @see Movie
      */
-    private Movie updateMovieFields(Movie movieToUpdate, MovieTransferObject updatedMovie) {// TODO redundant
+    private Movie updateMovieFields(Movie movieToUpdate, MovieTransferObject updatedMovie) {
         movieToUpdate.setMovieName(updatedMovie.getMovieName());
         movieToUpdate.setDirector(updatedMovie.getDirector());
         movieToUpdate.setReleaseDate(updatedMovie.getReleaseDate());

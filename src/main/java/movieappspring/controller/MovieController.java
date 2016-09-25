@@ -8,6 +8,8 @@ import movieappspring.entities.dto.MovieTransferObject;
 import movieappspring.entities.dto.ReviewTransferObject;
 import movieappspring.entities.util.MovieContainer;
 import movieappspring.entities.util.PagedEntity;
+import movieappspring.exception.OnGetNullException;
+import movieappspring.exception.OnReviewCreateNullException;
 import movieappspring.service.MovieService;
 import movieappspring.service.ReviewService;
 import movieappspring.service.UserService;
@@ -46,7 +48,9 @@ public class MovieController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView movies(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page) {
+    public ModelAndView movies(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page)
+            throws OnGetNullException {
+
         if (page < 1) {
             return new ModelAndView("redirect:/movies");
         }
@@ -63,10 +67,11 @@ public class MovieController {
         modelAndView.addObject("numberOfPages", numberOfPages);
         modelAndView.addObject("currentPage", page);
         return modelAndView;
+
     }
 
     @RequestMapping(value = "/{movieId}", method = RequestMethod.GET)
-    public ModelAndView movie(@PathVariable Long movieId) {
+    public ModelAndView movie(@PathVariable Long movieId) throws OnGetNullException {
         if (movieId > 0 && movieId <= movieService.getMaxMovieId() && movieService.ifMovieExists(movieId)) {
             ModelAndView modelAndView = new ModelAndView("movie");
 
@@ -82,7 +87,7 @@ public class MovieController {
     @RequestMapping(value = "/{movieId}", method = RequestMethod.POST)
     public ModelAndView postReview(@PathVariable Long movieId,
                                    @Validated @ModelAttribute("postedReview") ReviewTransferObject reviewTransferObject,
-                                   Errors errors) {
+                                   Errors errors) throws OnReviewCreateNullException, OnGetNullException {
         if (movieId < 1 && movieId > movieService.getMaxMovieId() && !movieService.ifMovieExists(movieId)) {
             return new ModelAndView("redirect:/movies");
         }
@@ -114,7 +119,7 @@ public class MovieController {
      * @return <code>MovieContainer</code> object with all movie-related data
      * @see MovieContainer
      */
-    private MovieContainer completeMovie(Long movieId) {
+    private MovieContainer completeMovie(Long movieId) throws OnGetNullException {
         MovieContainer movieContainer = new MovieContainer();
         Movie movie = movieService.getMovieByID(movieId);
         MovieTransferObject movieTransferObject = new MovieTransferObject(movie);
@@ -143,7 +148,7 @@ public class MovieController {
      * @param movieId id of movie to update rating
      * @param rating  new rating set by user
      */
-    private void updateMovieRating(Long movieId, Integer rating) {
+    private void updateMovieRating(Long movieId, Integer rating) throws OnGetNullException {
         Movie movieToUpdate = movieService.getMovieByID(movieId);
         List<Review> reviews = reviewService.getReviewsByMovieId(movieId);
 

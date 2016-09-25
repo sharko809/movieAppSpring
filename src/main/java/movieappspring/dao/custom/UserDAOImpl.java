@@ -242,6 +242,7 @@ public class UserDAOImpl implements UserDAO {
      *
      * @return List of <code>User</code> objects if any found. Otherwise returns an empty list
      */
+    @Deprecated
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection();
@@ -269,6 +270,7 @@ public class UserDAOImpl implements UserDAO {
      * @param noOfRows desired number of records per page
      * @return List of <code>User</code>objects in given range if any users found. Otherwise returns empty list
      */
+    @Deprecated
     public List<User> getAllLimit(Integer offset, Integer noOfRows) {
         List<User> users = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection();

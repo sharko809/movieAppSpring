@@ -3,6 +3,7 @@ package movieappspring.controller;
 import movieappspring.PrincipalUtil;
 import movieappspring.entities.User;
 import movieappspring.entities.dto.UserTransferObject;
+import movieappspring.exception.OnGetNullException;
 import movieappspring.security.PasswordManager;
 import movieappspring.security.UserDetailsImpl;
 import movieappspring.service.UserService;
@@ -39,7 +40,7 @@ public class AccountController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView account(@RequestParam(value = "id", defaultValue = "0") Long userId) {
+    public ModelAndView account(@RequestParam(value = "id", defaultValue = "0") Long userId) throws OnGetNullException {
         Long currentUserId = PrincipalUtil.getCurrentPrincipal().getId();
         if (userId < 1 || !currentUserId.equals(userId)) {
             return new ModelAndView("redirect:/account?id=" + currentUserId);
@@ -55,7 +56,7 @@ public class AccountController {
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView updateAccount(@Validated({Default.class, AccountValidation.class})
                                 @ModelAttribute(name = "thisUser") UserTransferObject user, BindingResult errors,
-                                RedirectAttributes redirectAttributes) {
+                                RedirectAttributes redirectAttributes) throws OnGetNullException {
         if (errors.hasErrors()) {
             return new ModelAndView("account");
         }

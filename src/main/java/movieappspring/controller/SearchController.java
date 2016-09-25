@@ -3,6 +3,7 @@ package movieappspring.controller;
 import movieappspring.entities.Movie;
 import movieappspring.entities.dto.MovieTransferObject;
 import movieappspring.entities.util.PagedEntity;
+import movieappspring.exception.OnGetNullException;
 import movieappspring.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,9 @@ public class SearchController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView searchMovie(@RequestParam(value = "searchInput",
                                     defaultValue = DEFAULT_SEARCH_INPUT) String searchInput,
-                                    @RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page) {
+                                    @RequestParam(value = "page", defaultValue = DEFAULT_PAGE_AS_STRING) Integer page)
+            throws OnGetNullException {
+
         if (page < 1) {
             return new ModelAndView("redirect:/search?searchInput=");
         }
@@ -53,6 +56,7 @@ public class SearchController {
         modelAndView.addObject("currentPage", page);
         modelAndView.addObject("searchRequest", searchInput);
         return modelAndView;
+
     }
 
 }

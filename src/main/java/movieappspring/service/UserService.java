@@ -3,6 +3,8 @@ package movieappspring.service;
 import movieappspring.dao.UserDAO;
 import movieappspring.entities.User;
 import movieappspring.entities.util.PagedEntity;
+import movieappspring.exception.OnGetNullException;
+import movieappspring.exception.OnUserCreateNullException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,12 +28,12 @@ public class UserService {
      * @param user user to be added to database
      * @return ID of created user.
      */
-    public Long createUser(User user) {
+    public Long createUser(User user) throws OnUserCreateNullException {
         Long userId = userDAO.create(user);
 
-        if (userId == null || userId == 0) {
-            LOGGER.error("Unable to create user. DAO method returned " + userId);
-            // TODO create exception
+        if (userId == null) {
+            LOGGER.error("Unable to create user. DAO method returned null.");
+            throw new OnUserCreateNullException("Unable to create user.", user);
         }
 
         return userId;
@@ -44,11 +46,11 @@ public class UserService {
      * @return <code>User</code> object if user with given login exists. Otherwise returns null.
      * @see User
      */
-    public User getUserByLogin(String login) {
+    public User getUserByLogin(String login) throws OnGetNullException {
         User user = userDAO.getByLogin(login);
         if (user == null) {
             LOGGER.error("Unable to get user by login " + login + ". DAO method returned null");
-            // TODO create exception
+            throw new OnGetNullException("Unable to get user by login " + login + ".");
         }
         return user;
     }
@@ -60,11 +62,11 @@ public class UserService {
      * @return <code>User</code> object if user with given ID exists. Otherwise returns null.
      * @see User
      */
-    public User getUserById(Long userId) {
+    public User getUserById(Long userId) throws OnGetNullException {
         User user = userDAO.get(userId);
         if (user == null) {
             LOGGER.error("Unable to get user by id " + userId + ". DAO method returned null");
-            // TODO create exception
+            throw new OnGetNullException("Unable to get user by id " + userId + ".");
         }
         return user;
     }
@@ -93,11 +95,12 @@ public class UserService {
      * @return List of <code>User</code> objects if any found. Otherwise returns an empty list
      * @see User
      */
-    public List<User> getAllUsers() {
+    @Deprecated
+    public List<User> getAllUsers() throws OnGetNullException {
         List<User> users = userDAO.getAll();
         if (users == null) {
             LOGGER.error("Unable to get all users. DAO method returned null");
-            // TODO create exception
+            throw new OnGetNullException("Unable to get all users.");
         }
         return users;
     }
@@ -112,13 +115,14 @@ public class UserService {
      * empty list and null records value.
      * @see PagedEntity
      */
-    public PagedEntity getUsersWithLimit(Integer offset, Integer noOfRows) {
+    @Deprecated
+    public PagedEntity getUsersWithLimit(Integer offset, Integer noOfRows) throws OnGetNullException {
         List<User> users = userDAO.getAllLimit(offset, noOfRows);
         Integer numberOfRecords = userDAO.getNumberOfRecords();
         if (users == null || numberOfRecords == null) {
             LOGGER.error("Unable to get users for offset " + offset + " and number of users " + noOfRows +
                     ". DAO method returned " + users + " users and " + numberOfRecords + " number of records");
-            // TODO create exception
+            throw new OnGetNullException("Unable to get users.");
         }
         PagedEntity pagedUsers = new PagedEntity();
         pagedUsers.setEntity(users);
@@ -138,14 +142,15 @@ public class UserService {
      * empty list and null records value.
      * @see PagedEntity
      */
-    public PagedEntity getUsersSortedBy(Integer offset, Integer noOfRows, String orderBy, Boolean isDescending) {
+    public PagedEntity getUsersSortedBy(Integer offset, Integer noOfRows, String orderBy, Boolean isDescending)
+            throws OnGetNullException {
         List<User> users = userDAO.getUsersSorted(offset, noOfRows, orderBy, isDescending);
         Integer numberOfRecords = userDAO.getNumberOfRecords();
         if (users == null || numberOfRecords == null) {
             LOGGER.error("Unable to get users for offset " + offset + ", number of users " + noOfRows +
                     " and sorted by " + orderBy + ". DAO method returned " + users + " users and " + numberOfRecords
                     + " number of records");
-            // TODO create exception
+            throw new OnGetNullException("Unable to sort users.");
         }
         PagedEntity pagedUsers = new PagedEntity();
         pagedUsers.setEntity(users);

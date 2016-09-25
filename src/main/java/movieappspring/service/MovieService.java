@@ -3,6 +3,8 @@ package movieappspring.service;
 import movieappspring.dao.MovieDAO;
 import movieappspring.entities.Movie;
 import movieappspring.entities.util.PagedEntity;
+import movieappspring.exception.OnGetNullException;
+import movieappspring.exception.OnMovieCreateNullException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,10 +28,11 @@ public class MovieService {
      * @param movie movie to be added to database
      * @return ID of created movie record in database. If record hasn't been created returns 0.
      */
-    public Long addMovie(Movie movie) {
+    public Long addMovie(Movie movie) throws OnMovieCreateNullException {
         Long movieID = movieDAO.create(movie);
         if (movieID == null) {
-            // TODO create exception
+            LOGGER.error("Unable to create movie. DAO method returned null.");
+            throw new OnMovieCreateNullException("Unable to create movie.", movie);
         }
         return movieID;
     }
@@ -41,10 +44,11 @@ public class MovieService {
      * @return Movie entity object if movie with given ID is found in database. Otherwise returns null
      * @see Movie
      */
-    public Movie getMovieByID(Long movieID) {
+    public Movie getMovieByID(Long movieID) throws OnGetNullException {
         Movie movie = movieDAO.get(movieID);
         if (movie == null) {
-            // TODO create exception
+            LOGGER.error("Unable to get movie by id: " + movieID + ". DAO method returned null.");
+            throw new OnGetNullException("Unable to get movie.");
         }
         return movie;
     }
@@ -73,10 +77,12 @@ public class MovieService {
      * @return List of Movie objects if any found. Otherwise returns an empty list
      * @see Movie
      */
-    public List<Movie> getAllMovies() {
+    @Deprecated
+    public List<Movie> getAllMovies() throws OnGetNullException {
         List<Movie> movies = movieDAO.getAll();
         if (movies == null) {
-            // TODO create exception
+            LOGGER.error("Unable to get all movies. DAO method returned null");
+            throw new OnGetNullException("Error during retireving movies.");
         }
         return movies;
     }
@@ -90,11 +96,12 @@ public class MovieService {
      * any movies found. Otherwise returns PagedEntity object with empty list and null records value
      * @see PagedEntity
      */
-    public PagedEntity getAllMoviesLimit(Integer offset, Integer noOfRows) {
+    public PagedEntity getAllMoviesLimit(Integer offset, Integer noOfRows) throws OnGetNullException {
         List<Movie> movies = movieDAO.getAllLimit(offset, noOfRows);
         Integer numberOfRecords = movieDAO.getNumberOfRecords();
         if (movies == null || numberOfRecords == null) {
-            // TODO create exception
+            LOGGER.error("Unable to get movies for offset " + offset + ", number of movies " + noOfRows + ".");
+            throw new OnGetNullException("Error during searching the movie");
         }
         PagedEntity pagedMovies = new PagedEntity();
         pagedMovies.setEntity(movies);
@@ -112,11 +119,13 @@ public class MovieService {
      * any movies found. Otherwise returns PagedEntity object with empty list and null records value
      * @see PagedEntity
      */
-    public PagedEntity searchMovies(String movieName, Integer offset, Integer noOfRows) {
+    public PagedEntity searchMovies(String movieName, Integer offset, Integer noOfRows) throws OnGetNullException {
         List<Movie> movies = movieDAO.getMoviesLike(movieName, offset, noOfRows);
         Integer numberOfRecords = movieDAO.getNumberOfRecords();
         if (movies == null || numberOfRecords == null) {
-            // TODO create exception
+            LOGGER.error("Unable to get movies for offset " + offset + ", number of movies " + noOfRows +
+                    " and search query " + movieName);
+            throw new OnGetNullException("Error during searching the movie");
         }
         PagedEntity pagedMovies = new PagedEntity();
         pagedMovies.setEntity(movies);
@@ -135,11 +144,15 @@ public class MovieService {
      * database if any movie records found. Otherwise returns PagedEntity object with empty list and null records value
      * @see PagedEntity
      */
-    public PagedEntity getMoviesSorted(Integer offset, Integer noOfRows, String orderBy, Boolean isDesc) {
+    public PagedEntity getMoviesSorted(Integer offset, Integer noOfRows, String orderBy, Boolean isDesc)
+            throws OnGetNullException {
         List<Movie> movies = movieDAO.getMoviesSorted(offset, noOfRows, orderBy, isDesc);
         Integer numberOfRecords = movieDAO.getNumberOfRecords();
         if (movies == null || numberOfRecords == null) {
-            // TODO create exception
+            LOGGER.error("Unable to get movies for offset " + offset + ", number of movies " + noOfRows +
+                    " and sorted by " + orderBy + ". DAO method returned " + movies + " movies and " + numberOfRecords
+                    + " number of records");
+            throw new OnGetNullException("Unable to sort movies.");
         }
         PagedEntity pagedMovies = new PagedEntity();
         pagedMovies.setEntity(movies);
@@ -147,10 +160,11 @@ public class MovieService {
         return pagedMovies;
     }
 
-    public Long getMaxMovieId() {
+    public Long getMaxMovieId() throws OnGetNullException {
         Long movieId = movieDAO.maxMovieId();
-        if (movieId == null || movieId < 1) {
-            // TODO handle exception
+        if (movieId == null) {
+            LOGGER.error("Unable to get max movie id. DAO method returned null.");
+            throw new OnGetNullException("Unable to get max movie id.");
         }
         return movieId;
     }

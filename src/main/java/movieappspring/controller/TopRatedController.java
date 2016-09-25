@@ -3,6 +3,7 @@ package movieappspring.controller;
 import movieappspring.entities.Movie;
 import movieappspring.entities.dto.MovieTransferObject;
 import movieappspring.entities.util.PagedEntity;
+import movieappspring.exception.OnGetNullException;
 import movieappspring.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,7 @@ public class TopRatedController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView topRated() {
+    public ModelAndView topRated() throws OnGetNullException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("toprated");
 
