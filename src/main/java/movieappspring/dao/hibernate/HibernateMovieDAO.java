@@ -19,6 +19,10 @@ import java.util.List;
 @Transactional
 public class HibernateMovieDAO implements MovieDAO {
 
+    private static final String SQL_SELECT_ALL = "SELECT SQL_CALC_FOUND_ROWS * FROM movie";
+    private static final String SQL_SELECT_FOUND_ROWS = "SELECT FOUND_ROWS()";
+    private static final String SQL_SELECT_LIKE = "SELECT SQL_CALC_FOUND_ROWS * FROM movie WHERE moviename LIKE ?";
+    private static final String SQL_SELECT_ORDER_BY = "SELECT SQL_CALC_FOUND_ROWS * FROM movie ORDER BY ";
     private SessionFactory sessionFactory;
     private Integer numberOfRecords;
 
@@ -47,7 +51,7 @@ public class HibernateMovieDAO implements MovieDAO {
     @Override
     public Movie get(Long movieId) {
         return (Movie) sessionFactory.getCurrentSession()
-                .createQuery("from Movie WHERE id = :id")
+                .createQuery("FROM Movie WHERE id = :id")
                 .setParameter("id", movieId)
                 .uniqueResult();
     }
@@ -79,7 +83,7 @@ public class HibernateMovieDAO implements MovieDAO {
      */
     @Override
     public List<Movie> getAll() {
-        return sessionFactory.getCurrentSession().createQuery("from Movie", Movie.class).list();
+        return sessionFactory.getCurrentSession().createQuery("FROM Movie", Movie.class).list();
     }
 
     /**
@@ -92,11 +96,11 @@ public class HibernateMovieDAO implements MovieDAO {
     @Override
     public List<Movie> getAllLimit(Integer offset, Integer noOfRows) {
         List<Movie> movies = sessionFactory.getCurrentSession()
-                .createNativeQuery("SELECT SQL_CALC_FOUND_ROWS * FROM movie", Movie.class)
+                .createNativeQuery(SQL_SELECT_ALL, Movie.class)
                 .setFirstResult(offset)
                 .setMaxResults(noOfRows).list();
         this.numberOfRecords = ((BigInteger) sessionFactory.getCurrentSession()
-                .createNativeQuery("SELECT FOUND_ROWS()")
+                .createNativeQuery(SQL_SELECT_FOUND_ROWS)
                 .uniqueResult()).intValue();
         return movies;
     }
@@ -112,12 +116,12 @@ public class HibernateMovieDAO implements MovieDAO {
     @Override
     public List<Movie> getMoviesLike(String movieName, Integer offset, Integer noOfRows) {
         List<Movie> movies = sessionFactory.getCurrentSession()
-                .createNativeQuery("SELECT SQL_CALC_FOUND_ROWS * FROM movie WHERE moviename LIKE ?", Movie.class)
+                .createNativeQuery(SQL_SELECT_LIKE, Movie.class)
                 .setParameter(1, movieName + "%")
                 .setFirstResult(offset)
                 .setMaxResults(noOfRows).list();
         this.numberOfRecords = ((BigInteger) sessionFactory.getCurrentSession()
-                .createNativeQuery("SELECT FOUND_ROWS()")
+                .createNativeQuery(SQL_SELECT_FOUND_ROWS)
                 .uniqueResult()).intValue();
         return movies;
     }
@@ -134,11 +138,11 @@ public class HibernateMovieDAO implements MovieDAO {
     @Override
     public List<Movie> getMoviesSorted(Integer offset, Integer noOfRows, String orderBy, Boolean isDesc) {
         List<Movie> movies = sessionFactory.getCurrentSession()
-                .createNativeQuery("SELECT SQL_CALC_FOUND_ROWS * FROM movie ORDER BY " + orderBy + (isDesc ? " DESC" : " ASC"), Movie.class)
+                .createNativeQuery(SQL_SELECT_ORDER_BY + orderBy + (isDesc ? " DESC" : " ASC"), Movie.class)
                 .setFirstResult(offset)
                 .setMaxResults(noOfRows).list();
         this.numberOfRecords = ((BigInteger) sessionFactory.getCurrentSession()
-                .createNativeQuery("SELECT FOUND_ROWS()")
+                .createNativeQuery(SQL_SELECT_FOUND_ROWS)
                 .uniqueResult()).intValue();
         return movies;
     }
@@ -175,7 +179,7 @@ public class HibernateMovieDAO implements MovieDAO {
     @Override
     public boolean ifMovieExists(Long movieId) {
         Long id = (Long) sessionFactory.getCurrentSession()
-                .createQuery("select id from Movie where id = :id")
+                .createQuery("SELECT id FROM Movie WHERE id = :id")
                 .setParameter("id", movieId)
                 .uniqueResult();
         return id != null && id > 0;
