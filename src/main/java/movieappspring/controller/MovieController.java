@@ -123,7 +123,6 @@ public class MovieController {
         Map<Long, Object> users = new HashMap<>();
         if (reviews.size() > 0) {
             for (Review review : reviews) {
-                // TODO check this spot. Tricky place
                 if (review != null)
                     if (review.getUserId() != null)
                         if (review.getUserId() > 0) {

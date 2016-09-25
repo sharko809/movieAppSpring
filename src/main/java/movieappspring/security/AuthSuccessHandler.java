@@ -52,8 +52,13 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
         try {
             redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, targetURL);
         } catch (IOException e) {
-            e.printStackTrace();
-            // TODO handle (or?..)
+            LOGGER.error("Exception during redirect to: " + targetURL, e);
+            try {
+                redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, targetURL);
+            } catch (IOException e1) {
+                LOGGER.error("Exception during redirect to: " + targetURL, e);
+                throw new RuntimeException(e);
+            }
         }
     }
 

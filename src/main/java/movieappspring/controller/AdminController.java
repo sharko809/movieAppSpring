@@ -197,7 +197,10 @@ public class AdminController {
     public ModelAndView deleteReview(@RequestParam Long reviewId,
                                      @RequestParam(defaultValue = DEFAULT_MOVIES_REDIRECT) String redirect) {
         if (reviewId > 0) {
-            reviewService.deleteReview(reviewService.getReview(reviewId));// TODO shitty
+            Review review = reviewService.getReview(reviewId);
+            if (review != null) {
+                reviewService.deleteReview(review);
+            }
         }
 
         return new ModelAndView("redirect:" + redirect);
@@ -330,7 +333,6 @@ public class AdminController {
         Map<Long, Object> users = new HashMap<>();
         if (reviews.size() > 0) {
             for (Review review : reviews) {
-                // TODO check this spot. Tricky place
                 if (review != null)
                     if (review.getUserId() != null)
                         if (review.getUserId() > 0) {
@@ -354,7 +356,7 @@ public class AdminController {
      * @see MovieTransferObject
      * @see Movie
      */
-    private Movie updateMovieFields(Movie movieToUpdate, MovieTransferObject updatedMovie) {
+    private Movie updateMovieFields(Movie movieToUpdate, MovieTransferObject updatedMovie) {// TODO redundant
         movieToUpdate.setMovieName(updatedMovie.getMovieName());
         movieToUpdate.setDirector(updatedMovie.getDirector());
         movieToUpdate.setReleaseDate(updatedMovie.getReleaseDate());
