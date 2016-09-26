@@ -35,7 +35,7 @@
                     <div class="inline-flex max-width">
                         <sf:input path="movieName" class="pure-input-1-2 max-width" minlength="1"
                                   cssErrorClass="error-input"
-                                  maxlength="60" placeholder="Title" style="margin-right: 5px;" required="true"
+                                  maxlength="100" placeholder="Title" style="margin-right: 5px;" required="true"
                                   readonly="true"/>
                         <button id="editTitle" type="button" class="pure-button">Edit</button>
                     </div>

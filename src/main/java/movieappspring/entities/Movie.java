@@ -30,7 +30,7 @@ public class Movie {
      * Movie title
      */
     @NotNull
-    @Size(min = 1, max = 60, message = "{movie.title.size}")
+    @Size(min = 1, max = 100, message = "{movie.title.size}")
     @Pattern(regexp = "[a-zA-zа-яА-яё0-9(){},.:'ßé!?üôöóâä-åøí&Åñ]+([ '-][a-zA-Zа-яА-Яё0-9(){},.:'ßé!?üôöóâä-åøí&Åñ]+)*",
             message = "{movie.title.pattern}")
     private String movieName;
