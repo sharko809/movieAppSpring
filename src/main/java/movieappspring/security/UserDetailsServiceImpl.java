@@ -37,8 +37,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @see User
      */
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        System.out.println("LOGIN: " + login);
-        User user = null;
+        LOGGER.info("LOGIN: " + login);
+        User user;
         try {
             user = userService.getUserByLogin(login);
         } catch (OnGetNullException e) {

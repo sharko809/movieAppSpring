@@ -29,15 +29,17 @@ public class Movie {
      * Movie title
      */
     @NotNull
-    @Size(min = 1, max = 30, message = "{movie.title.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-яё0-9(){},.]+([ '-][a-zA-Zа-яА-Яё0-9(){},.]+)*", message = "{movie.title.pattern}")
+    @Size(min = 1, max = 60, message = "{movie.title.size}")
+    @Pattern(regexp = "[a-zA-zа-яА-яё0-9(){},.:'ßé!?üôöóâä-åøí&Åñ]+([ '-][a-zA-Zа-яА-Яё0-9(){},.:'ßé!?üôöóâä-åøí&Åñ]+)*",
+            message = "{movie.title.pattern}")
     private String movieName;
 
     /**
      * Name of movie's director
      */
-    @Size(min = 1, max = 30, message = "{movie.director.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-яёöá(){},]+([ '-][a-zA-Zа-яА-Яöáё(){},]+)*", message = "{movie.director.pattern}")
+    @Size(min = 1, max = 40, message = "{movie.director.size}")
+    @Pattern(regexp = "[a-zA-zа-яА-яёöá(){},.:'ßé!?üôóâäåøíÅñ]+([ '-][a-zA-Zа-яА-Яöáё(){},.:'ßé!?üôóâäåøíÅñ]+)*",
+            message = "{movie.director.pattern}")
     private String director;
 
     /**

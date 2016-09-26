@@ -36,7 +36,7 @@
                     <div class="inline-flex max-width">
                         <sf:input path="movieName" class="pure-input-1-2 max-width" minlength="1"
                                   cssErrorClass="error-input"
-                                  maxlength="30" placeholder="Title" style="margin-right: 5px;" required="true"
+                                  maxlength="60" placeholder="Title" style="margin-right: 5px;" required="true"
                                   readonly="true"/>
                         <button id="editTitle" type="button" class="pure-button">Edit</button>
                     </div>
@@ -45,7 +45,7 @@
                     <div class="inline-flex max-width">
                         <sf:input path="director" class="pure-input-1-2 max-width" minlength="1"
                                   cssErrorClass="error-input"
-                                  maxlength="30" placeholder="Director" style="margin-right: 5px;" readonly="true"/>
+                                  maxlength="40" placeholder="Director" style="margin-right: 5px;" readonly="true"/>
                         <button id="editDirector" type="button" class="pure-button">Edit</button>
                     </div>
                 </div>

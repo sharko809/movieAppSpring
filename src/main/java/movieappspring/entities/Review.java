@@ -39,7 +39,7 @@ public class Review {
      */
     @NotNull
     @Size(min = 3, max = 100, message = "{review.title.size}")
-    @Pattern(regexp = "[a-zA-zа-яА-яё0-9]+([ '-][a-zA-Zа-яА-Яё0-9]+)*", message = "{review.title.pattern}")
+    @Pattern(regexp = "[a-zA-zа-яА-яё0-9,.]+([ '-][a-zA-Zа-яА-Яё0-9,.]+)*", message = "{review.title.pattern}")
     @Column(name = "reviewtitle")
     private String title;
 

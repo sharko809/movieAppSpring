@@ -30,9 +30,9 @@
         <div class="pure-u-md-1-2 pure-u-sm-1-2 centered" style="margin-top: 20px;">
             <sf:form class="pure-form" method="post" modelAttribute="movie">
                 <fieldset class="pure-group">
-                    <sf:input path="movieName" class="pure-input-1-2" minlength="1" maxlength="30" cssErrorClass="error-input"
+                    <sf:input path="movieName" class="pure-input-1-2" minlength="1" maxlength="60" cssErrorClass="error-input"
                            placeholder="Title" required="true" style="width: 100%;"/>
-                    <sf:input path="director" class="pure-input-1-2" minlength="1" maxlength="30" cssErrorClass="error-input"
+                    <sf:input path="director" class="pure-input-1-2" minlength="1" maxlength="40" cssErrorClass="error-input"
                            placeholder="Director" style="width: 100%;"/>
                     <sf:input path="releaseDate" type="date" class="pure-input-1-2" min="1890-01-01" cssErrorClass="error-input"
                            max="2150-01-01" placeholder="Release date" style="width: 100%;"/>

@@ -82,13 +82,13 @@ public class ControllerExceptionHandler {
         return new ModelAndView("redirect:" + request.getRequestURL());
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(RuntimeException.class)
     public ModelAndView error(HttpServletRequest request, Exception exception) {
         LOGGER.warn("Exception caught.", exception);
         ModelAndView modelAndView = new ModelAndView("error", "errorDetails", composeErrorDetails(request, exception));
-        System.out.println("trying to catch: " + exception.getClass());
-        System.out.println("exception message: " + exception.getLocalizedMessage());
-        System.out.println("full requested path: " + request.getRequestURL() + "?" + request.getQueryString());
+        LOGGER.error("trying to catch: " + exception.getClass());
+        LOGGER.error("exception message: " + exception.getLocalizedMessage());
+        LOGGER.error("full requested path: " + request.getRequestURL() + "?" + request.getQueryString());
         return modelAndView;
     }
 

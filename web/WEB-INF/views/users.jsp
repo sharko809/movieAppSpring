@@ -34,21 +34,20 @@
                 <form id="sort-form" method="get">
                     <label for="id">ID</label>
                     <input id="id" type="radio" name="sortBy" value="id" ${sortBy eq 'id' ? 'checked' : ''}>
-                    <label for="login">Login</label>
+                    <label for="login"> Login</label>
                     <input id="login" type="radio" name="sortBy" value="login" ${sortBy eq 'login' ? 'checked' : ''}>
-                    <label for="username">Name</label>
+                    <label for="username"> Name</label>
                     <input id="username" type="radio" name="sortBy" value="username"
                     ${sortBy eq 'username' ? 'checked' : ''}>
-                    <label for="isadmin">Admin</label>
+                    <label for="isadmin"> Admin</label>
                     <input id="isadmin" type="radio" name="sortBy" value="isadmin"
                     ${sortBy eq 'isadmin' ? 'checked' : ''}>
-                    <label for="isbanned">Banned</label>
+                    <label for="isbanned"> Banned</label>
                     <input id="isbanned" type="radio" name="sortBy" value="isbanned"
                     ${sortBy eq 'isbanned' ? 'checked' : ''}>
-                    <label for="isDesc">Descending</label>
+                    <label for="isDesc"> Descending</label>
                     <input id="isDesc" type="checkbox" name="isDesc" value="1" ${isDesc eq '1' ? 'checked' : ''}>
                     <input type="hidden" name="page" value="${currentPage}">
-                    <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>--%>
                     <button id="sort-button" class="pure-button" type="submit">Sort</button>
                 </form>
             </div>

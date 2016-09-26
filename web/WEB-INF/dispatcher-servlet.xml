@@ -34,16 +34,13 @@
     <bean id="validator"
           class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
-    <bean id="movieService" class="movieappspring.service.MovieService" scope="request">
-        <!--<constructor-arg ref="movieDao"/>-->
+    <bean id="movieService" class="movieappspring.service.MovieService">
         <constructor-arg ref="hibernateMovieDAO"/>
     </bean>
-    <bean id="userService" class="movieappspring.service.UserService" scope="request">
-        <!--<constructor-arg ref="userDao"/>-->
+    <bean id="userService" class="movieappspring.service.UserService">
         <constructor-arg ref="hibernateUserDAO"/>
     </bean>
     <bean id="reviewService" class="movieappspring.service.ReviewService">
-        <!--<constructor-arg ref="reviewDao"/>-->
         <constructor-arg ref="hibernateReviewDAO"/>
     </bean>
 
