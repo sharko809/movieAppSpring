@@ -14,7 +14,9 @@
         <security:intercept-url pattern="/toprated" access="permitAll"/>
         <security:intercept-url pattern="/search**" access="permitAll"/>
         <security:intercept-url pattern="/account" access="isAuthenticated()"/>
+        <security:intercept-url pattern="/account/**" access="isAuthenticated()"/>
         <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+        <security:access-denied-handler ref="accessDeniedHandler"/>
         <security:custom-filter before="CHANNEL_FILTER" ref="encodingFilter"/>
         <security:form-login login-page="/"
                              default-target-url="/home"
@@ -40,5 +42,6 @@
     </bean>
     <bean id="authSuccessHandler" class="movieappspring.security.AuthSuccessHandler"/>
     <bean id="authFailureHandler" class="movieappspring.security.AuthFailureHandler"/>
+    <bean id="accessDeniedHandler" class="movieappspring.security.AccessDeniedHandler"/>
 
 </beans>

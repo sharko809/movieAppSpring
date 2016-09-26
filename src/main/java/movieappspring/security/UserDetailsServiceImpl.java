@@ -6,6 +6,7 @@ import movieappspring.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,9 +47,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("Error during authorizing user. User not found.");
         }
 
-        if (user == null) {
-            LOGGER.warn("User with login " + login + " not found.");
-            throw new UsernameNotFoundException("User with login " + login + " not found.");
+        if (user.isBanned()) {
+            LOGGER.warn("Banned user " + login + " login attempt.");
+            throw new DisabledException("Banned user " + login + " login attempt.");
         }
 
         List<GrantedAuthority> authorities = new ArrayList<>();

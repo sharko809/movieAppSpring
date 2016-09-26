@@ -63,11 +63,12 @@ public class AuthFailureHandler implements AuthenticationFailureHandler {
             request.setAttribute("result", "Wrong password or username");
             request.setAttribute("login", login);
             request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
+        } else if (exception.getLocalizedMessage().startsWith("Banned user ")) {// TODO probably not the best idea
+            request.setAttribute("result", exception.getLocalizedMessage());
+            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
         } else {
             LinkedList<String> errorDetails = new LinkedList<>();
             errorDetails.add("<b>Error message:</b> " + exception.getLocalizedMessage());
-            errorDetails.add("<b>Full requested path:</b> " + request.getRequestURL() +
-                    (request.getQueryString() != null ? "?" + request.getQueryString() : ""));
             request.setAttribute("errorDetails", errorDetails);
             request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
         }
