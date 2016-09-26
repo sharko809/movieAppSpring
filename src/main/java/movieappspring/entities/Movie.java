@@ -2,6 +2,7 @@ package movieappspring.entities;
 
 
 import movieappspring.entities.dto.MovieTransferObject;
+import movieappspring.validation.annotation.ValidDate;
 import movieappspring.validation.annotation.ValidMovieTransferObjectURL;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -45,6 +46,7 @@ public class Movie {
     /**
      * Movie release date
      */
+    @ValidDate
     private Date releaseDate;
 
     /**

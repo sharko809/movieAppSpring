@@ -1,6 +1,7 @@
 package movieappspring.entities.dto;
 
 import movieappspring.entities.Movie;
+import movieappspring.validation.annotation.ValidDate;
 import movieappspring.validation.annotation.ValidMovieTransferObjectURL;
 
 import javax.validation.constraints.*;
@@ -24,6 +25,7 @@ public class MovieTransferObject {
             message = "{movie.director.pattern}")
     private String director;
 
+    @ValidDate
     private Date releaseDate;
 
     @ValidMovieTransferObjectURL(min = 7, max = 255)
