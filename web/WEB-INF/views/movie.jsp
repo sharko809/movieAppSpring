@@ -69,9 +69,9 @@
                     </div>
                 </div>
                 <c:choose>
-                    <c:when test="${movie.trailerURL ne null}">
+                    <c:when test="${movieContainer.movieTransferObject.trailerURL ne null}">
                         <div class="pure-u-1 videoWrapper">
-                            <iframe width="100%" height="315" src="${movie.trailerURL}"
+                            <iframe width="100%" height="315" src="${movieContainer.movieTransferObject.trailerURL}"
                                     frameborder="0" allowfullscreen></iframe>
                         </div>
                     </c:when>

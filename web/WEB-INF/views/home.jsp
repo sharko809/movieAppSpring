@@ -145,7 +145,7 @@
                             <div class="pure-u-1 inline-flex">
                                 <div class="pure-u-1-4 centered">
                                     <select style="margin-bottom: 10px;" class="page-select"
-                                            onchange="goToPage(this, '/movies?page=')">
+                                            onchange="goToPage(this, '/movies?page=')" title="Select page">
                                         <c:forEach begin="1" end="${numberOfPages}" var="i">
                                             <option ${currentPage eq i ? 'selected' : ''}>${i}</option>
                                         </c:forEach>
