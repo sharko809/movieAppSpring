@@ -59,10 +59,19 @@
                                             <span>${movie.description}</span>
                                         </div>
                                     </div>
-                                    <div class="pure-u-lg-1-2 pure-u-sm-1 movie-trailer">
-                                        <iframe width="100%" height="315" src="${movie.trailerURL ne null ? movie.trailerURL : "/resources/images/no-trailer.jpg"}" frameborder="0"
-                                                allowfullscreen></iframe>
-                                    </div>
+                                    <c:choose>
+                                        <c:when test="${movie.trailerURL ne null}">
+                                            <div class="pure-u-lg-1-2 pure-u-sm-1 movie-trailer">
+                                                <iframe width="100%" height="315" src="${movie.trailerURL}"
+                                                        frameborder="0" allowfullscreen></iframe>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="center-text">
+                                                <img src="<c:url value="/resources/images/no-trailer.jpg"/>">
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </div>
                         </c:forEach>

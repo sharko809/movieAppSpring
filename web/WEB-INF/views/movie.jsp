@@ -68,11 +68,19 @@
                         <span>${movieContainer.movieTransferObject.description}</span>
                     </div>
                 </div>
-                <div class="pure-u-1 videoWrapper">
-                    <iframe src="${movieContainer.movieTransferObject.trailerURL ne null ?
-                    movieContainer.movieTransferObject.trailerURL : "/resources/images/no-trailer.jpg"}"
-                            frameborder="0" allowfullscreen></iframe>
-                </div>
+                <c:choose>
+                    <c:when test="${movie.trailerURL ne null}">
+                        <div class="pure-u-1 videoWrapper">
+                            <iframe width="100%" height="315" src="${movie.trailerURL}"
+                                    frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="center-text">
+                            <img src="<c:url value="/resources/images/no-trailer.jpg"/>">
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
         <div class="pure-u-1" style="margin: 5px;">
@@ -91,7 +99,7 @@
                             <div class="pure-u-1 inline-flex">
                                 <div class="pure-u-6-8 max-width" style="margin-top: 7px;">
                                     <sf:input path="title" class="max-width" type="text" cssErrorClass="error-input"
-                                              placeholder="Review title. You can SHORTLY describe your impression."/>
+                                              placeholder="Review title. You can shortly describe your impression."/>
                                 </div>
                                 <div class="pure-u-1-8">
                                     <div class="center-text">
@@ -118,8 +126,6 @@
                             <div class="pure-u-1" style="height: 200px; margin-bottom: 5px;">
                                 <sf:textarea path="text" style="height: 100%;" class="max-width"
                                              cssErrorClass="error-input" placeholder="Your review"/>
-                                    <%--<sf:input path="movieId" type="hidden" value="${movieContainer.movie.id}"/>--%>
-                                    <%--<input type="hidden" id="redirectFrom" name="redirectFrom" value=""/>--%>
                             </div>
                             <div class="pure-u-1 inline-flex">
                                 <div>
