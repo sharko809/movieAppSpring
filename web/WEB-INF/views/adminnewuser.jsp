@@ -19,7 +19,6 @@
     <link rel="stylesheet" href="<c:url value="/resources/css/admin.css"/>">
     <link rel="stylesheet" href="<c:url value="/resources/css/adminReg.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/xs-screen.css"/>">
-    <script src="<c:url value="/resources/js/reset-variables.js"/>" type="text/javascript"></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>

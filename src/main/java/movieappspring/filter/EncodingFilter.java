@@ -4,7 +4,7 @@ import javax.servlet.*;
 import java.io.IOException;
 
 /**
- * Created by dsharko on 9/15/2016.
+ * Set encoding to UTF-8 to prevent broken symbols etc.
  */
 public class EncodingFilter implements Filter{
 

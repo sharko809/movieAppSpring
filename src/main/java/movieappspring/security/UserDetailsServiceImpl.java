@@ -43,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             user = userService.getUserByLogin(login);
         } catch (OnGetNullException e) {
             LOGGER.error("Error during authorizing user", e);
-            throw new RuntimeException("Error during authorizing user");
+            throw new UsernameNotFoundException("Error during authorizing user. User not found.");
         }
 
         if (user == null) {

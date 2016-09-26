@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/authHeader.css"/>">
     <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/xs-screen.css"/>">
     <script src="<c:url value="/resources/js/vendor/jquery-3.1.0.min.js"/>" type="text/javascript"></script>
-    <script src="<c:url value="/resources/js/reset-variables.js"/>" type="text/javascript"></script>
+    <script src="<c:url value="/resources/js/reset-login.js"/>" type="text/javascript"></script>
 </head>
 <body class="body-style">
 <jsp:include page="/WEB-INF/views/header.jsp"/>
@@ -27,42 +27,44 @@
     <div class="pure-u-md-1-2 pure-u-sm-5-6 centered">
         <div id="auth-block" class="pure-u-1 inline-flex">
             <div class="pure-u-md-1-2 pure-u-sm-1 max-width">
-                <sf:form class="pure-form pure-form-aligned" method="post" modelAttribute="user" action="/login">
+                <form class="pure-form pure-form-aligned" method="post" action="<c:url value="/login"/>">
                     <h3 class="text-center">Please, fill form below to login</h3>
                     <fieldset class="text-center">
                         <div class="pure-control-group">
-                            <sf:label path="login">E-mail: </sf:label>
-                            <sf:input path="login" minlength="3" maxlength="60" placeholder="E-mail" required="true"/>
+                            <label for="login">E-mail: </label>
+                            <input id="login" name="login" type="email" minlength="3" maxlength="60"
+                                   placeholder="E-mail" required/>
                         </div>
                         <div class="pure-control-group">
-                            <sf:label path="password">Password: </sf:label>
-                            <sf:password path="password" minlength="3" maxlength="15" placeholder="Password"
-                                         required="true"/>
+                            <label for="password">Password: </label>
+                            <input id="password" name="password" type="password" minlength="3" maxlength="15"
+                                   placeholder="Password"
+                                   required/>
                         </div>
                         <div class="pure-controls">
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <input class="pure-button" type="submit" value="Login"/>
                         </div>
                         <input type="hidden" name="regPage" value="regPage"/>
-                        <%--<c:if test="${!logUser.login.isEmpty()}">--%>
-                            <%--<script type="text/javascript">--%>
-                                <%--setLoginInputs('${logUser.login}');--%>
-                            <%--</script>--%>
-                        <%--</c:if>--%>
+                        <c:if test="${login ne null}">
+                            <script type="text/javascript">
+                                setLoginInputs('${login}');
+                            </script>
+                        </c:if>
                     </fieldset>
-                    <sf:errors path="*" element="p" cssClass="error-info"/>
-                </sf:form>
-                <a id="reg-redirect" class="text-center" href="<c:url value="/registration"/>">Don't have an account? Register here</a>
-            </div>
-        </div>
-        <div class="pure-u-1">
-            <c:if test="${result != null}">
-                <div id="error-info" class="error-info">
-                    <c:forEach items="${result}" var="r">
-                        <p>${r}</p>
-                    </c:forEach>
+                </form>
+                <div class="pure-u-1">
+                    <c:if test="${result != null}">
+                        <div id="error-info" class="error-info">
+                            <c:forEach items="${result}" var="r">
+                                <p>${r}</p>
+                            </c:forEach>
+                        </div>
+                    </c:if>
                 </div>
-            </c:if>
+                <a id="reg-redirect" class="text-center" href="<c:url value="/registration"/>">Don't have an account?
+                    Register here</a>
+            </div>
         </div>
         <div class="pure-u-1">
             <div class="info-block">
