@@ -12,14 +12,19 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class UserTransferObjectValidator implements ConstraintValidator<ValidUserTransferObjectPassword, String> {
 
+    private int min;
+    private int max;
+
     @Override
     public void initialize(ValidUserTransferObjectPassword validUserTransferObjectPassword) {
+        this.min = validUserTransferObjectPassword.min();
+        this.max = validUserTransferObjectPassword.max();
     }
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
-        return s == null || s.isEmpty() || !(s.length() < 3 || s.length() > 15);
+        return s == null || s.isEmpty() || !(s.length() < min || s.length() > max);
 
     }
 

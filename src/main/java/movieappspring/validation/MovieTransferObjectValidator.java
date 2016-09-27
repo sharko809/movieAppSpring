@@ -12,7 +12,12 @@ import javax.validation.ConstraintValidatorContext;
  */
 public class MovieTransferObjectValidator implements ConstraintValidator<ValidMovieTransferObjectURL, String> {
 
+    private int min;
+    private int max;
+
     public void initialize(ValidMovieTransferObjectURL validMovieTransferObjectURL) {
+        this.min = validMovieTransferObjectURL.min();
+        this.max = validMovieTransferObjectURL.max();
     }
 
     public boolean isValid(String url, ConstraintValidatorContext constraintValidatorContext) {
@@ -24,7 +29,7 @@ public class MovieTransferObjectValidator implements ConstraintValidator<ValidMo
             if (url.isEmpty()) {
                 return true;
             } else {
-                if (url.length() < 3 || url.length() > 255) {
+                if (url.length() < min || url.length() > max) {
                     response.append("{movie.url.size}\n");
                 } else if (!urlValidator.isValid(url)) {
                     response.append("{movie.url}\n");

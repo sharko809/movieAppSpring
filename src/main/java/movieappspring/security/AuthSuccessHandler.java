@@ -38,11 +38,18 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
      *
      * @param httpServletRequest  HttpServletRequest
      * @param httpServletResponse HttpServletResponse
-     * @param authentication user auth details
+     * @param authentication      user auth details
      */
     private void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                         Authentication authentication) {
-        String targetURL = makeTargetUrl(authentication);
+        String redirectURL = httpServletRequest.getParameter("redirect");
+        String targetURL;
+
+        if (redirectURL == null) {
+            targetURL = makeTargetUrl(authentication);
+        } else {
+            targetURL = redirectURL;
+        }
 
         if (httpServletResponse.isCommitted()) {
             LOGGER.debug("Response has been committed. Can't redirect to " + targetURL);

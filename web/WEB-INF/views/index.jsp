@@ -21,7 +21,7 @@
     <script src="<c:url value="/resources/js/reset-login.js"/>" type="text/javascript"></script>
 </head>
 <body class="body-style">
-<jsp:include page="/WEB-INF/views/header.jsp"/>
+<jsp:include page="/WEB-INF/views/loginheader.jsp"/>
 <div class="padding-top"></div>
 <div class="pure-g">
     <div class="pure-u-md-1-2 pure-u-sm-5-6 centered">
@@ -45,7 +45,7 @@
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <input class="pure-button" type="submit" value="Login"/>
                         </div>
-                        <input type="hidden" name="regPage" value="regPage"/>
+                        <%--<input type="hidden" name="regPage" value="regPage"/>--%>
                         <c:if test="${login ne null}">
                             <script type="text/javascript">
                                 setLoginInputs('${login}');

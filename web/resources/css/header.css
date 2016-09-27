@@ -73,6 +73,10 @@
     margin: 14px 0 0 0;
 }
 
+.text-center {
+    text-align: center;
+}
+
 @media screen and (max-width: 768px){
 
     #user-welcome {

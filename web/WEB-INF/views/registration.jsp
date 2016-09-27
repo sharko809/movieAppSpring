@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <title>Registration</title>
@@ -45,7 +46,9 @@
                 </div>
                 <sf:errors path="*" element="p" cssClass="error-info"/>
             </fieldset>
-            <a id="login-redirect" class="text-center" href="<c:url value="/"/>">To login page</a>
+            <sec:authorize access="isAnonymous()">
+                <a id="login-redirect" class="text-center" href="<c:url value="/"/>">To login page</a>
+            </sec:authorize>
         </sf:form>
         <div class="pure-u-1">
             <c:if test="${fail ne null}">

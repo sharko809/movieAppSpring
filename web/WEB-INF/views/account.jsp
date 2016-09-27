@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         <div class="pure-controls">
-                            <input type="hidden" id="redirectFrom" name="redirectFrom" value=""/>
+                            <input type="hidden" id="redirect" name="redirect" value=""/>
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <button type="submit" class="pure-button">Update account</button>
                         </div>

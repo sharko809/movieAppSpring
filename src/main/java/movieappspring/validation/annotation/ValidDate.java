@@ -20,6 +20,8 @@ public @interface ValidDate {
 
     String message() default "{date.invalid}";
 
+    String pattern() default "yyyy-MM-dd";
+
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
