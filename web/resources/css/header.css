@@ -112,6 +112,10 @@
         width: 100% !important;
     }
 
+    #login-ref, #registration-ref {
+        display: none;
+    }
+
 }
 
 @media screen and (max-width: 1024px){

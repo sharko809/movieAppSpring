@@ -10,14 +10,13 @@
                         More
                         <div class="dropdown-content">
                             <a class="menu-text text-center" href="<c:url value="/toprated"/>">
-                                <p>
-                                    Top rated
-                                </p>
+                                <p>Top rated</p>
                             </a>
                             <a class="menu-text text-center" href="<c:url value="/movies"/>">
-                                <p>
-                                    Movie list
-                                </p>
+                                <p>Movie list</p>
+                            </a>
+                            <a class="menu-text" href="<c:url value="/registration"/>">
+                                <p>Registration</p>
                             </a>
                         </div>
                     </div>
@@ -25,16 +24,12 @@
             </div>
             <div id="top-rated" class="pure-u-md-1-5 pure-u-sm-1-5 text-center" style="width: 50%;">
                 <a class="menu-text" href="<c:url value="/toprated"/>">
-                    <p class="p-item">
-                        Top rated
-                    </p>
+                    <p class="p-item">Top rated</p>
                 </a>
             </div>
             <div id="movie-list" class="pure-u-md-1-5 pure-u-sm-1-5 text-center" style="width: 50%;">
                 <a class="menu-text" href="<c:url value="/movies"/>">
-                    <p class="p-item">
-                        Movie list
-                    </p>
+                    <p class="p-item">Movie list</p>
                 </a>
             </div>
             <form class="pure-u-md-2-5 pure-u-sm-2-5 float-search" method="get" action="<c:url value="/search"/>">

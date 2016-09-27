@@ -47,7 +47,8 @@
                 <sf:errors path="*" element="p" cssClass="error-info"/>
             </fieldset>
             <sec:authorize access="isAnonymous()">
-                <a id="login-redirect" class="text-center" href="<c:url value="/"/>">To login page</a>
+                <a id="login-redirect" class="text-center" style="letter-spacing: normal;" href="<c:url value="/"/>">To
+                    login page</a>
             </sec:authorize>
         </sf:form>
         <div class="pure-u-1">

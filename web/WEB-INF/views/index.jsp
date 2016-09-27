@@ -45,7 +45,6 @@
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <input class="pure-button" type="submit" value="Login"/>
                         </div>
-                        <%--<input type="hidden" name="regPage" value="regPage"/>--%>
                         <c:if test="${login ne null}">
                             <script type="text/javascript">
                                 setLoginInputs('${login}');
