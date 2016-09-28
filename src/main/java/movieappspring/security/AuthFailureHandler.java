@@ -46,7 +46,9 @@ public class AuthFailureHandler implements AuthenticationFailureHandler {
             throws ServletException, IOException {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
-        LOGGER.info("Login: " + login + ", password: " + password);
+        LOGGER.debug("Login: " + login + ", password: " + password);
+        LOGGER.debug("exception: {}", exception.getClass());
+
 
         List<String> errors = new ArrayList<>(validate(login, password));
 
@@ -63,7 +65,7 @@ public class AuthFailureHandler implements AuthenticationFailureHandler {
             request.setAttribute("result", "Wrong password or username");
             request.setAttribute("login", login);
             request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
-        } else if (exception.getLocalizedMessage().startsWith("Banned user ")) {// TODO probably not the best idea
+        } else if (exception.getMessage().startsWith("Banned user ")) {
             request.setAttribute("result", exception.getLocalizedMessage());
             request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
         } else {

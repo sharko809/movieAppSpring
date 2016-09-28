@@ -66,10 +66,7 @@ public class HibernateUserDAO implements UserDAO {
      */
     @Override
     public User get(Long userID) {
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM User WHERE id = :id", User.class)
-                .setParameter("id", userID)
-                .uniqueResult();
+        return sessionFactory.getCurrentSession().get(User.class, userID);
     }
 
     /**

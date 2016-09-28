@@ -45,9 +45,7 @@ public class HibernateReviewDAO implements ReviewDAO {
      */
     @Override
     public Review get(Long reviewID) {
-        return (Review) sessionFactory.getCurrentSession().createQuery("FROM Review WHERE id = :id")
-                .setParameter("id", reviewID)
-                .uniqueResult();
+        return sessionFactory.getCurrentSession().get(Review.class, reviewID);
     }
 
     /**

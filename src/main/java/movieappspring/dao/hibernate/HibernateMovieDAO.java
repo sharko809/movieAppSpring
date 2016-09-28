@@ -50,10 +50,7 @@ public class HibernateMovieDAO implements MovieDAO {
      */
     @Override
     public Movie get(Long movieId) {
-        return (Movie) sessionFactory.getCurrentSession()
-                .createQuery("FROM Movie WHERE id = :id")
-                .setParameter("id", movieId)
-                .uniqueResult();
+        return sessionFactory.getCurrentSession().get(Movie.class, movieId);
     }
 
     /**
