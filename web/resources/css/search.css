@@ -9,6 +9,10 @@
     width: 40%;
 }
 
+.search-title {
+    margin: 20px 10px 10px 10px;
+}
+
 @media screen and (max-width: 768px) {
 
     #empty-set {

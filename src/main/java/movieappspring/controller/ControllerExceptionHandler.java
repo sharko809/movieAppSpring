@@ -34,6 +34,12 @@ public class ControllerExceptionHandler {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
+    /**
+     * Handles case when some serious (database, hibernate) exception occurs during posting new review
+     *
+     * @param exception exception thrown during posting review error
+     * @return view with message correspondent to exception
+     */
     @ExceptionHandler(OnReviewCreateNullException.class)
     public ModelAndView createReviewException(OnReviewCreateNullException exception) {
         LOGGER.error("Exception on posting review. " + exception.reviewDetails(), exception);
@@ -42,6 +48,13 @@ public class ControllerExceptionHandler {
         return new ModelAndView("error", "errorDetails", errorDetails);
     }
 
+    /**
+     * Handles case when some serious (database, hibernate) exception occurs executing read operations from database
+     *
+     * @param request   http request
+     * @param exception exception thrown during executing read operations from database
+     * @return view with message correspondent to exception
+     */
     @ExceptionHandler(OnGetNullException.class)
     public ModelAndView onGetException(HttpServletRequest request, Exception exception) {
         LOGGER.error("Exception on querying the database.", exception);
@@ -49,6 +62,12 @@ public class ControllerExceptionHandler {
         return new ModelAndView("error", "errorDetails", errorDetails);
     }
 
+    /**
+     * Handles case when some serious (database, hibernate) exception occurs during creating new movie
+     *
+     * @param exception exception thrown during creating new movie
+     * @return view with message correspondent to exception
+     */
     @ExceptionHandler(OnMovieCreateNullException.class)
     public ModelAndView createMovieException(OnMovieCreateNullException exception) {
         LOGGER.error("Exception on adding movie. " + exception.movieDetails(), exception);
@@ -57,6 +76,12 @@ public class ControllerExceptionHandler {
         return new ModelAndView("error", "errorDetails", errorDetails);
     }
 
+    /**
+     * Handles case when some serious (database, hibernate) exception occurs during creating new user
+     *
+     * @param exception exception thrown during adding new user
+     * @return view with message correspondent to exception
+     */
     @ExceptionHandler(OnUserCreateNullException.class)
     public ModelAndView createMovieException(OnUserCreateNullException exception) {
         LOGGER.error("Exception on creating user. " + exception.userDetails(), exception);
@@ -65,6 +90,12 @@ public class ControllerExceptionHandler {
         return new ModelAndView("error", "errorDetails", errorDetails);
     }
 
+    /**
+     * Handles case when user attempts to access non-existing resource
+     *
+     * @param request http request
+     * @return view with message correspondent to exception. Like "no such url" with provided requested url
+     */
     @ExceptionHandler(NoHandlerFoundException.class)
     public ModelAndView notFound404(HttpServletRequest request) {
         String message = "No such url found on this server \n <b>Requested URL:</b> " +
@@ -72,6 +103,13 @@ public class ControllerExceptionHandler {
         return new ModelAndView("error", "errorDetails", message);
     }
 
+    /**
+     * Executed when user attempts to pass invalid parameters in url
+     *
+     * @param request   http request
+     * @param exception exception thrown
+     * @return view from which user attempted to get corrupted url, but with adequate url
+     */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ModelAndView methodArgumentMismatch(HttpServletRequest request, Exception exception) {
         LOGGER.warn("Bad url or argument mismatch: " + request.getRequestURL() +
@@ -82,6 +120,13 @@ public class ControllerExceptionHandler {
         return new ModelAndView("redirect:" + request.getRequestURL());
     }
 
+    /**
+     * Executes when exception (unhandled above) occurs
+     *
+     * @param request   http request
+     * @param exception thrown exception
+     * @return view with message correspondent to exception
+     */
     @ExceptionHandler(RuntimeException.class)
     public ModelAndView error(HttpServletRequest request, Exception exception) {
         LOGGER.warn("Exception caught.", exception);

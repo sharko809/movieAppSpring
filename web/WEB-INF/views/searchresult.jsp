@@ -23,7 +23,7 @@
 <div class="pure-g">
     <div class="pure-u-3-4 centered">
         <div class="pure-u-1">
-            <div style="margin: 20px 10px 10px 10px;">
+            <div class="search-title">
                 <strong>Search results for "${searchRequest}":</strong>
             </div>
         </div>
@@ -141,7 +141,7 @@
                         <div id="pages-sm" class="pure-g">
                             <div class="pure-u-1 inline-flex">
                                 <div class="pure-u-1-4 centered">
-                                    <select style="margin-bottom: 10px;" class="page-select"
+                                    <select class="page-select"
                                             onchange="goToPage(this, '/search?searchInput=${searchRequest}&page=')"
                                             title="Select page">
                                         <c:forEach begin="1" end="${numberOfPages}" var="i">

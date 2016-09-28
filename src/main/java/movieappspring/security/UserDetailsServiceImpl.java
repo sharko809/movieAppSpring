@@ -38,7 +38,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @see User
      */
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        LOGGER.info("LOGIN: " + login);
         User user;
         try {
             user = userService.getUserByLogin(login);
@@ -54,10 +53,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (!user.isAdmin()) {
-            LOGGER.info("Not admin auth attempt");
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         } else {
-            LOGGER.info("Admin auth attempt");
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
 
