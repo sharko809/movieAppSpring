@@ -36,13 +36,20 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
     /**
      * Handles redirect strategy based upon user role.
      *
-     * @param httpServletRequest  HttpServletRequest
-     * @param httpServletResponse HttpServletResponse
-     * @param authentication      user auth details
+     * @param request        HttpServletRequest
+     * @param response       HttpServletResponse
+     * @param authentication user auth details
      */
-    private void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-                        Authentication authentication) {
-        String redirectURL = httpServletRequest.getParameter("redirect");
+    private void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+            throws ServletException, IOException {
+
+        if (((UserDetailsImpl) authentication.getPrincipal()).isBanned()) {
+            request.setAttribute("result", "You are banned");
+            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
+            return;
+        }
+
+        String redirectURL = request.getParameter("redirect");
         String targetURL;
 
         if (redirectURL == null) {
@@ -51,17 +58,17 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
             targetURL = redirectURL;
         }
 
-        if (httpServletResponse.isCommitted()) {
+        if (response.isCommitted()) {
             LOGGER.debug("Response has been committed. Can't redirect to " + targetURL);
             return;
         }
 
         try {
-            redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, targetURL);
+            redirectStrategy.sendRedirect(request, response, targetURL);
         } catch (IOException e) {
             LOGGER.error("Exception during redirect to: " + targetURL, e);
             try {
-                redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, targetURL);
+                redirectStrategy.sendRedirect(request, response, targetURL);
             } catch (IOException e1) {
                 LOGGER.error("Exception during redirect to: " + targetURL, e);
                 throw new RuntimeException(e);
