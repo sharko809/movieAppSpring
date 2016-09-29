@@ -43,8 +43,8 @@ public class PropertiesManager {
             properties.load(inputStream);
             prop = properties.getProperty(propName);
         } catch (IOException e) {
-            LOGGER.fatal("Seems properties file is missing. That's totally not my fault, sorry. ", e);
-            throw new RuntimeException("Seems properties file is missing. That's totally not my fault, sorry. ", e);
+            LOGGER.fatal("Seems that properties file is missing. That's totally not my fault, sorry. ", e);
+            throw new RuntimeException("Seems that properties file is missing. That's totally not my fault, sorry. ", e);
         } finally {
             try {
                 inputStream.close();

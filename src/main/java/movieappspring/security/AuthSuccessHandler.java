@@ -8,6 +8,7 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +45,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
             throws ServletException, IOException {
 
         if (((UserDetailsImpl) authentication.getPrincipal()).isBanned()) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
             request.setAttribute("result", "You are banned");
             request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
             return;
